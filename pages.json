@@ -1,0 +1,316 @@
+{
+  "pages": [
+    {
+      "path": "pages/navlist/navlist",
+      "style": {
+        "navigationBarTitleText": "首页",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/self/self",
+      "style": {
+        "navigationBarTitleText": "我的",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/login/login",
+      "style": {
+        "navigationBarTitleText": "登录",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/login/auto_login",
+      "style": {
+        "navigationBarTitleText": "登录",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/detail/detail",
+      "style": {
+        "navigationBarTitleText": "详情",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/detail/replay",
+      "style": {
+        "navigationBarTitleText": "回复",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/search/search",
+      "style": {
+        "navigationBarTitleText": "搜索",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/address/list",
+      "style": {
+        "navigationBarTitleText": "地址管理",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/address/chilre/edit",
+      "style": {
+        "navigationBarTitleText": "编辑地址",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/order/list",
+      "style": {
+        "navigationBarTitleText": "下单",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/order/myorderlist",
+      "style": {
+        "navigationBarTitleText": "我的订单",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/order/detail",
+      "style": {
+        "navigationBarTitleText": "订单详情",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/order/edit",
+      "style": {
+        "navigationBarTitleText": "编辑订单",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/order/guize/guize",
+      "style": {
+        "navigationBarTitleText": "规则",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/shifu/list",
+      "style": {
+        "navigationBarTitleText": "师傅列表",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/shifu/fenleilist",
+      "style": {
+        "navigationBarTitleText": "师傅分类",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/shifu/selfdb",
+      "style": {
+        "navigationBarTitleText": "师傅后台",
+        "enablePullDownRefresh": false
+      }
+    }
+  ],
+  "subPackages": [
+    {
+      "root": "pages_fena",
+      "pages": [{
+          "path": "product/list",
+          "style": {
+            "navigationBarTitleText": "产品列表"
+          }
+        },
+        {
+          "path": "product/edit",
+          "style": {
+            "navigationBarTitleText": "编辑产品"
+          }
+        },
+        {
+          "path": "user/edit",
+          "style": {
+            "navigationBarTitleText": "编辑用户"
+          }
+        },
+        {
+          "path": "manage/list",
+          "style": {
+            "navigationBarTitleText": "管理"
+          }
+        },
+        {
+          "path": "reviewed/list",
+          "style": {
+            "navigationBarTitleText": "审核"
+          }
+        },
+        {
+          "path": "jubao/jubao",
+          "style": {
+            "navigationBarTitleText": "举报"
+          }
+        },
+        {
+          "path": "love/love",
+          "style": {
+            "navigationBarTitleText": "收藏"
+          }
+        },
+        {
+          "path": "ershou/ershou",
+          "style": {
+            "navigationBarTitleText": "二手"
+          }
+        },
+        {
+          "path": "feipin/fenlei",
+          "style": {
+            "navigationBarTitleText": "分类"
+          }
+        },
+        {
+          "path": "z2/z2",
+          "style": {
+            "navigationBarTitleText": "z2"
+          }
+        },
+        {
+          "path": "z3/z3",
+          "style": {
+            "navigationBarTitleText": "z3"
+          }
+        },
+        {
+          "path": "z4/z4",
+          "style": {
+            "navigationBarTitleText": "z4"
+          }
+        },
+        {
+          "path": "detail_price/detail_price",
+          "style": {
+            "navigationBarTitleText": "价格详情"
+          }
+        },
+        {
+          "path": "historyarr/historyarr",
+          "style": {
+            "navigationBarTitleText": "历史记录"
+          }
+        },
+        {
+          "path": "gonggao/gonggao",
+          "style": {
+            "navigationBarTitleText": "公告"
+          }
+        },
+        {
+          "path": "managerff/managerff",
+          "style": {
+            "navigationBarTitleText": "管理"
+          }
+        },
+        {
+          "path": "payorder/payorder",
+          "style": {
+            "navigationBarTitleText": "支付"
+          }
+        },
+        {
+          "path": "appcenter/appcenter",
+          "style": {
+            "navigationBarTitleText": "应用中心"
+          }
+        },
+        {
+          "path": "ad-interactive-webview/ad-interactive-webview",
+          "style": {
+            "backgroundColor": "#F8F8F8",
+            "navigationBarTitleText": "ad"
+          }
+        },
+        {
+          "path": "pay-desk/pay-desk",
+          "style": {
+            "backgroundColor": "#F8F8F8",
+            "navigationBarTitleText": "收银台"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages_fen",
+      "pages": [{
+          "path": "tuijian/list",
+          "style": {
+            "navigationBarTitleText": "管理员操作"
+          }
+        },
+
+        {
+          "path": "feipin-admin/index",
+          "style": {
+            "navigationBarTitleText": "",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "feipin-admin/edit",
+          "style": {
+            "navigationBarTitleText": ""
+          }
+        },
+        {
+          "path": "advpay/list",
+          "style": {
+            "navigationBarTitleText": ""
+          }
+        },
+        {
+          "path": "kaiyuan/list",
+          "style": {
+            "navigationBarTitleText": ""
+          }
+        },
+        {
+          "path": "kaiyuan/edit",
+          "style": {
+            "navigationBarTitleText": ""
+          }
+        }
+      ]
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "uni-app",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8"
+  },
+
+  "easycom": {
+    "custom": {
+      "^u--(.*)":  "@/uni_modules/uview-plus/components/u-$1/u-$1.vue",
+      "^up-(.*)": "@/uni_modules/uview-plus/components/u-$1/u-$1.vue",
+      "^u-([^-].*)": "@/uni_modules/uview-plus/components/u-$1/u-$1.vue"
+    }
+  },
+  "uniIdRouter": {
+    "loginPage": "uni_modules/uni-id-pages/pages/login/login-withpwd",
+    "needLogin": [
+      "pages/self/.*",
+      "pages/address/list",
+      "pages/order/myorderlist"
+    ],
+    "resToLogin": true
+  }
+}
