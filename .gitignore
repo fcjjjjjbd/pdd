@@ -1,0 +1,38 @@
+# General
+.DS_Store
+node_modules/
+dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw*
+
+# uni-app specific
+.hbuilderx/
+unpackage/
+
+# uniCloud specific
+uniCloud-aliyun/
+
+# Local env files
+.env.local
+.env.*.local
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor directories and files
+.project
+.hbuilderx
+.trae
