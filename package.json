@@ -1,0 +1,12 @@
+{
+  "name": "money-app",
+  "version": "1.0.0",
+  "description": "基于Vue3、UniApp和UniCloud开发的应用程序",
+  "main": "main.js",
+  "dependencies": {
+    "dayjs": "^1.11.13",
+    "pinia": "^2.0.0",
+    "pinia-plugin-persistedstate": "^1.0.0",
+    "uview-plus": "^3.0.0"
+  }
+}
