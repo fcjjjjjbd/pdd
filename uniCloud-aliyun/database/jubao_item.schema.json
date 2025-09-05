@@ -1,0 +1,47 @@
+// 文档教程: https://uniapp.dcloud.net.cn/uniCloud/schema
+{
+  "bsonType": "object",
+  "required": ["goodsid"],
+  "permission": {
+    "read": true,
+    "create": true,
+    "update": true,
+    "delete": true
+  },
+  "properties": {
+    "_id": {
+      "description": "ID，系统自动生成"
+    },
+    "goodsid": {
+      "bsonType": "string",
+      "description": "举报商家商品id",
+      "title": "类别名称",
+      "trim": "both"
+    },
+    "fenlei": {
+      "bsonType": "string",
+      "description": "举报分类",
+      "title": "类别名称",
+      "trim": "both"
+    },
+    "content": {
+      "bsonType": "string",
+      "description": "举报商品内容",
+      "title": "类别名称",
+      "trim": "both"
+    },
+    "weixi": {
+      "bsonType": "string",
+      "description": "举报者微信号",
+      "title": "类别名称",
+      "trim": "both"
+    },
+    "create_date": {
+      "bsonType": "timestamp",
+      "description": "创建时间",
+      "defaultValue": {
+        "$env": "now"
+      }
+    }
+  }
+}

@@ -1,0 +1,213 @@
+<!-- console.log()  <view class=""> </view> for()行动做到 错1改1 转恶0为善1 -->
+<template>
+  <view class="Layout">
+    <view class="top u-m-b-20">
+      <view class="box">
+        <uni-icons type="info" size="28"></uni-icons>
+        <view class="text">公告</view>
+      </view>
+      <view class="box" @click="clickshare">
+        <uni-icons type="download" size="23"></uni-icons>
+        <view class="text">售后</view>
+      </view>
+      <view class="box" @click="clicktui">
+        <uni-icons type="download" size="23"></uni-icons>
+        <view class="text">推荐</view>
+      </view>
+    </view>
+    <!-- 公告 -->
+    <view class="content">
+      <view class="item" v-for="item in advarr" :key="item._id">
+        {{ item.name }}
+      </view>
+    </view>
+
+    <!-- 分享 -->
+    <uni-popup ref="infoPopup" type="bottom">
+      <view class="share">
+        <scroll-view scroll-y>
+          <view class="info">
+            <view class="code">
+              售后微信加好友: stayapp
+              <view class="pic">
+                <image class="img" :src="dingpic" mode="aspetFit"></image>
+              </view>
+
+              <view class="pic">
+                <image
+                  class="img"
+                  src="https://mp-809a65a0-175d-4ce6-b53d-81522f24f79b.cdn.bspapp.com/userAvatar/down.jpg"
+                  mode="aspectFit"
+                ></image>
+              </view>
+              <view class="pic">
+                <image class="img" :src="dingpic" mode="aspetFit"></image>
+              </view>
+            </view>
+            <button
+              @click="copyy(name1)"
+              size="mini"
+              type="primary"
+              class="u-m-t-10 u-m-b-10"
+            >
+              复制网站地址
+            </button>
+            <view class="code">
+              网站二维码
+              <view class="pic">
+                <image class="img" :src="imgurl" mode="aspetFit"></image>
+              </view>
+            </view>
+          </view>
+        </scroll-view>
+      </view>
+    </uni-popup>
+  </view>
+</template>
+
+<script setup>
+import { showToast } from "../../utils/common";
+const dsyunobj = uniCloud.importObject("goods-backend");
+const db = uniCloud.database();
+const infoPopup = ref(null);
+const advarr = ref([]); //公告数组
+const name1 = ref(null); //网站地址
+const imgurl = ref(null); //网站二维码
+const dingpic = ref(null); //钉钉二维码
+
+onLoad(async () => {
+  let {
+    result: { data, errCode },
+  } = await db.collection("demo_mix").doc("67048b620d2b31998cb1f356").get({
+    getOne: true,
+  });
+  console.log(data);
+  imgurl.value = data.yy;
+  name1.value = data.rr;
+  dingpic.value = data.tt;
+});
+// 推荐
+const clicktui = async () => {
+  uni.navigateTo({
+    url: "/pages_fen/tuijian/list",
+  });
+};
+
+//   公告列表
+const getAdver = async () => {
+  let { data, errCode } = await dsyunobj.usergg();
+
+  if (errCode != 0) return;
+  advarr.value = data;
+};
+getAdver();
+// 复制网站二维码
+const copyy = async (value) => {
+  uni.setClipboardData({
+    data: value,
+    success: (res) => {
+      console.log(res);
+    },
+    fail: (err) => {
+      console.log(err);
+    },
+  });
+  showToast("复制成功");
+};
+// 分享
+const clickshare = () => {
+  infoPopup.value.open();
+};
+</script>
+
+<style lang="scss">
+.Layout {
+  padding: 20rpx;
+
+  .top {
+    background: rgba(255, 255, 255, 0.8);
+    height: 120rpx;
+    border-radius: 120rpx;
+    color: #000;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    box-shadow: 0rpx 2rpx 12rpx rgba(0, 0, 0, 0.1);
+    // backdrop-filter: blur(20rpx);
+
+    .box {
+      flex-direction: column;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 2rpx 12rpx;
+
+      .text {
+        font-size: 28rpx;
+        color: $text-font-color-2;
+      }
+    }
+  }
+
+  .content {
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    padding: 20rpx;
+    border-radius: 8rpx;
+
+    .item {
+      letter-spacing: 4rpx;
+      font-size: 34rpx;
+      font-weight: bold;
+      border-bottom: 1rpx solid $text-font-color-3;
+      padding-bottom: 28rpx;
+    }
+  }
+}
+
+.qun {
+  display: flex;
+  flex-direction: column;
+
+  .num {
+    margin-bottom: 20rpx;
+    font-size: 28rpx;
+    color: #333;
+  }
+}
+
+.share {
+  background: #fff;
+  padding: 20rpx;
+  border-radius: 30rpx 30rpx 0 0;
+  overflow: hidden;
+  font-size: 28rpx;
+
+  scroll-view {
+    max-height: 80vh;
+
+    .info {
+      .code {
+        width: 100%;
+        height: 100%;
+      }
+
+      .pic {
+        width: 600rpx;
+        height: 600rpx;
+        margin: 0 auto;
+        background: #fff;
+        border-radius: 8rpx;
+        overflow: hidden;
+
+        .img {
+          width: 100%;
+          height: 100%;
+        }
+      }
+    }
+  }
+}
+</style>

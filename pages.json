@@ -1,0 +1,437 @@
+{
+  "pages": [{
+      "path": "pages/navlist/navlist",
+      "style": {
+        "navigationBarTitleText": "拼多多上门服务"
+      }
+    },
+    {
+      "path": "pages/detail/detail",
+      "style": {
+        "navigationBarTitleText": "商品详情"
+      }
+    },
+    {
+      "path": "uni_modules/uni-id-pages/pages/userinfo/deactivate/deactivate",
+      "style": {
+        "navigationBarTitleText": "注销账号"
+      }
+    },
+    {
+      "path": "uni_modules/uni-id-pages/pages/userinfo/userinfo",
+      "style": {
+        "navigationBarTitleText": "个人资料"
+      }
+    },
+    {
+      "path": "uni_modules/uni-id-pages/pages/userinfo/bind-mobile/bind-mobile",
+      "style": {
+        "navigationBarTitleText": "绑定手机号码"
+      }
+    },
+    {
+      "path": "uni_modules/uni-id-pages/pages/userinfo/cropImage/cropImage",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "uni_modules/uni-id-pages/pages/login/login-withoutpwd",
+      "style": {
+        "navigationBarTitleText": "免密"
+      }
+    },
+    {
+      "path": "uni_modules/uni-id-pages/pages/login/login-withpwd",
+      "style": {
+        "navigationBarTitleText": "美困"
+      }
+    },
+    {
+      "path": "uni_modules/uni-id-pages/pages/login/login-smscode",
+      "style": {
+        "navigationBarTitleText": "手机验证码登录"
+      }
+    },
+    {
+      "path": "uni_modules/uni-id-pages/pages/register/register",
+      "style": {
+        "navigationBarTitleText": "注册"
+      }
+    },
+    {
+      "path": "uni_modules/uni-id-pages/pages/register/register-by-email",
+      "style": {
+        "navigationBarTitleText": "邮箱验证码注册"
+      }
+    },
+    {
+      "path": "uni_modules/uni-id-pages/pages/retrieve/retrieve",
+      "style": {
+        "navigationBarTitleText": "重置密码"
+      }
+    },
+    {
+      "path": "uni_modules/uni-id-pages/pages/retrieve/retrieve-by-email",
+      "style": {
+        "navigationBarTitleText": "通过邮箱重置密码"
+      }
+    },
+    {
+      "path": "uni_modules/uni-id-pages/pages/common/webview/webview",
+      "style": {
+        "enablePullDownRefresh": false,
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "uni_modules/uni-id-pages/pages/userinfo/change_pwd/change_pwd",
+      "style": {
+        "enablePullDownRefresh": false,
+        "navigationBarTitleText": "修改密码"
+      }
+    },
+    {
+      "path": "uni_modules/uni-id-pages/pages/register/register-admin",
+      "style": {
+        "enablePullDownRefresh": false,
+        "navigationBarTitleText": "注册管理员账号"
+      }
+    },
+    {
+      "path": "uni_modules/uni-id-pages/pages/userinfo/set-pwd/set-pwd",
+      "style": {
+        "enablePullDownRefresh": false,
+        "navigationBarTitleText": "设置密码"
+      }
+    },
+    {
+      "path": "uni_modules/uni-id-pages/pages/userinfo/realname-verify/realname-verify",
+      "style": {
+        "enablePullDownRefresh": false,
+        "navigationBarTitleText": "实名认证"
+      }
+    },
+    {
+      "path": "pages/self/self",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/search/search",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/login/auto_login",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/login/login",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/detail/replay",
+      "style": {
+        "navigationBarTitleText": "评论回复详情"
+      }
+    },
+
+    {
+      "path": "pages/address/list",
+      "style": {
+        "navigationBarTitleText": "地址列表"
+      }
+    },
+    {
+      "path": "pages/order/edit",
+      "style": {
+        "navigationBarTitleText": "全国最低价的上门服务"
+      }
+    },
+
+    {
+      "path": "pages/shifu/list",
+      "style": {
+        "navigationBarTitleText": "师傅接单"
+      }
+    },
+    {
+      "path": "pages/shifu/fenleilist",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/shifu/selfdb",
+      "style": {
+        "navigationBarTitleText": "师傅入驻信息"
+      }
+    },
+    {
+      "path": "pages/order/list",
+      "style": {
+        "navigationBarTitleText": "订单列表"
+      }
+    },
+
+    {
+      "path": "pages/order/myorderlist",
+      "style": {
+        "navigationBarTitleText": "订单列表"
+      }
+    },
+    {
+      "path": "pages/order/detail",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    }
+  ],
+  "tabBar": {
+    "color": "#000000",
+    "selectedColor": "#CC0000",
+    "borderStyle": "white",
+    "list": [{
+        "pagePath": "pages/navlist/navlist",
+        "text": "全都干"
+      },
+      {
+        "pagePath": "pages_fena/ershou/ershou",
+        "fontSize": "45px",
+        "text": "二手咸鱼"
+      },
+
+      {
+        "pagePath": "pages_fena/payorder/payorder",
+        "iconPath": "static/images/sc.png",
+        "selectedIconPath": "static/images/sc.png",
+        "text": "维修"
+      },
+
+      {
+        "pagePath": "pages/self/self",
+        "text": "我的"
+      }
+    ]
+  },
+  "subPackages": [{
+      "root": "pages_fena",
+      "pages": [{
+          "path": "managerff/managerff",
+          "style": {
+            "navigationBarTitleText": "管理员操作"
+          }
+        },
+        {
+          "path": "ershou/ershou",
+          "style": {
+            "navigationBarTitleText": "二手"
+          }
+        },
+        {
+          "path": "feipin/fenlei",
+          "style": {
+            "navigationBarTitleText": "上门回收"
+          }
+        },
+
+        {
+          "path": "gonggao/gonggao",
+          "style": {
+            "navigationBarTitleText": "投诉"
+          }
+        },
+
+        {
+          "path": "manage/list",
+          "style": {
+            "navigationBarTitleText": "后台管理首页"
+          }
+        },
+        {
+          "path": "payorder/payorder",
+          "style": {
+            "navigationBarTitleText": "订单列表"
+          }
+        },
+        {
+          "path": "payorder/detail",
+          "style": {
+            "navigationBarTitleText": "订单详情页"
+          }
+        },
+        {
+          "path": "love/love",
+          "style": {
+            "navigationBarTitleText": "收藏的商品"
+          }
+        },
+        {
+          "path": "jubao/jubao",
+          "style": {
+            "navigationBarTitleText": "举报"
+          }
+        },
+        {
+          "path": "reviewed/list",
+          "style": {
+            "navigationBarTitleText": "审核列表"
+          }
+        },
+        {
+          "path": "product/edit",
+          "style": {
+            "navigationBarTitleText": "添加商品"
+          }
+        },
+        {
+          "path": "product/list",
+          "style": {
+            "navigationBarTitleText": ""
+          }
+        },
+
+        {
+          "path": "user/edit",
+          "style": {
+            "navigationBarTitleText": ""
+          }
+        },
+        {
+          "path": "historyarr/historyarr",
+          "style": {
+            "navigationBarTitleText": "历史记录"
+          }
+        },
+        {
+          "path": "appcenter/appcenter",
+          "style": {
+            "navigationBarTitleText": "用户中心"
+          }
+        },
+
+        {
+          "path": "z2/z2",
+          "style": {
+            "navigationBarTitleText": "明码标价crud"
+          }
+        },
+        {
+          "path": "z3/z3",
+          "style": {
+            "navigationBarTitleText": ""
+          }
+        },
+        {
+          "path": "z4/z4",
+          "style": {
+            "navigationBarTitleText": ""
+          }
+        },
+        {
+          "path": "detail_price/detail_price",
+          "style": {
+            "navigationBarTitleText": ""
+          }
+        }
+      ]
+    },
+    {
+      "root": "uni_modules/uni-pay/pages",
+      "pages": [{
+          "path": "success/success",
+          "style": {
+            "backgroundColor": "#F8F8F8",
+            "navigationBarTitleText": "支付成功"
+          }
+        },
+        {
+          "path": "ad-interactive-webview/ad-interactive-webview",
+          "style": {
+            "backgroundColor": "#F8F8F8",
+            "navigationBarTitleText": "ad"
+          }
+        },
+        {
+          "path": "pay-desk/pay-desk",
+          "style": {
+            "backgroundColor": "#F8F8F8",
+            "navigationBarTitleText": "收银台"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages_fen",
+      "pages": [{
+          "path": "tuijian/list",
+          "style": {
+            "navigationBarTitleText": "管理员操作"
+          }
+        },
+
+        {
+          "path": "feipin-admin/index",
+          "style": {
+            "navigationBarTitleText": "",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "feipin-admin/edit",
+          "style": {
+            "navigationBarTitleText": ""
+          }
+        },
+        {
+          "path": "advpay/list",
+          "style": {
+            "navigationBarTitleText": ""
+          }
+        },
+        {
+          "path": "kaiyuan/list",
+          "style": {
+            "navigationBarTitleText": ""
+          }
+        },
+        {
+          "path": "kaiyuan/edit",
+          "style": {
+            "navigationBarTitleText": ""
+          }
+        }
+      ]
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "uni-app",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8"
+  },
+
+  "easycom": {
+    "custom": {
+      "^u--(.*)": "@/uni_modules/uview-plus/components/u-$1/u-$1.vue",
+      "^up-(.*)": "@/uni_modules/uview-plus/components/u-$1/u-$1.vue",
+      "^u-([^-].*)": "@/uni_modules/uview-plus/components/u-$1/u-$1.vue"
+    }
+  },
+  "uniIdRouter": {
+    "loginPage": "uni_modules/uni-id-pages/pages/login/login-withpwd",
+    "needLogin": [
+      "pages/self/.*",
+      "pages/address/list",
+      "pages/order/myorderlist"
+    ],
+    "resToLogin": true
+  }
+}
