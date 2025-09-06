@@ -200,24 +200,22 @@
     "borderStyle": "white",
     "list": [{
         "pagePath": "pages/navlist/navlist",
-        "text": "全都干"
+        "text": "首页"
       },
       {
         "pagePath": "pages_fena/ershou/ershou",
         "fontSize": "45px",
-        "text": "二手咸鱼"
+        "text": "师傅接单"
       },
 
       {
-        "pagePath": "pages_fena/payorder/payorder",
-        "iconPath": "static/images/sc.png",
-        "selectedIconPath": "static/images/sc.png",
-        "text": "维修"
+        "pagePath": "pages_fen/kaiyuan/list",
+               "text": "开源技术"
       },
 
       {
         "pagePath": "pages/self/self",
-        "text": "我的"
+        "text": "个人中心"
       }
     ]
   },

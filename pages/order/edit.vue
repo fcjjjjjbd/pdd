@@ -6,45 +6,8 @@
       <view class="name"> </view>
     </view>
 
-    <view class="main">
-      <view class="top" v-if="isAdminRole()">
-        <button type="primary" size="mini" plain @click="jgadmin">
-          价格后台
-        </button></view
-      >
-      <view>{{ urlobj.name }}明码标价</view>
-      <uni-table border stripe emptyText="暂无更多数据">
-        <!-- 表头行 -->
-        <uni-tr>
-          <uni-th align="center">上门服务类型</uni-th>
-          <uni-th align="center">上门收费价格(元)</uni-th>
-        </uni-tr>
-        <!-- 表格数据行 -->
-        <uni-tr v-for="row in priceInfo">
-          <uni-td style="font-size: 35rpx; color: black">{{
-            row.title
-          }}</uni-td>
-          <uni-td
-            ><view class="tabbrinfo">
-              <view class="chil" style="color: red; font-size: 35rpx">
-                ￥{{ row.price }}
-              </view>
-            </view></uni-td
-          >
-          <uni-td> </uni-td>
-        </uni-tr>
-      </uni-table>
-    </view>
-    <view v-if="true">
-      <up-collapse accordion>
-        <up-collapse-item title="进价渠道">
-          <template #value>
-            <view class="">下拉打开</view>
-          </template>
-          <text>{{ urlobj.jinjia }} 11</text>
-        </up-collapse-item>
-      </up-collapse>
-    </view>
+   
+    
     <view>现在发布预约上门</view>
     <view class="chosse" @click="chosse"
       >选择类型:

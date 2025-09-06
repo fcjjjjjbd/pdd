@@ -1,34 +1,26 @@
-// 系统状态栏 胶囊按钮高度
-const SYSTEM_INFO = uni.getSystemInfoSync();
+import { computed, unref } from "vue";
+import { SYSTEM_WINDOW_INFO, MENU_BUTTON_RECT_INFO } from "@/utils/config.js";
+//状态栏高度（px）
+export const statusBarH = computed(
+  () => SYSTEM_WINDOW_INFO.statusBarHeight || 25
+);
 
-export const getStatusBarHeight = () => SYSTEM_INFO.statusBarHeight || 15;
+//标题栏高度
+export const titleBarH = computed(() => {
+  const { top, height } = MENU_BUTTON_RECT_INFO;
+  if (!top || !height) return 40;
+  return height + (top - unref(statusBarH)) * 2;
+});
 
-export const getTitleBarHeight = () => {
-  if (uni.getMenuButtonBoundingClientRect) {
-    let {
-      top,
-      height
-    } = uni.getMenuButtonBoundingClientRect();
-    return height + (top - getStatusBarHeight()) * 2
-  } else {
-    return 40;
-  }
-}
+export const navBarH = computed(() => unref(statusBarH) + unref(titleBarH));
 
-export const getNavBarHeight = () => getStatusBarHeight() + getTitleBarHeight();
-
-export const getLeftIconLeft = () => {
-  // #ifdef MP-TOUTIAO
-  let {
-    leftIcon: {
-      left,
-      width
-    }
-  } = tt.getCustomButtonBoundingClientRect();
-  return left + parseInt(width);
-  // #endif
-
-  // #ifndef MP-TOUTIAO
-  return 0
-  // #endif	
-}
+export const useNavBarStyle = () => {
+  const statusBarHeight = computed(() => unref(statusBarH) + "px");
+  const titleBarHeight = computed(() => unref(titleBarH) + "px");
+  const headHeight = computed(() => unref(navBarH) + "px");
+  return {
+    statusBarHeight,
+    titleBarHeight,
+    headHeight,
+  };
+};

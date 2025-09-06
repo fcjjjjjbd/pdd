@@ -21,8 +21,7 @@
       url="/pages_fena/managerff/managerff"
     ></u-cell>
     <u-cell title="商品审核" isLink url="/pages_fena/reviewed/list"></u-cell>
-    <u-cell title="投诉列表" isLink url="/pages_fena/gonggao/gonggao"></u-cell>
-
+    
     <view class="goback" @click="goback">返回</view>
   </view>
 </template>

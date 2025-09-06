@@ -1,158 +1,303 @@
-<template>
-  <view class="home">
-    <z-paging
-      ref="paging"
-      v-model="dataList"
-      @query="queryList"
-      :default-page-size="4"
-      empty-view-text="无数据"
-    >
-      <!-- 一开始req加载状态 -->
-      <template #loading>
-        <view style="padding: 60rpx">
-          <uni-load-more status="loading"></uni-load-more>
-        </view>
-      </template>
-      <template #top>
-        <view class="search">
-          <uni-search-bar
-            @confirm="onSearch"
-            @cancel="onClear"
-            @clear="onClear"
-            placeholder="搜索"
-            v-model="keyword"
-          >
-          </uni-search-bar> </view
-      ></template>
-
-      <view class="list">
-        <view
-          class="list-item"
-          v-for="(item, index) in dataList"
-          :key="index"
-          @click="godetail(item)"
-        >
-          {{ item.title }}
-        </view>
-      </view>
-
-      <navigator url="/pages_fen/kaiyuan/edit" class="navorder">
-        <view class="item">
-          <text>发布</text>
-        </view>
-      </navigator>
-    </z-paging>
-  </view>
-</template>
-
 <script setup>
-const db = uniCloud.database(); // 连接云对象整体
+import { SYSTEM_WINDOW_INFO } from "@/utils/config.js";
+import { navBarH } from "@/utils/system.js";
+import { routerTo } from "@/utils/common.js";
+import { useGoodsCategoryApi, useGoodsDetail } from "@/apis/goods.js";
+const { data: categoryList = [] } = useGoodsCategoryApi();
+const { data: goodsDatail = {} } = useGoodsDetail();
+const currentClassId = ref("");
+const mainScrollTop = ref(0);
+const skuPopRef = ref(null);
+const cartPopRef = ref(null);
+const currGoods = ref({});
+const currSkuId = ref("");
+const searchVal = ref("");
+const containerHeight = computed(() => {
+  let tabBarH = 0;
+  // #ifdef H5
+  tabBarH = 50;
+  // #endif
+  return `${
+    SYSTEM_WINDOW_INFO.windowHeight -
+    unref(navBarH) -
+    45 -
+    uni.rpx2px(100) -
+    tabBarH
+  }px `;
+});
 
-import { ref } from "vue";
-const paging = ref(null);
+const onClassTab = (item) => {
+  console.log(item);
+  currentClassId.value = item._id;
+  mainScrollTop.value = item.top;
+};
 
-const dataList = ref([]);
-const keyword = ref("");
-// 跳转详情
-const godetail = async (e) => {
-  console.log(e);
-  uni.navigateTo({
-    url: "/pages/detail/detail?id=" + e._id,
+const calcSize = () => {
+  let h = 0;
+  categoryList.forEach((item, index) => {
+    const view = uni.createSelectorQuery().select(`#module-${item._id}`);
+    view
+      .fields({ size: true }, (data) => {
+        item.top = Math.floor(h);
+        h += data.height;
+      })
+      .exec();
   });
 };
-const queryList = (pageNo, pageSize) => {
-  getSoupList(pageNo, pageSize);
+
+const onMainScroll = (e) => {
+  let scrollTop = e.detail.scrollTop;
+  let results = categoryList
+    .filter((item) => item.top < scrollTop + 2)
+    .reverse();
+  if (results.length > 0) currentClassId.value = results[0]._id;
 };
 
-const getSoupList = async (pageNo, pageSize) => {
-  let skip = (pageNo - 1) * pageSize;
-
-  try {
-    let {
-      result: { errCode, data },
-    } = await db
-      .collection("goods_detail")
-      .field("publish_date,title")
-      .orderBy("publish_date", "desc")
-      .skip(skip)
-      .limit(pageSize)
-      .get();
-
-    if (errCode != 0) return;
-    paging.value.complete(data);
-  } catch (e) {
-    paging.value.complete(false);
-  }
+const showSkuPop = (e) => {
+  // console.log(e._id);
+  currGoods.value = goodsDatail;
+  currSkuId.value = goodsDatail?.sku?.[0]?._id || "";
+  skuPopRef.value.open();
 };
-//搜索
+
+const closeSkuPop = () => {
+  skuPopRef.value.close();
+};
+
+const openCartPop = () => {
+  cartPopRef.value.open();
+};
+
+nextTick(() => {
+  calcSize();
+  if (categoryList[0]) onClassTab(categoryList[0]);
+});
+
 const onSearch = () => {
-  console.log("123");
-};
-// 取消搜索
-const onClear = () => {
-  console.log("123");
+  routerTo("/pages/shop/search?keyword=" + unref(searchVal));
 };
 </script>
 
+<template>
+  <view class="page-wrap">
+    <mod-nav-bar title="商城" title-color="#fff"></mod-nav-bar>
+    <mode-search
+      @on-confirm="onSearch"
+      v-model:keyword="searchVal"
+    ></mode-search>
+    <view class="container">
+      <scroll-view class="aside" scroll-y>
+        <view
+          class="item"
+          :class="{ active: currentClassId == item._id }"
+          v-for="(item, index) in categoryList"
+          :key="item._id"
+          @click="onClassTab(item)"
+        >
+          {{ item.name }}
+        </view>
+      </scroll-view>
+
+      <scroll-view
+        class="main"
+        scroll-y
+        :scroll-top="mainScrollTop"
+        scroll-with-animation
+        @scroll="onMainScroll"
+      >
+        <view
+          class="group"
+          v-for="(group, index) in categoryList"
+          :key="group._id"
+          :id="`module-${group._id}`"
+        >
+          <view class="name">{{ group.name }}</view>
+          <view class="list">
+            <view class="item" v-for="(goods, idx) in group.goods" :key="idx">
+              <card-goods-info
+                :info="goods"
+                @select-buy="showSkuPop"
+                :type="1"
+              ></card-goods-info>
+            </view>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+</template>
+
 <style lang="scss" scoped>
-.home {
-  padding: 20rpx;
-
-  .list {
+.page-wrap {
+  .container {
     display: flex;
-    flex-direction: column;
-    margin-bottom: 150rpx; // 为悬浮按钮留出空间
-  }
+    justify-content: space-between;
+    height: v-bind(containerHeight);
 
-  .list-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20rpx; // 列表项之间的间距
-  }
+    .aside {
+      width: 200rpx;
+      height: 100%;
+      background: #f9f9f9;
+      flex-shrink: 0;
 
-  .navorder {
-    width: 120rpx;
-    height: 120rpx;
-    background: #0199fe;
-    border-radius: 50%;
-    color: #fff;
-    position: fixed;
-    z-index: 100;
-    bottom: 150rpx;
-    right: 50rpx;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 0 0 20rpx rgba(1, 153, 254, 0.8);
+      .item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100rpx;
+        font-size: 28rpx;
+        color: #666;
+        position: relative;
 
-    .item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+        &.active {
+          color: $uni-color-primary;
+          background: #fff;
+
+          &::after {
+            content: "";
+            display: block;
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 8rpx;
+            height: 36rpx;
+            background: $uni-color-primary;
+            border-radius: 0 10rpx 10rpx 0;
+          }
+        }
+      }
+    }
+
+    .main {
+      flex: 1;
+      height: 100%;
+
+      .group {
+        .name {
+          font-size: 26rpx;
+          color: #333;
+          padding: 10rpx 24rpx;
+          position: sticky;
+          top: 0;
+          left: 0;
+          background: #fff;
+          font-weight: bold;
+        }
+
+        .list {
+          padding: 24rpx;
+          padding-top: 0;
+          display: grid;
+          gap: 24rpx;
+        }
+      }
     }
   }
-  .navorder {
-    width: 120rpx;
-    height: 120rpx;
-    background: #0199fe;
-    border-radius: 50%;
-    color: #fff;
-    position: fixed;
-    z-index: 100;
-    bottom: 100rpx;
-    right: 50rpx;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 0 0 20rpx rgba(1, 153, 254, 0.8);
 
-    .item {
+  .shop-bar {
+    position: fixed;
+    width: 100%;
+    left: 0;
+    //#ifdef H5
+    bottom: 50px;
+    //#endif
+    //#ifndef H5
+    bottom: 0;
+
+    //#endif
+    .content {
+      position: relative;
       display: flex;
-      flex-direction: column;
+      justify-content: space-between;
       align-items: center;
-      justify-content: center;
+      width: 100%;
+      height: 100rpx;
+      padding: 0 24rpx;
+      box-sizing: border-box;
+      background-color: #6a6a6a;
+
+      .left {
+        display: flex;
+        align-items: center;
+        height: 100%;
+
+        .icon-wrap {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 112rpx;
+          height: 112rpx;
+          border-radius: 50%;
+          background-color: $uni-color-primary;
+          position: absolute;
+          top: -30rpx;
+          left: 24rpx;
+
+          .iconfont {
+            font-size: 50rpx;
+            color: #fff;
+          }
+
+          .tag {
+            position: absolute;
+            right: 0;
+            top: 0rpx;
+            min-width: 40rpx;
+            height: 40rpx;
+            padding: 10rpx;
+            font-size: 22rpx;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: $uni-color-error;
+            border-radius: 40rpx;
+          }
+        }
+
+        .price-wrap {
+          display: flex;
+          align-items: center;
+          margin-left: 120rpx;
+          color: #fff;
+          font-size: 22rpx;
+
+          .num {
+            font-size: 36rpx;
+          }
+        }
+      }
+
+      .right {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        height: 100%;
+
+        .settle {
+          padding: 0 32rpx;
+          height: 66rpx;
+          line-height: 66rpx;
+          font-size: 32rpx;
+          color: #fff;
+          background-color: $uni-color-error;
+          border-radius: 66rpx;
+        }
+      }
     }
+  }
+
+  .sku-pop-wrap,
+  .cart-pop-wrap {
+    background: #fff;
+    min-height: 300rpx;
+    padding: 32rpx;
+    /* #ifdef H5 */
+    padding: 32rpx 32rpx 66px;
+    /* #endif */
+    border-radius: 20rpx 20rpx 0 0;
   }
 }
 </style>
