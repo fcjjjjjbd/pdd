@@ -1,5 +1,6 @@
 {
-  "pages": [{
+  "pages": [
+    {
       "path": "pages/navlist/navlist",
       "style": {
         "navigationBarTitleText": "拼多多上门服务"
@@ -198,19 +199,15 @@
     "color": "#000000",
     "selectedColor": "#CC0000",
     "borderStyle": "white",
-    "list": [{
+    "list": [
+      {
         "pagePath": "pages/navlist/navlist",
         "text": "首页"
       },
-      {
-        "pagePath": "pages_fena/ershou/ershou",
-        "fontSize": "45px",
-        "text": "师傅接单"
-      },
 
       {
-        "pagePath": "pages_fen/kaiyuan/list",
-               "text": "开源技术"
+        "pagePath": "pages_fen/kaiyuan/fenlei",
+        "text": "开源技术"
       },
 
       {
@@ -219,20 +216,17 @@
       }
     ]
   },
-  "subPackages": [{
+  "subPackages": [
+    {
       "root": "pages_fena",
-      "pages": [{
+      "pages": [
+        {
           "path": "managerff/managerff",
           "style": {
             "navigationBarTitleText": "管理员操作"
           }
         },
-        {
-          "path": "ershou/ershou",
-          "style": {
-            "navigationBarTitleText": "二手"
-          }
-        },
+
         {
           "path": "feipin/fenlei",
           "style": {
@@ -343,7 +337,8 @@
     },
     {
       "root": "uni_modules/uni-pay/pages",
-      "pages": [{
+      "pages": [
+        {
           "path": "success/success",
           "style": {
             "backgroundColor": "#F8F8F8",
@@ -368,7 +363,8 @@
     },
     {
       "root": "pages_fen",
-      "pages": [{
+      "pages": [
+        {
           "path": "tuijian/list",
           "style": {
             "navigationBarTitleText": "管理员操作"
@@ -396,6 +392,12 @@
         },
         {
           "path": "kaiyuan/list",
+          "style": {
+            "navigationBarTitleText": ""
+          }
+        },
+        {
+          "path": "kaiyuan/fenlei",
           "style": {
             "navigationBarTitleText": ""
           }

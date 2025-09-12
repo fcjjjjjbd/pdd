@@ -39,11 +39,18 @@
       </view>
     </view>
 
-    <navigator url="/pages/order/myorderlist" class="navorder">
+    <view
+      class="navorder"
+      @click="
+        jumpToExternalUrl(
+          'https://hellouniadmin.dcloud.net.cn/admin/#/uni_modules/uni-cms/pages/article/list/list'
+        )
+      "
+    >
       <view class="item">
         <text>订单</text>
       </view>
-    </navigator>
+    </view>
   </view>
 </template>
 
@@ -57,6 +64,17 @@ const db = uniCloud.database();
 const dsyunobj = uniCloud.importObject("goods-backend");
 const isActive = ref(0); //选中的左分类index
 const rights = ref([]); //选中的分类右数据
+
+// 添加的跳转到站外地址的函数
+const jumpToExternalUrl = (url) => {
+  // #ifdef H5
+  window.open(url, "_blank");
+  // #endif
+
+  // #ifndef H5
+  plus.runtime.openURL(url);
+  // #endif
+};
 
 const jump = async () => {
   uni.navigateTo({
