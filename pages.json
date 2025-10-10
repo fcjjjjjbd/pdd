@@ -1,6 +1,5 @@
 {
-  "pages": [
-    {
+  "pages": [{
       "path": "pages/navlist/navlist",
       "style": {
         "navigationBarTitleText": "拼多多上门服务"
@@ -199,14 +198,13 @@
     "color": "#000000",
     "selectedColor": "#CC0000",
     "borderStyle": "white",
-    "list": [
-      {
+    "list": [{
         "pagePath": "pages/navlist/navlist",
         "text": "首页"
       },
 
       {
-        "pagePath": "pages_fen/kaiyuan/fenlei",
+        "pagePath": "pages_fen/open/open-news",
         "text": "开源技术"
       },
 
@@ -216,11 +214,9 @@
       }
     ]
   },
-  "subPackages": [
-    {
+  "subPackages": [{
       "root": "pages_fena",
-      "pages": [
-        {
+      "pages": [{
           "path": "managerff/managerff",
           "style": {
             "navigationBarTitleText": "管理员操作"
@@ -337,8 +333,7 @@
     },
     {
       "root": "uni_modules/uni-pay/pages",
-      "pages": [
-        {
+      "pages": [{
           "path": "success/success",
           "style": {
             "backgroundColor": "#F8F8F8",
@@ -363,8 +358,7 @@
     },
     {
       "root": "pages_fen",
-      "pages": [
-        {
+      "pages": [{
           "path": "tuijian/list",
           "style": {
             "navigationBarTitleText": "管理员操作"
@@ -391,19 +385,19 @@
           }
         },
         {
-          "path": "kaiyuan/list",
+          "path": "open/open-news",
           "style": {
             "navigationBarTitleText": ""
           }
         },
         {
-          "path": "kaiyuan/fenlei",
+          "path": "open/open-newsdetail",
           "style": {
             "navigationBarTitleText": ""
           }
         },
         {
-          "path": "kaiyuan/edit",
+          "path": "open/edit",
           "style": {
             "navigationBarTitleText": ""
           }

@@ -54,12 +54,12 @@
       <view class="main">
         <view class="group">
 
-          <!-- <navigator url="/pages_fena/product/list">
+           <navigator url="/pages_fena/product/list">
               <view class="item">
-                <view class="left"><text class="iconfont icon-a-24-bianji"></text><text class="text">商家</text></view>
+                <view class="left"><text class="iconfont icon-a-24-bianji"></text><text class="text">上门地址</text></view>
                 <uni-icons type="arrow-right" size="30"></uni-icons>
               </view>
-            </navigator> -->
+            </navigator> 
           <navigator url="/pages_fena/payorder/payorder">
             <view class="item">
               <view class="left"><text class="iconfont icon-a-21-xiugai"></text><text class="text">我的订单</text></view>
