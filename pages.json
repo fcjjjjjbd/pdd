@@ -401,6 +401,13 @@
           "style": {
             "navigationBarTitleText": ""
           }
+        },
+        {
+          "path" : "mynews",
+          "style" : 
+          {
+            "navigationBarTitleText" : ""
+          }
         }
       ]
     }
