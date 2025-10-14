@@ -1,5 +1,4 @@
 import App from "./App";
-import uviewPlus from "@/uni_modules/uview-plus";
 import * as Pinia from "pinia";
 import piniasistedstate from "pinia-plugin-persistedstate";
 
@@ -23,7 +22,6 @@ export function createApp() {
   const pinia = Pinia.createPinia();
   pinia.use(piniasistedstate);
   app.use(pinia);
-  app.use(uviewPlus);
   return {
     app,
     Pinia,
