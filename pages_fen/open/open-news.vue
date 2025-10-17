@@ -105,12 +105,9 @@ const handleContentClick = (itemId) => {
         class="paging-container"
       >
         <template #top>
-          <uv-search
-            @confirm="onSearch"
-            placeholder="搜索"
-            v-model="keyword"
-            class="search-bar"
-          ></uv-search>
+          <uni-search-bar @confirm="onSearch" v-model="keyword" >
+			</uni-search-bar>
+    
         </template>
         <!-- 分类标签 - 搜索框下方 -->
         <view class="tabs-section">
@@ -162,27 +159,8 @@ const handleContentClick = (itemId) => {
 
 <style lang="scss" scoped>
 // 页面主容器
-.page-container {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  background-color: #f8f9fa;
-}
 
-// 搜索框区域 - 最顶部
-.search-section {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background-color: #fff;
-  padding: 20rpx 32rpx;
-  border-bottom: 2rpx solid #e5e5e5;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.06);
 
-  .search-bar {
-    width: 100%;
-  }
-}
 
 // 分类标签区域 - 搜索框下方
 .tabs-section {
