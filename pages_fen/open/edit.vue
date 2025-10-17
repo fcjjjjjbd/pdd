@@ -1,528 +1,302 @@
+<!-- 行动   -->
 <template>
-  <view class="example">
-    <view class="page-editor-container">
-      <view class="top">
-        <view>
-          <button
-            class="mini-btn"
-            type="primary"
-            size="mini"
-            :disabled="false"
-            @click="onSubmit"
-          >
-            提交
-          </button>
+  <view class="home">
+    <!-- 分类选择 -->
+    <view class="category-row">
+      <button class="category-btn" size="mini" @click="showCategoryPicker">
+        选择分类
+      </button>
+      <uv-input
+        class="category-input"
+        placeholder="输入分类名称"
+        border="surround"
+        maxlength="20"
+        clearable
+        type="text"
+        v-model="dataobj.Category"
+        autoBlur
+      ></uv-input>
+    </view>
+
+    <!-- 添加学博客图片 -->
+    <view class="title">添加轮播图 </view>
+    <view class="picarr">
+      <view
+        class="box add"
+        @click="addpic"
+        v-if="dataobj.imageValue.length < 8"
+      >
+        <uni-icons type="plus" size="39"></uni-icons>
+      </view>
+
+      <view class="box pic" v-for="(item, index) in dataobj.imageValue">
+        <image class="img" :src="item.fileID" mode="aspectFit"></image>
+        <view class="mask">
+          <view class="icon"> </view>
+          <view class="icon" @click="delepic(index)">
+            <uni-icons type="trash" size="30"></uni-icons>
+          </view>
         </view>
       </view>
-      <view class="title">
-        <input
-          type="text"
-          v-model="artobj.title"
-          placeholder="请输入完整的标题"
-          placeholder-class="placeholderClass"
-        />
+    </view>
+
+    <view class="title">详情信息 </view>
+    <textarea
+      v-model="dataobj.content"
+      auto-height
+      placeholder="商品类型描述,每个明码标价"
+      style="width: 100%; min-height: 400rpx"
+      class="font-30"
+      maxlength="999"
+    ></textarea>
+
+    <view class="tijiao"
+      ><button type="primary" @click="tijiao">提交商品</button></view
+    >
+    <!-- 弹窗 -->
+    <uni-popup ref="fenleipp" type="bottom">
+      <view class="fenleipp">
+        <z-tabs :list="useNavlist.leftList" @change="flchange"></z-tabs>
+        <view v-for="item in rights" @click="selext(item._id, item.name)">
+          <uni-section class="mb-10" :title="item.name"></uni-section>
+        </view>
       </view>
-      <sv-editor
-        pasteMode="origin"
-        @ready="ready"
-        @input="input"
-        @overmax="overMax"
-        @epaste="epaste"
-      ></sv-editor>
-    </view>
-    <view class="page-editor-toolbar-container">
-      <sv-editor-toolbar
-        ref="toolbarRef"
-        :style-tools="[
-          'header',
-          'divider',
-          'bold',
-          'italic',
-          'underline',
-          'strike',
-          'align',
-          'color',
-          'backgroundColor',
-          'removeformat',
-        ]"
-        @changeTool="changeTool"
-        @toolMoreItem="onToolMoreItem"
-        @moreItemConfirm="moreItemConfirm"
-      >
-        <template #at>
-          <view class="panel-at">
-            <view
-              v-for="item in atList"
-              :key="item.id"
-              class="panel-at-item"
-              @click="onAt(item)"
-            >
-              {{ item.name }}
-            </view>
-          </view>
-        </template>
-        <template #topic>
-          <view class="panel-topic">
-            <view
-              v-for="item in topicList"
-              :key="item.id"
-              class="panel-topic-item"
-              @click="onTopic(item)"
-            >
-              {{ item.name }}
-            </view>
-          </view>
-        </template>
-        <template #setting>
-          <button size="mini" @click="onExport">导出</button>
-        </template>
-      </sv-editor-toolbar>
-    </view>
+    </uni-popup>
   </view>
 </template>
 
 <script setup>
-const db = uniCloud.database(); // 连接云对象整体
-const listobj = uniCloud.importObject("goods_item", {
-  customUI: true,
-});
-import { showToast } from "../../utils/common.js";
-import SvEditorToolbar from "@/uni_modules/sv-editor/components/sv-editor/sv-editor-toolbar.vue";
-import {
-  addAt,
-  addTopic,
-  addAttachment,
-  addImage,
-  addLink,
-  addVideo,
-} from "@/uni_modules/sv-editor/components/common/utils.js";
-const edipp = ref(null);
+import { showToast, isAdminRole } from "@/utils/common.js";
+import { removeHtmlTags, convertImageToWebP } from "@/utils/tools.js";
+import dayjs from "dayjs";
+import { useNavlistStore } from "@/stores/navlistStore.js";
+const useNavlist = useNavlistStore();
+const db = uniCloud.database();
+const goods_yun = uniCloud.importObject("goods_item");
+const goods_yundx = uniCloud.importObject("goods-backend");
 
-const list1 = ref(null);
+const emit = defineEmits(["Updatelist"]);
+const current_id = ref(uniCloud.getCurrentUserInfo().uid); // 当前用户id
+const fenleipp = ref(null);
+const dataobj = ref({
+  name: "",
 
-const atList = ref([
-  {
-    name: "马什么梅",
-    id: 1,
-  },
-  {
-    name: "什么冬梅",
-    id: 2,
-  },
-  {
-    name: "马冬什么",
-    id: 3,
-  },
-]);
-const topicList = ref([
-  {
-    name: "今日资讯",
-    id: "news",
-  },
-  {
-    name: "热搜",
-    id: "hot",
-  },
-  {
-    name: "开心一下",
-    id: "happy",
-  },
-]);
-const artobj = ref({
-  title: "",
   content: "",
+  pifacontent: "",
+  imageValue: [],
+  temparr: [], //本地临时图片
+  Category: "",
+  goods_thumb: "",
 });
-
-const toolbarRef = ref(null);
-const editorCtx = ref(null);
-let id;
-const ready = (e) => {
-  console.log("==== ready ==== :", e);
-  editorCtx.value = e;
-  editorCtx.value.initHtml(
-    `
-    <p style="text-align: left;">
-    
-    </p>`,
-    async (videoUrl) => {
-      let res;
-      // #ifdef APP || H5
-      // res = await editorCtx.value.createVideoThumbnail(videoUrl)
-      // #endif
-      const fox =
-        "https://fuss10.elemecdn.com/3/28/bbf893f792f03a54408b3b7a7ebf0jpeg.jpeg";
-      res = await editorCtx.value.createCoverThumbnail(fox);
-      return res;
-    }
-  );
-};
-// 修改
-const updataff = async (e) => {
-  id = e._id;
-  console.log(e);
-  editorCtx.value.setHtml(e.content);
-  edipp.value.close();
-};
-
-// 删除
-const removeff = async (id) => {
-  let res = await uni.showModal({
-    title: "是否删除",
-  });
-  if (res.confirm) {
-    let res = await db.collection("afenlei").doc(id).remove();
-    getnav();
+const rights = ref(null);
+onLoad(async (e) => {
+  if (e.xgobj) {
+    let dsobj = JSON.parse(decodeURIComponent(e.xgobj));
+    console.log(dsobj);
+    dataobj.value = dsobj;
   }
+});
+// 分类赋值
+const selext = async (e, name) => {
+  console.log(name);
+  dataobj.value.Category = e;
+  dataobj.value.name = name;
+
+  fenleipp.value.close();
 };
 
+// 改变分类
+const flchange = async (e) => {
+  rights.value = useNavlist.rightList.filter((item) => {
+    return item.category_id == useNavlist.leftList[e]._id;
+  });
+};
+
+// 选择好图片
+const addpic = async () => {
+  const res = await new Promise((resolve) => {
+    uni.chooseImage({
+      count: 8,
+      success: resolve,
+      fail: () => resolve(null), // 处理取消选择的情况
+    });
+  });
+
+  if (!res || !res.tempFilePaths.length) return; // 2. 未选择图片直接返回
+
+  dataobj.value.temparr = res.tempFilePaths;
+
+  // 上传云端图片
+  for (let item of dataobj.value.temparr) {
+    let yspic = await convertImageToWebP(item);
+    let res = await uniCloud.uploadFile({
+      filePath: yspic,
+      cloudPathAsRealPath: true,
+      cloudPath:
+        "dspic/" + dayjs().format("YYYY-MM-DD") + "/" + Date.now() + ".webp",
+    });
+    console.log(res);
+    dataobj.value.imageValue.push(res);
+  }
+  dataobj.value.goods_thumb = dataobj.value.imageValue[0].fileID;
+  dataobj.value.temparr = [];
+};
+
+// 提交
+const tijiao = async () => {
+  dataobj.value.content = removeHtmlTags(dataobj.value.content);
+
+  goodsff();
+};
 // 提交云端
-const onSubmit = async () => {
-  console.log(artobj.value);
+const goodsff = async () => {
   try {
     uni.showLoading({
-      title: "提交中",
+      mask: true,
     });
-    if (artobj.value.content === "")
-      return showToast("内容不能为空", "none", false);
-    let errCode, res;
 
-    if (errCode === 0) {
-      showToast("发表成功", "success");
-      setTimeout(() => uni.navigateBack(), 1000);
+    if (dataobj.value._id) {
+      let copyobj = {
+        ...dataobj.value,
+      };
+      delete copyobj._id;
+      console.log(copyobj);
+      await db
+        .collection("goods_detail")
+        .doc(dataobj.value._id)
+        .update(copyobj); //修改商品
+    } else {
+      let {
+        result: { data, errCode, errMsg },
+      } = await db.collection("goods_detail").add(dataobj.value);
+      if (errCode !== 0) {
+        return showToast({
+          title: errMsg,
+        });
+      }
     }
-  } catch (e) {
-    console.log(e);
-    showToast(e.errMsg, "error");
+    showToast({
+      title: "新增成功",
+    });
+    uni.$emit("Updatelist");
+    uni.redirectTo({
+      url: "/pages_fena/product/list",
+    });
+    init();
+  } catch (err) {
+    showToast({
+      title: err,
+    });
   } finally {
     uni.hideLoading();
   }
 };
+// 删除本地图片
+const delepic = async (index) => {
+  await goods_yundx.deletimg(dataobj.value.imageValue[index].fileID);
+  dataobj.value.imageValue.splice(index, 1);
+};
+//恢复默认
+const init = () => {
+  dataobj.value = {
+    content: "",
+    pifacontent: "",
+    imageValue: [],
+    temparr: [],
+    goods_thumb: "", //本地临时图片
+  };
+};
 
-// 打开弹窗
-const mypp = () => {
-  edipp.value.open();
-};
-const input = (e) => {
-  console.log("input ==>", e);
-  artobj.value.content = e.html;
-};
-const epaste = (e) => {
-  console.log("epaste ==>", e);
-};
-const overMax = (e) => {
-  console.log("overMax ==>", e);
-};
-const changeTool = (e) => {
-  console.log("changeTool ==>", e);
-};
-const onToolMoreItem = (e) => {
-  console.log("onToolMoreItem ==>", e);
-  if (e.name == "clear") {
-    uni.showModal({
-      title: "提示",
-      content: "确定要清空内容吗？",
-      success: ({ confirm }) => {
-        if (confirm) {
-          editorCtx.value.clear();
-        }
-      },
-    });
-  }
-};
-const moreItemConfirm = async (e) => {
-  console.log("moreItemConfirm ==>", e);
-  // 添加图片
-  if (e.name == "image") {
-    if (!e.file || !e.file.length) {
-      uni.showToast({
-        title: "请选择图片",
-        icon: "none",
-      });
-      return;
-    }
-    uni.showLoading({
-      title: "上传中",
-    });
-    try {
-      for (let item of e.file) {
-        let filePath = "";
-        // #ifdef H5
-        if (item instanceof File) {
-          // H5 端 File 对象，需转成本地 url
-          filePath = URL.createObjectURL(item);
-        } else if (item.path) {
-          filePath = item.path;
-        }
-        // #endif
-        // #ifndef H5
-        filePath = item.path;
-        // #endif
-
-        if (!filePath) {
-          console.error("filePath 获取失败", item);
-          continue;
-        }
-
-        let suffix = filePath.substring(filePath.lastIndexOf("."));
-        let randomName =
-          Date.now() + "" + String(Math.random()).substr(3, 6) + suffix;
-
-        // 上传到云存储
-        let uploadRes = await uniCloud.uploadFile({
-          filePath: filePath,
-          cloudPath: item.name || randomName,
-        });
-        console.log("上传结果", uploadRes);
-
-        if (uploadRes && uploadRes.fileID) {
-          // 插入图片到编辑器
-          editorCtx.value.insertImage({
-            src: uploadRes.fileID,
-          });
-        } else {
-          console.error("上传失败", uploadRes);
-        }
-      }
-      uni.showToast({
-        title: "添加图片成功",
-        icon: "success",
-      });
-    } catch (err) {
-      console.error("图片上传失败", err);
-      uni.showToast({
-        title: "添加图片失败",
-        icon: "error",
-      });
-    } finally {
-      uni.hideLoading();
-    }
-    toolbarRef.value?.closeMorePop();
-    return;
-  }
-  // 添加视频
-  if (e.name == "video") {
-    const videoRes = await addVideo(
-      async (editorCtxArg) => {
-        return new Promise((resolve) => {
-          uni.showLoading({
-            title: "上传中",
-          });
-          setTimeout(async () => {
-            uni.hideLoading();
-            let videos = [];
-            if (e.link) {
-              const linkThumbnail = await editorCtx.value.createVideoThumbnail(
-                e.link
-              );
-              videos.push({
-                imagePath: linkThumbnail,
-                tempFilePath: e.link,
-              });
-            }
-            if (e.file?.tempFilePath) {
-              const fileThumbnail = await editorCtx.value.createVideoThumbnail(
-                e.file.tempFilePath
-              );
-              e.file.imagePath = fileThumbnail;
-              videos.push(e.file);
-            }
-            resolve(videos);
-          }, 3000);
-        });
-      },
-      {
-        imageFiled: "imagePath",
-        videoFiled: "tempFilePath",
-        width: "100%",
-      }
-    );
-    if (videoRes) {
-      uni.showToast({
-        title: "添加视频成功",
-        icon: "success",
-      });
-    } else {
-      uni.showToast({
-        title: "添加视频失败",
-        icon: "error",
-      });
-    }
-  }
-  // 添加链接
-  if (e.name == "link") {
-    addLink(
-      {
-        link: e.link,
-        text: e.text,
-      },
-      () => {
-        uni.showToast({
-          title: "添加链接成功",
-        });
-      }
-    );
-  }
-  // 添加附件
-  if (e.name == "attachment") {
-    const attachmentRes = await addAttachment(async () => {
-      return new Promise((resolve) => {
-        uni.showLoading({
-          title: "上传中",
-        });
-        setTimeout(() => {
-          uni.hideLoading();
-          let attachmentObj = e;
-          if (e.file?.path) {
-            attachmentObj.path = e.file.path;
-          } else if (e.link) {
-            attachmentObj.path = e.link;
-          }
-          resolve(attachmentObj);
-        }, 3000);
-      });
-    });
-    if (attachmentRes) {
-      uni.showToast({
-        title: "添加附件成功",
-        icon: "success",
-      });
-    } else {
-      uni.showToast({
-        title: "添加附件失败",
-        icon: "error",
-      });
-    }
-  }
-  // 关闭弹窗
-  toolbarRef.value?.closeMorePop();
-};
-const onAt = (e) => {
-  addAt(
-    {
-      username: e.name,
-      userid: e.id,
-    },
-    () => {
-      uni.showToast({
-        title: "艾特成功",
-      });
-    }
-  );
-  toolbarRef.value?.closeMorePop();
-};
-const onTopic = (e) => {
-  addTopic(
-    {
-      topic: e.name,
-      link: e.id,
-    },
-    () => {
-      uni.showToast({
-        title: "添加话题成功",
-      });
-    }
-  );
-  toolbarRef.value?.closeMorePop();
-};
-const onExport = async () => {
-  const contentRes = await editorCtx.value.getLastContent();
-  const htmlHandler = editorCtx.value.exportHtml(contentRes.html);
-  uni.navigateTo({
-    url: "/pages/out/out",
-    success: (res) => {
-      res.eventChannel.emit("E_HTML_EXPORT", {
-        data: htmlHandler,
-      });
-    },
+const showCategoryPicker = () => {
+  fenleipp.value.open();
+  rights.value = useNavlist.rightList.filter((item) => {
+    return item.category_id == useNavlist.leftList[0]._id;
   });
 };
-// 向外暴露
-defineExpose({
-  open,
-  close,
-});
 </script>
 
-<style lang="scss">
-.example {
-  box-sizing: border-box;
-  height: calc(100vh - var(--window-top) - env(safe-area-inset-bottom));
-  display: flex;
-  flex-direction: column;
-  background: #fff;
-
-  .page-editor-container {
-    flex: 1;
-    overflow-y: auto;
-    border: 10px solid #66ccff;
-    box-sizing: border-box;
-
-    .top {
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      padding: 10px;
-    }
-  }
-
-  .page-editor-toolbar-container {
-    position: sticky;
-    bottom: 0;
-    width: 100%;
-
-    :deep(.sv-editor-toolbar) {
-    }
-  }
-}
-
-.panel-at,
-.panel-topic {
-  display: flex;
-  flex-direction: column;
-
-  .panel-at-item,
-  .panel-topic-item {
-    padding: 10px;
-    margin: 10px 0;
-    box-sizing: border-box;
-    border-radius: 20rpx;
-    box-shadow: 0 0 8px 6px rgba(0, 0, 0, 0.08);
-  }
-}
-
-.content {
-  width: 100%;
-
+<style lang="scss" scoped>
+.fenleipp {
   background-color: #fff;
+  padding: 20rpx;
+  border-radius: 20rpx;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+.home {
+  padding: 20rpx;
 
-  border-radius: 8rpx;
-
-  .item {
-    @include flex-box();
-    letter-spacing: 4rpx;
-    font-size: 34rpx;
+  .row-add {
+    display: flex;
+    flex-direction: column;
+    padding: 20rpx 0;
+    font-size: 30rpx;
     font-weight: bold;
-    border-bottom: 1rpx solid $text-font-color-3;
-    padding-bottom: 28rpx;
 
-    .info {
-      display: flex;
+    .label {
+      width: 300rpx;
+      padding-right: 20rpx;
     }
   }
-}
 
-.my-publish-btn {
-  margin: 30rpx auto;
-  width: 300rpx;
-  height: 70rpx;
-  line-height: 70rpx;
-  text-align: center;
-  border: 2rpx solid #409eff;
-  border-radius: 35rpx;
-  color: #409eff;
-  font-size: 32rpx;
-  background: #fff;
-  box-shadow: 0 2rpx 8rpx rgba(64, 158, 255, 0.08);
-  cursor: pointer;
+  .title {
+    padding: 30rpx 0;
+  }
+
+  .picarr {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); // 每行显示三个图片
+    gap: 3px; // 图片之间的间距
+
+    .box {
+      width: 240rpx;
+      aspect-ratio: 13 / 16;
+      border: 1px solid black;
+    }
+
+    .pic {
+      image {
+        width: 100%;
+        height: 100%;
+      }
+
+      .mask {
+        display: flex;
+        background: rgba(240, 255, 255, 1);
+
+        .icon {
+          width: 50%;
+        }
+      }
+    }
+
+    .add {
+      @include flex-box-set();
+      cursor: pointer;
+    }
+  }
+
+  .category-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20rpx;
+
+    .category-btn {
+      margin-right: 20rpx;
+      padding: 10rpx 20rpx;
+      background-color: #007aff;
+      color: #fff;
+      border-radius: 10rpx;
+    }
+
+    .category-input {
+      flex: 1;
+    }
+  }
+
+  .tijiao {
+    padding-top: 150rpx;
+    width: 80%;
+  }
 }
 </style>

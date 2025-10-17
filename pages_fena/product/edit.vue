@@ -6,7 +6,7 @@
       <button class="category-btn" size="mini" @click="showCategoryPicker">
         选择分类
       </button>
-      <up-input
+      <uv-input
         class="category-input"
         placeholder="输入分类名称"
         border="surround"
@@ -15,7 +15,7 @@
         type="text"
         v-model="dataobj.Category"
         autoBlur
-      ></up-input>
+      ></uv-input>
     </view>
 
     <!-- 添加学博客图片 -->

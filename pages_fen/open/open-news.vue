@@ -13,7 +13,7 @@ const keyword = ref("");
 const paging = ref(null);
 
 const show1 = ref(null);
-const list = ref([
+const navlist = ref([
   {
     name: "全部",
     value: "0",
@@ -52,19 +52,19 @@ const navclick = (index) => {
 
 // 处理点赞事件
 const handleLike = (data) => {
-  console.log('点赞事件:', data);
+  console.log("点赞事件:", data);
   // 这里可以调用后端API更新点赞状态
 };
 
 // 处理收藏事件
 const handleCollect = (data) => {
-  console.log('收藏事件:', data);
+  console.log("收藏事件:", data);
   // 这里可以调用后端API更新收藏状态
 };
 
 // 处理分享事件
 const handleShare = (itemId) => {
-  console.log('分享事件:', itemId);
+  console.log("分享事件:", itemId);
   // 这里可以调用分享功能
   uni.share({
     provider: "weixin",
@@ -78,142 +78,184 @@ const handleShare = (itemId) => {
     },
     fail: function (err) {
       console.log("fail:" + JSON.stringify(err));
-    }
+    },
   });
 };
 
 // 处理阅读事件
 const handleRead = (itemId) => {
-  console.log('阅读事件:', itemId);
+  console.log("阅读事件:", itemId);
   // 这里可以统计阅读量
+};
+
+// 处理内容点击事件
+const handleContentClick = (itemId) => {
+  routerTo("/pages_fen/open/open-newsdetail?id=" + itemId);
 };
 </script>
 
 <template>
-  <uv-tabs :list="list" @click="navclick"></uv-tabs>
-  <view class="page-wrap">
-    <z-paging ref="paging" v-model="dataList" @query="queryList">
-      <template #top>
-        <uni-search-bar
-          @confirm="onSearch"
-          placeholder="搜索"
-          v-model="keyword"
-        >
-        </uni-search-bar>
-      </template>
-      <template #loading>
-        <uni-load-more status="loading"></uni-load-more>
-      </template>
-      <view class="list-wrap">
-        <view
-          class="item-wrap"
-          v-for="item in dataList"
-          :key="item._id"
-        >
-          <view class="content-wrap" @click="routerTo('/pages_fen/open/open-newsdetail?id=' + item._id)">
-            <view class="left-wrap">
-              <view class="title">
-                {{ item.title }}
-              </view>
-              <view class="info">
-                <view class="author">{{ item.nickname }}</view>
-                <view class="time">{{
-                  dayjs(item.publish_date).format("YYYY-MM-DD HH:mm")
-                }}</view>
-              </view>
-            </view>
-            <view class="right-wrap" v-if="item.avatar">
-              <image class="img" :src="item.avatar" mode="aspectFill"></image>
-            </view>
-          </view>
-          <!-- 添加交互栏组件 -->
-          <UniView 
+  <view class="page-container">
+    <!-- 内容列表 - 分类下方 -->
+    <view class="content-section">
+      <z-paging
+        ref="paging"
+        v-model="dataList"
+        @query="queryList"
+        class="paging-container"
+      >
+        <template #top>
+          <uv-search
+            @confirm="onSearch"
+            placeholder="搜索"
+            v-model="keyword"
+            class="search-bar"
+          ></uv-search>
+        </template>
+        <!-- 分类标签 - 搜索框下方 -->
+        <view class="tabs-section">
+          <uv-tabs :list="navlist" @click="navclick" />
+        </view>
+        <template #loading>
+          <uni-load-more status="loading" />
+        </template>
+
+        <view class="news-list">
+          <UniView
+            v-for="item in dataList"
+            :key="item._id"
             :item-id="item._id"
+            :title="item.title"
+            :author="item.nickname"
+            :publish-date="item.publish_date"
+            :avatar="item.avatar"
             :read-count="item.read_count || 0"
             :like-count="item.like_count || 0"
             :collect-count="item.collect_count || 0"
             :is-liked="item.is_liked || false"
             :is-collected="item.is_collected || false"
+            @content-click="handleContentClick"
             @like="handleLike"
             @collect="handleCollect"
             @share="handleShare"
             @read="handleRead"
           />
         </view>
-      </view>
-      <uni-fab
-        ref="fab"
-        :pattern="{ icon: 'pyq' }"
-        horizontal="right"
-        vertical="bottom"
-        @fabClick="mynew"
-      />
-      <uni-popup ref="show1" type="bottom" background-color="#fff">
-        <mynews />
-      </uni-popup>
-    </z-paging>
+      </z-paging>
+    </view>
+
+    <!-- 浮动按钮 -->
+    <uni-fab
+      ref="fab"
+      :pattern="{ icon: 'pyq' }"
+      horizontal="right"
+      vertical="bottom"
+      @fabClick="mynew"
+    />
+
+    <!-- 弹窗 -->
+    <uni-popup ref="show1" type="bottom" background-color="#fff">
+      <mynews />
+    </uni-popup>
   </view>
 </template>
 
 <style lang="scss" scoped>
-.search {
-  margin: 140px 0;
+// 页面主容器
+.page-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #f8f9fa;
 }
 
-.page-wrap {
-  .list-wrap {
-    padding: 12rpx 0;
+// 搜索框区域 - 最顶部
+.search-section {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: #fff;
+  padding: 20rpx 32rpx;
+  border-bottom: 2rpx solid #e5e5e5;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.06);
 
-    .item-wrap {
-      border-bottom: 1px solid #f0f0f0;
-      padding: 24rpx 32rpx;
-      
-      .content-wrap {
-        display: flex;
-        align-items: stretch;
-        justify-content: space-between;
-        gap: 24rpx;
-        height: 200rpx;
-        margin-bottom: 16rpx;
-      }
+  .search-bar {
+    width: 100%;
+  }
+}
 
-      .left-wrap {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
+// 分类标签区域 - 搜索框下方
+.tabs-section {
+  position: sticky;
+  top: 20rpx; // 搜索框高度
+  z-index: 99;
+  background-color: #fff;
+  padding: 0 32rpx;
+  border-bottom: 2rpx solid #e5e5e5;
+  box-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.04);
+}
 
-        .title {
-          font-size: 30rpx;
-          color: #333;
-          @include text-ellipsis(2);
-        }
+// 内容区域 - 分类下方
+.content-section {
+  flex: 1;
+  overflow: hidden;
+  margin-top: 0; // 移除之前的padding-top
 
-        .info {
-          display: flex;
-          font-size: 26rpx;
-          color: #aaa;
-          gap: 12rpx;
-        }
-      }
+  .paging-container {
+    height: 100%;
 
-      .right-wrap {
-        flex-shrink: 0;
-        height: 100%;
-        aspect-ratio: 16 / 10;
-        border-radius: 8rpx;
-        overflow: hidden;
+    .news-list {
+      padding: 50rpx 32rpx;
 
-        .img {
-          width: 100%;
-          height: 100%;
+      // 新闻项之间的间距
+      :deep(.uni-view-item) {
+        margin-bottom: 24rpx;
+        background-color: #fff;
+        border-radius: 16rpx;
+        padding: 24rpx;
+        box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
+        position: relative;
+        z-index: 1; // 确保内容在正确层级
+
+        &:last-child {
+          margin-bottom: 0;
         }
       }
     }
+  }
+}
 
-    .item-wrap:last-child {
-      border-bottom: none;
-    }
+// z-paging 深层样式优化
+:deep(.z-paging-content) {
+  height: 100%;
+  overflow-y: auto;
+  padding-top: 0; // 确保内容从顶部开始
+}
+
+:deep(.z-paging-container) {
+  height: 100%;
+  position: relative;
+  z-index: 1; // 确保在正确层级
+}
+
+// 浮动按钮样式调整
+:deep(.uni-fab) {
+  z-index: 98;
+  position: fixed; // 确保浮动按钮固定定位
+}
+
+// 响应式设计
+@media screen and (max-width: 750rpx) {
+  .search-section {
+    padding: 16rpx 24rpx;
+  }
+
+  .tabs-section {
+    padding: 0 24rpx;
+  }
+
+  .news-list {
+    padding: 20rpx 24rpx;
   }
 }
 </style>
