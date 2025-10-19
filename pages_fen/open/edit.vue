@@ -1,25 +1,23 @@
-<!-- 行动   -->
+<!-- create赋值,默认推荐,去除无用优化代码   -->
 <template>
   <view class="home">
     <!-- 分类选择 -->
     <view class="category-row">
-      <button class="category-btn" size="mini" @click="showCategoryPicker">
-        选择分类
+      <button class="category-btn" size="mini" @click="selects">
+        选择分类:
       </button>
-      <uv-input
-        class="category-input"
-        placeholder="输入分类名称"
-        border="surround"
-        maxlength="20"
-        clearable
-        type="text"
-        v-model="dataobj.Category"
-        autoBlur
-      ></uv-input>
+
+      <uv-action-sheet
+        ref="actionSheet"
+        :actions="list2"
+        @select="select"
+        :closeOnClickOverlay="true"
+      >
+      </uv-action-sheet>
+      <text>{{ dataobj.category_name || '请选择分类' }}</text>
     </view>
 
     <!-- 添加学博客图片 -->
-    <view class="title">添加轮播图 </view>
     <view class="picarr">
       <view
         class="box add"
@@ -40,7 +38,6 @@
       </view>
     </view>
 
-    <view class="title">详情信息 </view>
     <textarea
       v-model="dataobj.content"
       auto-height
@@ -53,15 +50,6 @@
     <view class="tijiao"
       ><button type="primary" @click="tijiao">提交商品</button></view
     >
-    <!-- 弹窗 -->
-    <uni-popup ref="fenleipp" type="bottom">
-      <view class="fenleipp">
-        <z-tabs :list="useNavlist.leftList" @change="flchange"></z-tabs>
-        <view v-for="item in rights" @click="selext(item._id, item.name)">
-          <uni-section class="mb-10" :title="item.name"></uni-section>
-        </view>
-      </view>
-    </uni-popup>
   </view>
 </template>
 
@@ -72,44 +60,72 @@ import dayjs from "dayjs";
 import { useNavlistStore } from "@/stores/navlistStore.js";
 const useNavlist = useNavlistStore();
 const db = uniCloud.database();
-const goods_yun = uniCloud.importObject("goods_item");
 const goods_yundx = uniCloud.importObject("goods-backend");
+const pddyun = uniCloud.importObject("client-aopen", { customUI: true });
 
 const emit = defineEmits(["Updatelist"]);
 const current_id = ref(uniCloud.getCurrentUserInfo().uid); // 当前用户id
 const fenleipp = ref(null);
+const actionSheet = ref(null);
+const list2 = ref([]);
+
 const dataobj = ref({
   name: "",
-
   content: "",
-  pifacontent: "",
   imageValue: [],
   temparr: [], //本地临时图片
-  Category: "",
+  category_id: "",
+  category_name: "", // 添加分类名称字段
   goods_thumb: "",
 });
 const rights = ref(null);
+// 获取分类
+const getfenlei = async () => {
+  let { errCode, errMsg, count, data } = await pddyun.list();
+  if (errCode !== 0) return showToast("获取失败");
+  dataobj.value.category_id = data[0]._id;
+  dataobj.value.category_name = data[0].name; // 设置默认分类名称
+  list2.value = data.map((item) => {
+    return {
+      _id: item._id,
+      name: item.name,
+      color: "#000000",
+      fontSize: "30",
+    };
+  });
+};
+getfenlei();
 onLoad(async (e) => {
   if (e.xgobj) {
     let dsobj = JSON.parse(decodeURIComponent(e.xgobj));
     console.log(dsobj);
-    dataobj.value = dsobj;
+    // 使用对象合并，确保所有必要属性都存在
+    dataobj.value = {
+      ...dataobj.value,
+      ...dsobj,
+      // 确保关键属性有默认值
+      content: dsobj.content || "",
+      imageValue: dsobj.imageValue || [],
+      temparr: dsobj.temparr || [],
+      category_id: dsobj.category_id || "",
+      goods_thumb: dsobj.goods_thumb || "",
+      name: dsobj.name || "",
+    };
+    
+    // 根据category_id查找对应的分类名称
+    if (dsobj.category_id && list2.value.length > 0) {
+      const category = list2.value.find(item => item._id === dsobj.category_id);
+      if (category) {
+        dataobj.value.category_name = category.name;
+      }
+    }
   }
 });
-// 分类赋值
-const selext = async (e, name) => {
-  console.log(name);
-  dataobj.value.Category = e;
-  dataobj.value.name = name;
-
-  fenleipp.value.close();
-};
-
-// 改变分类
-const flchange = async (e) => {
-  rights.value = useNavlist.rightList.filter((item) => {
-    return item.category_id == useNavlist.leftList[e]._id;
-  });
+// 选择分类
+const select = async (e) => {
+  console.log(e);
+  dataobj.value.category_id = e._id;
+  dataobj.value.category_name = e.name; // 同步更新分类名称
 };
 
 // 选择好图片
@@ -145,7 +161,7 @@ const addpic = async () => {
 // 提交
 const tijiao = async () => {
   dataobj.value.content = removeHtmlTags(dataobj.value.content);
-
+  console.log(dataobj.value);
   goodsff();
 };
 // 提交云端
@@ -161,14 +177,12 @@ const goodsff = async () => {
       };
       delete copyobj._id;
       console.log(copyobj);
-      await db
-        .collection("goods_detail")
-        .doc(dataobj.value._id)
-        .update(copyobj); //修改商品
+      await db.collection("aopen-wen").doc(dataobj.value._id).update(copyobj);
     } else {
+      dataobj.value.name = dataobj.value.content.slice(0, 12);
       let {
         result: { data, errCode, errMsg },
-      } = await db.collection("goods_detail").add(dataobj.value);
+      } = await db.collection("aopen-wen").add(dataobj.value);
       if (errCode !== 0) {
         return showToast({
           title: errMsg,
@@ -178,17 +192,16 @@ const goodsff = async () => {
     showToast({
       title: "新增成功",
     });
-    uni.$emit("Updatelist");
-    uni.redirectTo({
-      url: "/pages_fena/product/list",
-    });
-    init();
   } catch (err) {
     showToast({
       title: err,
     });
   } finally {
     uni.hideLoading();
+    uni.switchTab({
+      url: "/pages_fen/open/open-news",
+    });
+    init();
   }
 };
 // 删除本地图片
@@ -200,18 +213,14 @@ const delepic = async (index) => {
 const init = () => {
   dataobj.value = {
     content: "",
-    pifacontent: "",
     imageValue: [],
     temparr: [],
     goods_thumb: "", //本地临时图片
   };
 };
 
-const showCategoryPicker = () => {
-  fenleipp.value.open();
-  rights.value = useNavlist.rightList.filter((item) => {
-    return item.category_id == useNavlist.leftList[0]._id;
-  });
+const selects = () => {
+  actionSheet.value.open();
 };
 </script>
 

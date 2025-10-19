@@ -27,6 +27,11 @@ const navlist = ref([
     value: "2",
   },
 ]);
+const jump = async () => {
+  uni.navigateTo({
+    url: "/pages_fen/open/open-search",
+  });
+};
 const queryList = async (pageCurrent, pageSize) => {
   try {
     let { errCode, data } = await newsCloudObj.list({
@@ -39,8 +44,6 @@ const queryList = async (pageCurrent, pageSize) => {
     paging.value.complete(false);
   }
 };
-// 搜索onSearch
-const onSearch = () => {};
 // 我的列表
 const mynew = () => {
   show1.value.open();
@@ -105,9 +108,12 @@ const handleContentClick = (itemId) => {
         class="paging-container"
       >
         <template #top>
-          <uni-search-bar @confirm="onSearch" v-model="keyword" >
-			</uni-search-bar>
-    
+          <view class="u-flex top-box" @click="jump">
+            <view class="u-flex search-box">
+              <uni-icons type="search" size="20"></uni-icons>
+              <text class="text u-m-l-8">搜索</text>
+            </view>
+          </view>
         </template>
         <!-- 分类标签 - 搜索框下方 -->
         <view class="tabs-section">
@@ -159,8 +165,6 @@ const handleContentClick = (itemId) => {
 
 <style lang="scss" scoped>
 // 页面主容器
-
-
 
 // 分类标签区域 - 搜索框下方
 .tabs-section {

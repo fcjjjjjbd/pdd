@@ -1,5 +1,6 @@
 {
-  "pages": [{
+  "pages": [
+    {
       "path": "pages/navlist/navlist",
       "style": {
         "navigationBarTitleText": "拼多多上门服务"
@@ -198,7 +199,8 @@
     "color": "#000000",
     "selectedColor": "#CC0000",
     "borderStyle": "white",
-    "list": [{
+    "list": [
+      {
         "pagePath": "pages/navlist/navlist",
         "text": "首页"
       },
@@ -214,9 +216,11 @@
       }
     ]
   },
-  "subPackages": [{
+  "subPackages": [
+    {
       "root": "pages_fena",
-      "pages": [{
+      "pages": [
+        {
           "path": "managerff/managerff",
           "style": {
             "navigationBarTitleText": "管理员操作"
@@ -333,7 +337,8 @@
     },
     {
       "root": "uni_modules/uni-pay/pages",
-      "pages": [{
+      "pages": [
+        {
           "path": "success/success",
           "style": {
             "backgroundColor": "#F8F8F8",
@@ -358,7 +363,8 @@
     },
     {
       "root": "pages_fen",
-      "pages": [{
+      "pages": [
+        {
           "path": "tuijian/list",
           "style": {
             "navigationBarTitleText": "管理员操作"
@@ -391,6 +397,12 @@
           }
         },
         {
+          "path": "open/open-search",
+          "style": {
+            "navigationBarTitleText": ""
+          }
+        },
+        {
           "path": "open/open-newsdetail",
           "style": {
             "navigationBarTitleText": ""
@@ -403,10 +415,9 @@
           }
         },
         {
-          "path" : "open/child/mynews",
-          "style" : 
-          {
-            "navigationBarTitleText" : ""
+          "path": "open/child/mynews",
+          "style": {
+            "navigationBarTitleText": ""
           }
         }
       ]
@@ -420,8 +431,7 @@
   },
 
   "easycom": {
-    "custom": {
-    }
+    "custom": {}
   },
   "uniIdRouter": {
     "loginPage": "uni_modules/uni-id-pages/pages/login/login-withpwd",
