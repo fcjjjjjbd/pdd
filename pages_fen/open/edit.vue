@@ -2,10 +2,8 @@
 <template>
   <view class="home">
     <!-- 分类选择 -->
-    <view class="category-row">
-      <button class="category-btn" size="mini" @click="selects">
-        选择分类:
-      </button>
+    <view class="category-row" @click="selects">
+      <view class="rew"> 选择分类: </view>
 
       <uv-action-sheet
         ref="actionSheet"
@@ -14,7 +12,7 @@
         :closeOnClickOverlay="true"
       >
       </uv-action-sheet>
-      <text>{{ dataobj.category_name || '请选择分类' }}</text>
+      <text>{{ dataobj.category_name || "请选择分类" }}</text>
     </view>
 
     <!-- 添加学博客图片 -->
@@ -41,14 +39,14 @@
     <textarea
       v-model="dataobj.content"
       auto-height
-      placeholder="商品类型描述,每个明码标价"
+      placeholder="分享技术文章"
       style="width: 100%; min-height: 400rpx"
       class="font-30"
       maxlength="999"
     ></textarea>
 
     <view class="tijiao"
-      ><button type="primary" @click="tijiao">提交商品</button></view
+      ><button type="primary" @click="tijiao">{{ pageType }}</button></view
     >
   </view>
 </template>
@@ -62,7 +60,7 @@ const useNavlist = useNavlistStore();
 const db = uniCloud.database();
 const goods_yundx = uniCloud.importObject("goods-backend");
 const pddyun = uniCloud.importObject("client-aopen", { customUI: true });
-
+let id = ref();
 const emit = defineEmits(["Updatelist"]);
 const current_id = ref(uniCloud.getCurrentUserInfo().uid); // 当前用户id
 const fenleipp = ref(null);
@@ -78,6 +76,8 @@ const dataobj = ref({
   category_name: "", // 添加分类名称字段
   goods_thumb: "",
 });
+const pageType = computed(() => (unref(id) ? "修改" : "新增"));
+
 const rights = ref(null);
 // 获取分类
 const getfenlei = async () => {
@@ -96,31 +96,15 @@ const getfenlei = async () => {
 };
 getfenlei();
 onLoad(async (e) => {
-  if (e.xgobj) {
-    let dsobj = JSON.parse(decodeURIComponent(e.xgobj));
-    console.log(dsobj);
-    // 使用对象合并，确保所有必要属性都存在
-    dataobj.value = {
-      ...dataobj.value,
-      ...dsobj,
-      // 确保关键属性有默认值
-      content: dsobj.content || "",
-      imageValue: dsobj.imageValue || [],
-      temparr: dsobj.temparr || [],
-      category_id: dsobj.category_id || "",
-      goods_thumb: dsobj.goods_thumb || "",
-      name: dsobj.name || "",
-    };
-    
-    // 根据category_id查找对应的分类名称
-    if (dsobj.category_id && list2.value.length > 0) {
-      const category = list2.value.find(item => item._id === dsobj.category_id);
-      if (category) {
-        dataobj.value.category_name = category.name;
-      }
-    }
-  }
+  id.value = e.id;
+  if (id.value) getDetail();
+  uni.setNavigationBarTitle({ title: unref(pageType) });
 });
+const getDetail = async () => {
+  let { errCode, data } = await pddyun.detailxg(unref(id));
+  dataobj.value = data;
+  console.log(data);
+};
 // 选择分类
 const select = async (e) => {
   console.log(e);
@@ -162,6 +146,8 @@ const addpic = async () => {
 const tijiao = async () => {
   dataobj.value.content = removeHtmlTags(dataobj.value.content);
   console.log(dataobj.value);
+  dataobj.value.name = dataobj.value.content.slice(0, 20);
+
   goodsff();
 };
 // 提交云端
@@ -171,23 +157,13 @@ const goodsff = async () => {
       mask: true,
     });
 
-    if (dataobj.value._id) {
-      let copyobj = {
-        ...dataobj.value,
-      };
-      delete copyobj._id;
-      console.log(copyobj);
-      await db.collection("aopen-wen").doc(dataobj.value._id).update(copyobj);
-    } else {
-      dataobj.value.name = dataobj.value.content.slice(0, 12);
-      let {
-        result: { data, errCode, errMsg },
-      } = await db.collection("aopen-wen").add(dataobj.value);
-      if (errCode !== 0) {
-        return showToast({
-          title: errMsg,
-        });
-      }
+    let { errCode, errMsg } = unref(id)
+      ? await pddyun.update(dataobj.value)
+      : await pddyun.add(dataobj.value);
+    if (errCode !== 0) {
+      return showToast({
+        title: errMsg,
+      });
     }
     showToast({
       title: "新增成功",
@@ -225,16 +201,13 @@ const selects = () => {
 </script>
 
 <style lang="scss" scoped>
-.fenleipp {
-  background-color: #fff;
-  padding: 20rpx;
-  border-radius: 20rpx;
-  max-height: 80vh;
-  overflow-y: auto;
-}
 .home {
   padding: 20rpx;
 
+  .category-row {
+    display: flex;
+    align-items: center;
+  }
   .row-add {
     display: flex;
     flex-direction: column;
@@ -282,24 +255,6 @@ const selects = () => {
     .add {
       @include flex-box-set();
       cursor: pointer;
-    }
-  }
-
-  .category-row {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20rpx;
-
-    .category-btn {
-      margin-right: 20rpx;
-      padding: 10rpx 20rpx;
-      background-color: #007aff;
-      color: #fff;
-      border-radius: 10rpx;
-    }
-
-    .category-input {
-      flex: 1;
     }
   }
 

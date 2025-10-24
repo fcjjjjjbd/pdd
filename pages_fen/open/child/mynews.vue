@@ -1,16 +1,41 @@
 <script setup>
 import { ref } from "vue";
+import { routerTo, showModal, showLoading, showToast } from "@/utils/common.js";
 
-const demo = ref(null);
+const opencloubobj = uniCloud.importObject("client-aopen", {
+  customUI: true,
+});
+
 const dataList = ref([]);
-
-const demoo = async () => {};
-
+const getmy = async () => {
+  let { errCode, errMsg, count, data } = await opencloubobj.myopen();
+  if (errCode !== 0) return showToast("获取失败");
+  console.log(data);
+  dataList.value = data;
+};
+getmy();
 // 新增文章按钮点击事件
 const goToEdit = () => {
   uni.navigateTo({
     url: "/pages_fen/open/edit",
   });
+};
+// 删除
+const delTable = async (id) => {
+  try {
+    if (!(await showModal({ content: "是否确认删除?" }))) return;
+    showLoading("执行中..");
+    let { errCode, errMsg, data } = await opencloubobj.remove(id);
+    if (errCode !== 0) return showToast("删除失败");
+    showToast("删除成功");
+    dataList.value = dataList.value.filter((item) => item._id !== id);
+    getmy();
+  } catch (err) {
+    showModal(err);
+    console.log(err);
+  } finally {
+    uni.hideLoading();
+  }
 };
 </script>
 <template>
@@ -26,19 +51,21 @@ const goToEdit = () => {
       >
         <view class="left-wrap">
           <view class="title">
-            {{ item.title }}
+            {{ item.name }}
           </view>
           <view class="info">
-            <view @click="updataff(item)"
+            <view @click.stop="routerTo('/pages_fen/open/edit?id=' + item._id)"
               ><uni-icons type="compose" size="30"></uni-icons>
+              修改
             </view>
-            <view @click.stop="removeff(item._id)"
+            <view @click.stop="delTable(item._id)"
               ><uni-icons type="trash" size="30"></uni-icons>
+              删除
             </view>
           </view>
         </view>
-        <view class="right-wrap" v-if="item.avatar">
-          <image class="img" :src="item.avatar" mode="aspectFill"></image>
+        <view class="right-wrap" v-if="item.goods_thumb">
+          <image class="img" :src="item.goods_thumb" mode="aspectFill"></image>
         </view>
       </view>
     </view>

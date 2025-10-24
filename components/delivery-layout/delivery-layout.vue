@@ -16,7 +16,7 @@
           <view class="addressTxt" v-else>请添加收货地址</view>
         </view>
         <view class="right">
-          <u-icon name="arrow-right" color="#999" size="18"></u-icon>
+          <uni-icons type="right" color="#999" size="18"></uni-icons>
         </view>
       </view>
     </view>

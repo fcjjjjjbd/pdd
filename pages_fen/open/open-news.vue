@@ -1,56 +1,59 @@
 <script setup>
 import { ref } from "vue";
 import dayjs from "dayjs";
-import { routerTo } from "@/utils/common.js";
-import mynews from "@/pages_fen/open/child/mynews.vue";
-import UniView from "@/components/uni-view/uni-view.vue";
-const newsCloudObj = uniCloud.importObject("client-news", {
+import { routerTo, showLoading, showModal, showToast } from "@/utils/common.js";
+import UniView from "./child/mynews.vue";
+const pddCloudObj = uniCloud.importObject("client-aopen", {
   customUI: true,
 });
 const dataList = ref([]);
-const keyword = ref("");
 
 const paging = ref(null);
 
 const show1 = ref(null);
-const navlist = ref([
-  {
-    name: "全部",
-    value: "0",
-  },
-  {
-    name: "推荐",
-    value: "1",
-  },
-  {
-    name: "最新",
-    value: "2",
-  },
-]);
+const navlist = ref([]);
+const selectcategoryid = ref();
 const jump = async () => {
   uni.navigateTo({
     url: "/pages_fen/open/open-search",
   });
 };
+// 获取分类数组
+const getcategory = async () => {
+  let { errCode, data } = await pddCloudObj.list();
+  if (errCode !== 0) return showToast("获取失败");
+  navlist.value = data;
+  selectcategoryid.value = data[0]._id;
+  console.log(data);
+};
+//getcategory();
 const queryList = async (pageCurrent, pageSize) => {
   try {
-    let { errCode, data } = await newsCloudObj.list({
-      pageCurrent,
+    let { errCode, data } = await pddCloudObj.categorylist({
       pageSize,
+      pageCurrent,
+
+      category_id: "68f362336523415a2b3a6466",
     });
     if (errCode !== 0) return paging.value.complete(false);
+    console.log(data);
     paging.value.complete(data);
   } catch (err) {
     paging.value.complete(false);
   }
 };
+nextTick(() => {
+  paging.value.reload();
+});
 // 我的列表
 const mynew = () => {
   show1.value.open();
 };
 // 切换导航
-const navclick = (index) => {
-  console.log(index);
+const navclick = (e) => {
+  console.log(e);
+  selectcategoryid.value = e._id;
+  paging.value.reload();
 };
 
 // 处理点赞事件
@@ -63,26 +66,6 @@ const handleLike = (data) => {
 const handleCollect = (data) => {
   console.log("收藏事件:", data);
   // 这里可以调用后端API更新收藏状态
-};
-
-// 处理分享事件
-const handleShare = (itemId) => {
-  console.log("分享事件:", itemId);
-  // 这里可以调用分享功能
-  uni.share({
-    provider: "weixin",
-    scene: "WXSceneSession",
-    type: 0,
-    href: `/pages_fen/open/open-newsdetail?id=${itemId}`,
-    title: "分享文章",
-    summary: "来看看这篇有趣的文章",
-    success: function (res) {
-      console.log("success:" + JSON.stringify(res));
-    },
-    fail: function (err) {
-      console.log("fail:" + JSON.stringify(err));
-    },
-  });
 };
 
 // 处理阅读事件
@@ -105,7 +88,7 @@ const handleContentClick = (itemId) => {
         ref="paging"
         v-model="dataList"
         @query="queryList"
-        class="paging-container"
+        :auto="false"
       >
         <template #top>
           <view class="u-flex top-box" @click="jump">
@@ -124,7 +107,7 @@ const handleContentClick = (itemId) => {
         </template>
 
         <view class="news-list">
-          <UniView
+          <uni-view
             v-for="item in dataList"
             :key="item._id"
             :item-id="item._id"
@@ -140,7 +123,6 @@ const handleContentClick = (itemId) => {
             @content-click="handleContentClick"
             @like="handleLike"
             @collect="handleCollect"
-            @share="handleShare"
             @read="handleRead"
           />
         </view>
@@ -158,7 +140,7 @@ const handleContentClick = (itemId) => {
 
     <!-- 弹窗 -->
     <uni-popup ref="show1" type="bottom" background-color="#fff">
-      <mynews />
+      <UniView />
     </uni-popup>
   </view>
 </template>

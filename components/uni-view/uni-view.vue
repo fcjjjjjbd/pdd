@@ -4,7 +4,7 @@
     <view class="news-content" @click="handleContentClick">
       <view class="content-wrap">
         <view class="left-wrap">
-          <view class="title">{{ title }}</view>
+          <view class="title">{{ name }}</view>
         </view>
         <view class="right-wrap" v-if="avatar">
           <image class="img" :src="avatar" mode="aspectFill"></image>
@@ -43,12 +43,6 @@
           {{ formatNumber(collectCount) }}
         </text>
       </view>
-
-      <!-- 分享 -->
-      <!-- <view class="interaction-item" @click="handleShare">
-        <uni-icons type="redo" size="16" color="#999"></uni-icons>
-        <text class="interaction-text">分享</text>
-      </view> -->
     </view>
   </view>
 </template>
@@ -60,15 +54,10 @@ import dayjs from "dayjs";
 // Props 定义
 const props = defineProps({
   // 新闻内容相关
-  title: {
+  name: {
     type: String,
     default: "",
   },
-  // author: {
-  //   type: String,
-  //   default: "",
-  // },
-
   avatar: {
     type: String,
     default: "",

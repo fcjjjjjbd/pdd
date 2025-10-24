@@ -2,15 +2,15 @@
 <template>
   <view class="infos">
     <view class="box1">
-      <uv-icon name="photo" color="#1C1C1C" size="35"></uv-icon>
+      <uni-icons type="compose" color="#1C1C1C" size="35"> </uni-icons>
       <view class="">发布订单</view>
     </view>
     <view class="box1">
-      <uv-icon name="photo" color="#1C1C1C" size="35"></uv-icon>
+      <uni-icons type="staff" color="#1C1C1C" size="35"> </uni-icons>
       <view class="">师傅报价</view>
     </view>
     <view class="box1">
-      <uv-icon name="photo" color="#1C1C1C" size="35"></uv-icon>
+      <uni-icons type="personadd" color="#1C1C1C" size="35"></uni-icons>
       <view class="">挑选师傅</view>
     </view>
     <view class="box1">
