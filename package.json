@@ -16,5 +16,10 @@
             "前端组件",
             "通用组件"
         ]
+    },
+    "dependencies": {
+        "dayjs": "^1.11.18",
+        "pinia-plugin-persistedstate": "^4.2.0",
+        "xe-utils": "^3.7.9"
     }
 }

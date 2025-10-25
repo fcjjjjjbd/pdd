@@ -4,6 +4,9 @@
 export function addressff(string1, string2) {
   return `${string1}${string2}`;
 }
+export function hideLoading() {
+  uni.hideLoading();
+}
 export function showLoading(options = "") {
   if (typeof options === "string") options = { title: options };
   const { title = "", mask = false } = options;
