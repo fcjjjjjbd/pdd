@@ -64,6 +64,29 @@
         </view>
       </view>
     </navigator>
+
+    <!-- 我的订单 -->
+    <view class="order-wrap">
+      <view class="head">
+        <view class="label">我的订单</view>
+        <view class="value" @click="routerTo('/pages/order/myorderlist')">
+          查看全部
+          <uni-icons type="right" color="#999"></uni-icons>
+        </view>
+      </view>
+      <view class="list">
+        <view class="item" v-for="item in orderMenus" :key="item.value">
+          <view class="icon-wrap">
+            <!-- <text class="iconfont" :class="item.icon"></text>
+             -->
+            <uni-icons type="contact" size="30"></uni-icons>
+            <view class="tag">3</view>
+          </view>
+          <view class="label">{{ item.text }}</view>
+        </view>
+      </view>
+    </view>
+
     <view class="main">
       <view class="group">
         <navigator url="/pages/my/address">
@@ -139,12 +162,14 @@
 </template>
 
 <script setup>
-import { isAdminRole } from "@/utils/common.js";
+import { isAdminRole, routerTo } from "@/utils/common.js";
 import { useUserStore } from "@/stores/user.js";
 import { useNavlistStore } from "@/stores/navlistStore";
-const userStore = ref(useUserStore()); // 微信当前pinia用户信息
 import { store, mutations } from "@/uni_modules/uni-id-pages/common/store.js";
-import { RouterLink, RouterView } from "vue-router";
+import { ORDER_STATUS_ENUMS } from "@/utils/config.js";
+const userStore = ref(useUserStore()); // 微信当前pinia用户信息
+
+const orderMenus = ORDER_STATUS_ENUMS().filter((item) => item.myOrder === true);
 
 const navlistStore = useNavlistStore();
 
@@ -228,6 +253,81 @@ const userInfo = computed(() => store.userInfo);
         filter: blur(20px);
         transform: scale(2);
         opacity: 0.5;
+      }
+    }
+  }
+
+  .order-wrap {
+    position: relative;
+    width: 100%;
+    border-radius: 12rpx;
+    background-color: #fff;
+    margin-bottom: 32rpx;
+
+    .head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 80rpx;
+      padding: 0 32rpx;
+      border-bottom: 1px solid #f4f4f4;
+
+      .label {
+        font-size: 28rpx;
+        color: #333;
+      }
+
+      .value {
+        font-size: 26rpx;
+        color: #999;
+        display: flex;
+        align-items: center;
+      }
+    }
+
+    .list {
+      min-height: 100rpx;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-around;
+      padding: 32rpx 0;
+
+      .item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        gap: 10rpx;
+
+        .icon-wrap {
+          position: relative;
+
+          .iconfont {
+            font-size: 52rpx;
+          }
+
+          .tag {
+            position: absolute;
+            right: -6rpx;
+            top: -6rpx;
+            min-width: 26rpx;
+            height: 26rpx;
+            padding: 6rpx;
+            font-size: 18rpx;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: $uni-color-primary;
+            border-radius: 26rpx;
+          }
+        }
+
+        .label {
+          font-size: 28rpx;
+          color: #333;
+        }
       }
     }
   }

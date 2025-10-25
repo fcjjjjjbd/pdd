@@ -3,11 +3,9 @@
   <view class="home">
     <order-map> </order-map>
     <view class="info">
-      <view class="name"> </view>
+      <view class="name1" @click="goadv">师傅广告费排名</view>
     </view>
 
-   
-    
     <view>现在发布预约上门</view>
     <view class="chosse" @click="chosse"
       >选择类型:
@@ -40,8 +38,33 @@
       style="width: 100%; min-height: 400rpx"
     ></textarea>
 
-    <delivery-layout :deliveryInfo="addressobj"></delivery-layout>
-    <!-- body -->
+    <!-- 上门地址 -->
+    <view class="delivery-box">
+      <view
+        class="row-wrap address-wrap"
+        @click="routerTo('/pages/my/address?type=select')"
+      >
+        <view class="left-wrap">
+          <view class="label">收货信息：</view>
+          <view class="name" v-if="orderStore.addressInfo?._id"
+            >{{ orderStore.addressInfo.name }}，{{
+              orderStore.addressInfo.phone
+            }}</view
+          >
+          <view class="name" v-else style="font-weight: bold"
+            >请选择收货地址</view
+          >
+          <view class="address" v-if="orderStore.addressInfo?._id">{{
+            orderStore.addressInfo.address + orderStore.addressInfo.house
+          }}</view>
+        </view>
+        <view class="right-wrap">
+          <uni-icons class="arrow" type="right" size="30rpx" color="#aaa" />
+        </view>
+      </view>
+    </view>
+
+    <!-- <delivery-layout :deliveryInfo="addressobj"></delivery-layout>-->
 
     <view class="tijiao"
       ><button type="primary" @click="tijiao">预约上门</button></view
@@ -53,13 +76,16 @@
 const mmbjydx = uniCloud.importObject("goods-backend", {
   customUI: true,
 });
-import { showToast, isAdminRole, addressff } from "@/utils/common.js";
+import { showToast, isAdminRole, addressff, routerTo } from "@/utils/common.js";
 import dayjs from "dayjs";
 import { removeHtmlTags, convertImageToWebP } from "@/utils/tools.js";
 import { usedsmaxStore } from "@/stores/dsmax.js";
+import { useOrderStore } from "@/stores/order.js";
+const orderStore = useOrderStore();
+
 const maxStore = ref(usedsmaxStore());
 const addcloubobj = uniCloud.importObject("goods-backend");
-const checkobj = uniCloud.importObject("check_info");
+const checkobj = uniCloud.importObject("secCheckContent");
 
 const emit = defineEmits(["Updatelist"]);
 const current_id = ref(uniCloud.getCurrentUserInfo().uid); // 当前用户id
@@ -72,11 +98,7 @@ const dataobj = ref({
   goods_thumb: "",
   title: "",
 }); //订单所有信息
-const addressobj = ref({
-  address: "",
-  username: "",
-  mobile: "",
-}); //默认地址
+
 const temparr = ref([]); //本地临时图片
 let typelist = [
   "维修 ",
@@ -89,6 +111,12 @@ let typelist = [
   "装修",
 ];
 const trpevalue = ref(typelist[0]); //默认选择
+// 师傅广告费
+const goadv = () => {
+  uni.navigateTo({
+    url: "/pages_fen/advpay/list?id=" + dsobj.value._id,
+  });
+};
 // 选择类型
 const chosse = () => {
   uni.showActionSheet({
@@ -101,6 +129,17 @@ const chosse = () => {
     },
   });
 };
+const getAddress = async () => {
+  try {
+    let { errCode, data: [item = {}] = [] } = await addressCloudObj.list({
+      pageSize: 1,
+    });
+    orderStore.addressInfo = item;
+  } catch (err) {
+    console.log(err);
+  }
+};
+getAddress();
 // 获取表格数据
 const getnav = async () => {
   let { data } = await mmbjydx.getmmbj(urlobj.value._id);
@@ -163,23 +202,26 @@ const tijiao = async () => {
     return showToast({
       title: "请输入图片",
     });
-  if (!addressobj.value.address)
-    return showToast({
-      title: "请输入地址",
-    });
+
   if (maxStore.value.ordernum > 6)
     return showToast({
       title: "订单超出",
     });
   dataobj.value.content = removeHtmlTags(dataobj.value.content);
-  let cesires = await checkobj.textcheck(
+  uni.showLoading();
+  let secRes = await checkobj.textSecCheck(
     `${dataobj.value.title} ${dataobj.value.content}`,
     "o5tQd7U__aPjwWnoYBPUivS4C_sw"
   );
-  if (cesires.Code != 0)
-    return showToast({
-      title: "内容违规",
+  if (secRes.code) {
+    uni.hideLoading();
+    uni.showModal({
+      title: secRes.errMsg,
+      content: `发布内容存在"${secRes.result.label}"问题,请重新编辑后发布!`,
+      showCancel: false,
     });
+    return;
+  }
   goodsff();
 };
 
@@ -211,7 +253,7 @@ const goodsff = async () => {
     dataobj.value.category_id = _id;
     let objyun = {
       ...dataobj.value,
-      addressobj: addressobj.value,
+      addressobj: orderStore.addressInfo,
       creattime: Date.now(),
       temptime: Date.now() + 345600000,
     };
@@ -240,22 +282,6 @@ const goodsff = async () => {
 const delepic = (index) => {
   temparr.value.splice(index, 1);
 };
-uni.$on("Update", (e) => {
-  addressobj.value = e;
-});
-onUnload(() => {
-  uni.$off("Update");
-});
-
-// 默认地址
-const getmorenaddress = async () => {
-  let { data, errCode } = await addcloubobj.getaddresss();
-  if (!data.length) return;
-  if (errCode !== 0) return;
-
-  addressobj.value = data[0];
-};
-// getmorenaddress();
 </script>
 
 <style lang="scss" scoped>
@@ -284,12 +310,15 @@ const getmorenaddress = async () => {
       margin-bottom: 20rpx;
     }
   }
+
   .chosse {
     @include flex-box();
+
     .typee {
       font-size: 45rpx;
     }
   }
+
   .picarr {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -364,6 +393,36 @@ const getmorenaddress = async () => {
     border-radius: 8rpx;
     font-size: 28rpx;
     line-height: 1.5;
+  }
+
+  .row-wrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20rpx 32rpx;
+    .label {
+      flex-shrink: 0;
+      font-size: 28rpx;
+      color: #999;
+    }
+  }
+
+  .address-wrap {
+    .left-wrap {
+      padding-right: 20rpx;
+      .label {
+        font-size: 28rpx;
+        color: #999;
+      }
+      .name {
+        font-size: 32rpx;
+        padding: 10rpx 0;
+      }
+      .address {
+        font-size: 26rpx;
+        color: #666;
+      }
+    }
   }
 
   .tijiao {

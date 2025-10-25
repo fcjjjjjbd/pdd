@@ -73,7 +73,6 @@
         </view>
       </view>
       <view v-show="currentContent === 'list'" class="list">
-        <view class="name1" @click="goadv">师傅广告费排名</view>
         <view class="item" v-for="item in orderlist" :key="item">
           <order-item :item="item"></order-item>
         </view>
@@ -230,12 +229,7 @@ const gosfdb = () => {
     url: "/pages/shifu/selfdb",
   });
 };
-// 师傅广告费
-const goadv = () => {
-  uni.navigateTo({
-    url: "/pages_fen/advpay/list?id=" + dsobj.value._id,
-  });
-};
+
 // 轮播图放大
 const clickpic = (index) => {
   const arr = orderdetail.value.imageValue.map((row) => row.url);
@@ -381,7 +375,7 @@ const clickcopy2 = (value) => {
     flex: 1;
     /* 占据剩余空间 */
     padding-bottom: 180rpx;
-    
+
     .name1 {
       font-size: 32rpx;
       text-align: center;

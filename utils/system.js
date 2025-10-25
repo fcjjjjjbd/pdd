@@ -2,13 +2,13 @@ import { computed, unref } from "vue";
 import { SYSTEM_WINDOW_INFO, MENU_BUTTON_RECT_INFO } from "@/utils/config.js";
 //状态栏高度（px）
 export const statusBarH = computed(
-  () => SYSTEM_WINDOW_INFO.statusBarHeight || 25
+  () => SYSTEM_WINDOW_INFO.statusBarHeight || 15
 );
 
 //标题栏高度
 export const titleBarH = computed(() => {
   const { top, height } = MENU_BUTTON_RECT_INFO;
-  if (!top || !height) return 40;
+  if (!top || !height) return 30;
   return height + (top - unref(statusBarH)) * 2;
 });
 

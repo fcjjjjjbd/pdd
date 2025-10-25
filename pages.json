@@ -2,9 +2,7 @@
   "pages": [
     {
       "path": "pages/navlist/navlist",
-      "style": {
-        "navigationBarTitleText": "拼多多上门服务"
-      }
+      "navigationStyle": "custom"
     },
     {
       "path": "pages/detail/detail",
@@ -157,12 +155,6 @@
       }
     },
 
-    {
-      "path": "pages/address/list",
-      "style": {
-        "navigationBarTitleText": "地址列表"
-      }
-    },
     {
       "path": "pages/order/edit",
       "style": {
@@ -448,11 +440,7 @@
   },
   "uniIdRouter": {
     "loginPage": "uni_modules/uni-id-pages/pages/login/login-withpwd",
-    "needLogin": [
-      "pages/self/.*",
-      "pages/address/list",
-      "pages/order/myorderlist"
-    ],
+    "needLogin": ["pages/self/.*", "pages/order/myorderlist"],
     "resToLogin": true
   }
 }

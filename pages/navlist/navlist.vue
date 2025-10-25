@@ -1,19 +1,8 @@
 <!-- 4.6 -->
 <template>
   <view class="container">
-    <view class="u-flex top-box" @click="jump">
-      <view class="u-flex search-box">
-        <uni-icons type="search" size="20"></uni-icons>
-        <text class="text u-m-l-8">搜索</text>
-      </view>
-    </view>
-
-    <!-- 导航菜单 -->
-    <view class="scrollNav">
-      <scroll-view scroll-x>
-        <!-- 售后功能已转移到个人中心页面 -->
-      </scroll-view>
-    </view>
+    <mod-nav-bar title="首页" title-color="#fff"></mod-nav-bar>
+    <mode-search @on-confirm="jump"></mode-search>
 
     <!-- 左边分类 -->
     <view class="left-v">
@@ -34,16 +23,11 @@
           v-for="(rew, index) in rights"
           :key="rew._id"
         >
+          <view class=""><uni-icons type="contact" size="40"></uni-icons></view>
           {{ rew.name }}
         </text>
       </view>
     </view>
-
-    <navigator url="/pages/order/myorderlist" class="navorder">
-      <view class="item">
-        <text>订单</text>
-      </view>
-    </navigator>
   </view>
 </template>
 
@@ -94,8 +78,6 @@ onMounted(async () => {
 
 <style lang="scss" scoped>
 .container {
-  width: 100%;
-
   .top-box {
     width: 100%;
     height: 88rpx;
@@ -130,18 +112,8 @@ onMounted(async () => {
         padding: 0 30rpx;
         text-align: center;
 
-        .pic {
-          width: 125rpx;
-          height: 125rpx;
-
-          .img {
-            width: 100%;
-            height: 100%;
-          }
-        }
-
         .text {
-          font-size: 32rpx;
+          font-size: 50rpx;
           color: var(--globalColor);
           padding-top: 10rpx;
         }
