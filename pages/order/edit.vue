@@ -3,7 +3,7 @@
   <view class="home">
     <order-map> </order-map>
     <view class="info">
-      <view class="name1" @click="goadv">师傅广告费排名</view>
+      <view class="name1" @click="goToAdvpayList()">师傅广告费排名</view>
     </view>
 
     <view>现在发布预约上门</view>
@@ -111,12 +111,7 @@ let typelist = [
   "装修",
 ];
 const trpevalue = ref(typelist[0]); //默认选择
-// 师傅广告费
-const goadv = () => {
-  uni.navigateTo({
-    url: "/pages_fen/advpay/list?id=" + dsobj.value._id,
-  });
-};
+
 // 选择类型
 const chosse = () => {
   uni.showActionSheet({
@@ -181,9 +176,7 @@ const addpic = () => {
   });
 };
 onLoad((e) => {
-  if (e.feiobj) {
-    urlobj.value = JSON.parse(decodeURIComponent(e.feiobj));
-  }
+  urlobj.value = e;
   console.log(urlobj.value);
   getnav();
 });
@@ -281,6 +274,9 @@ const goodsff = async () => {
 // 删除本地图片
 const delepic = (index) => {
   temparr.value.splice(index, 1);
+};
+const goToAdvpayList = () => {
+  routerTo(`/pages_fen/advpay/list?id=${urlobj.value.category_id}`);
 };
 </script>
 

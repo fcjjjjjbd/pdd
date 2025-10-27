@@ -3,7 +3,9 @@ import dayjs from "dayjs"
 import { ref } from "vue";
 import {onLoad} from "@dcloudio/uni-app"
 import { showToast } from "../../utils/common";
-const newsCloudObj = uniCloud.importObject("client-news",{customUI:true});
+const pddCloudObj = uniCloud.importObject("client-aopen", {
+  customUI: true,
+});
 let id;
 onLoad((e)=>{
 	id = e.id;
@@ -12,14 +14,14 @@ onLoad((e)=>{
 
 const detail = ref()
 
-
+// {errCode,data}
 const getDetail = async()=>{
 	try{
-		let {errCode,data} = await newsCloudObj.detail(id);
-		if(errCode!==0) return showToast("获取失败")
+		let {data }= await pddCloudObj.detailxg(id);
+		console.log(data)
 		detail.value = data;
 		uni.setNavigationBarTitle({
-			title:detail.value.title
+			title:detail.value.name
 		})
 	}catch(err){
 		console.log(err);
@@ -33,21 +35,22 @@ const getDetail = async()=>{
 </script>
 
 <template>
-	<view class="page-wrap" v-if="detail?.title">
+	<view class="page-wrap" v-if="detail?.name" >
 		<view class="news-title">
-			{{detail.title}}
-		</view>
+			</view>
 		<view class="news-info">
-			<view class="author">{{detail.nickname}}</view>
-			<view class="date">{{dayjs(detail.publish_date).format("YYYY-MM-DD HH:mm:ss")}}</view>
+			<view class="author"></view>
+			<view class="date"></view>
 		</view>
 		<view class="news-content">
 			<uv-parse :content="detail.content"></uv-parse>			
 		</view>
 		<view style="padding:30rpx 0; font-size: 28rpx;color:#666">阅读量： {{detail.view_count}}</view>
-	</view>
 	
-	<uni-load-more status="loading" v-else></uni-load-more>
+	</view>
+		<uni-load-more status="loading"  v-else></uni-load-more>
+
+	
 </template>
 
 <style lang="scss" scoped>

@@ -2,8 +2,7 @@
 <template>
   <view class="container">
     <mod-nav-bar title="首页" title-color="#fff"></mod-nav-bar>
-    <mode-search @on-confirm="jump"></mode-search>
-
+    
     <!-- 左边分类 -->
     <view class="left-v">
       <view
@@ -18,7 +17,7 @@
     <view class="right-v">
       <view class="three-v">
         <text
-          @click="clickChlidBtn(rew)"
+          @click="routerTo(`/pages/order/edit?category_id=${rew.category_id}&name=${encodeURIComponent(rew.name)}`)"
           class="item"
           v-for="(rew, index) in rights"
           :key="rew._id"
@@ -33,7 +32,7 @@
 
 <script setup>
 import { useNavlistStore } from "@/stores/navlistStore";
-
+import { showToast, isAdminRole, routerTo } from "@/utils/common.js";
 const navlistStore = useNavlistStore();
 
 const db = uniCloud.database();
@@ -53,15 +52,6 @@ const clickFun = (id, index) => {
     return item.category_id == id;
   });
   isActive.value = index;
-};
-// 跳转详情
-const clickChlidBtn = async (value) => {
-  console.log(value);
-  let params = encodeURI(JSON.stringify(value));
-  uni.navigateTo({
-    url: "/pages/order/edit?feiobj=" + params,
-  });
-  return;
 };
 
 onMounted(async () => {

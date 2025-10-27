@@ -1,113 +1,37 @@
 <!-- console.log() 居安思死-->
 <template>
-  <view>
-    <view class="self">
-      <z-paging
-        ref="paging"
-        v-model="Paylist"
-        @query="queryList"
-        :default-page-size="6"
-        :auto="false"
-      >
-        <template #loading>
-          <uni-load-more status="loading"></uni-load-more>
-        </template>
-        <view class="top"> </view>
-        <view class="content">
-          <view class="item" v-for="(item, index) in Paylist" :key="item._id">
-            <view class="left"> {{ priceFormat(item.total_fee) }}¥ </view>
-            <view class="right">
-              <view class="top1" @click="clickcopy2(item.content)">
-                {{ item.content }}
-              </view>
-              <view class="info">
-                <view class="phone" @click="clickcopy2(item.phone)">
-                  {{ item.phone }}
-                </view>
-                <view class="rights">
-                  <view class="item" @click="starff">
-                    <view class="wen"></view>
-                    <uni-icons
-                      v-if="starbool"
-                      type="star"
-                      size="28"
-                      color="#999"
-                    ></uni-icons>
-                    <uni-icons
-                      v-else
-                      type="star-filled"
-                      size="28"
-                      color="#ff0000"
-                    ></uni-icons>
-                    <text v-if="false">5</text>
-                  </view>
-
-                  <view
-                    class="item"
-                    v-if="item.user_id == current_id || isAdminRole()"
-                    @click="removeid(item._id, index)"
-                  >
-                    <uni-icons type="trash" size="30"></uni-icons>
-                  </view>
-                  <view
-                    class="item"
-                    v-if="item.user_id == current_id || isAdminRole()"
-                    @click="updataid()"
-                  >
-                    <uni-icons type="chat-filled" size="30"></uni-icons>
-                  </view>
-                </view>
-              </view>
-            </view>
-          </view>
-        </view>
-        <view class="bottom">
-          <view class="btn" @click="addpp">上传</view>
-        </view>
-      </z-paging>
-    </view>
-    <uni-popup ref="payPopup">
-      <view class="jiedanPopup">
-        <view class="content">
-          <view class="rew"
-            >支付广告费<uni-easyinput
-              type="number"
-              maxlength="4"
-              v-model.number="payobj.total_fee"
-              class="fromIpt"
-              placeholder="付费"
-            />
-          </view>
-          <view class="rew"
-            >业务描述明码标价<uni-easyinput
-              type="text"
-              maxlength="55"
-              v-model="payobj.content"
-              class="fromIpt"
-              placeholder="输入自己的业务信息,每个价格"
-          /></view>
-          <view class="rew"
-            >电话/微信<uni-easyinput
-              type="text"
-              maxlength="12"
-              v-model="payobj.phone"
-              class="fromIpt"
-              placeholder="输入电话号"
-          /></view>
-        </view>
-        <view class="footer">
-          <button @click="submit" type="warn" size="default">支付</button>
+  <view class="self">
+    <z-paging
+      ref="paging"
+      v-model="Paylist"
+      @query="queryList"
+      :default-page-size="6"
+      :auto="false"
+    >
+      <template #loading>
+        <uni-load-more status="loading"></uni-load-more>
+      </template>
+      <view class="content">
+        <view class="item" v-for="(item, index) in Paylist" :key="item._id">
+          <adv-card :item="item"></adv-card>
         </view>
       </view>
-    </uni-popup>
-    <!-- 弹窗支付 -->
-    <uni-pay ref="Pay" @success="paySuccess" @cancel="payCancel"></uni-pay>
+      <view class="bottom">
+        <view class="btn" @click="addpp">上传</view>
+      </view>
+      <uni-popup ref="payPopup" type="bottom" :is-mask-click="false">
+        <Myedit />
+      </uni-popup>
+      <!-- 弹窗支付 -->
+      <uni-pay ref="Pay" @success="paySuccess" @cancel="payCancel"></uni-pay>
+    </z-paging>
   </view>
 </template>
 
 <script setup>
 import { showToast, isAdminRole } from "@/utils/common.js";
 import { priceFormat } from "@/utils/tools.js";
+import Myedit from "./child/mynews.vue";
 
 const addcloubobj = uniCloud.importObject("goods-backend");
 const db = uniCloud.database();
@@ -119,11 +43,6 @@ const payPopup = ref(null);
 const classyid = ref(null); //分类id
 const current_id = ref(uniCloud.getCurrentUserInfo().uid); // 当前用户id
 const statuss = ref(0); //管理员功能
-const payobj = ref({
-  total_fee: null,
-  content: "",
-  phone: "",
-}); //支付对象
 const starbool = ref(true); //收藏功能
 onLoad((e) => {
   let { id = null } = e;
@@ -159,71 +78,11 @@ const getlist = async (pageNo, pageSize) => {
   if (errCode != 0) return;
   paging.value.complete(data);
 };
-// 收藏
-const starff = () => {
-  starbool.value = !starbool.value;
-};
+
 const addpp = () => {
   payPopup.value.open();
 };
-//提交云端
-const submit = () => {
-  // 自由return支付
-  statuss.value = 1;
-  payobj.value.total_fee = 2;
-  if (payobj.value.total_fee < 2)
-    return showToast({
-      title: "最低2元",
-    });
-  if (isAdminRole()) {
-    statuss.value = 1;
-  }
-  createOrder();
-};
-// 支付
-const createOrder = async () => {
-  // #ifdef MP-WEIXIN
-  let provider = "wxpay";
-  // #endif
-  // #ifndef MP-WEIXIN
-  let provider = "alipay";
-  // #endif
-  let order_no = Date.now() + "_" + String(Math.random()).substring(3, 9);
-  let obj = {
-    ...payobj.value,
-    total_fee: payobj.value.total_fee * 100,
-    orderType: "payad",
-    order_no,
-    classifyid: classyid.value,
-    status: statuss.value,
-  };
-  let {
-    result: { errCode },
-  } = await db.collection("pay-order").add(obj);
 
-  if (errCode != 0) return;
-  let out_trade_no = order_no + "_" + String(Math.random()).substring(3, 9);
-  // statuss.value = 0;
-  //  自由
-  payPopup.value.close();
-  const newItem = {
-    _id: 123,
-    content: payobj.value.content,
-    total_fee: payobj.value.total_fee,
-    phone: payobj.value.phone,
-  };
-  Paylist.value.unshift(newItem);
-  return;
-  Pay.value.createOrder({
-    provider,
-    total_fee: payobj.value.total_fee * 100, // 支付金额，单位分 100 = 1元
-    type: "goods", // 支付回调类型
-    order_no, // 业务系统订单号
-    out_trade_no, // 插件支付单号
-    description: "支付师傅广告费", // 支付描述
-  });
-  payPopup.value.close();
-};
 // 复制地址
 const clickcopy2 = (value) => {
   uni.setClipboardData({

@@ -4,10 +4,10 @@
     <view class="news-content" @click="handleContentClick">
       <view class="content-wrap">
         <view class="left-wrap">
-          <view class="title">{{ name }}</view>
+          <view class="title">{{ item.name }}</view>
         </view>
-        <view class="right-wrap" v-if="avatar">
-          <image class="img" :src="avatar" mode="aspectFill"></image>
+        <view class="right-wrap" >
+          <image class="img" :src="item.goods_thumb" mode="aspectFill"></image>
         </view>
       </view>
     </view>
@@ -15,32 +15,32 @@
     <!-- 交互栏 -->
     <view class="interaction-bar">
       <!-- 阅读量 -->
-      <view class="interaction-item" @click="handleRead">
-        <uni-icons type="eye" size="16" color="#999"></uni-icons>
-        <text class="interaction-text">{{ formatNumber(readCount) }}</text>
+      <view class="interaction-item" >
+        <uni-icons type="eye" size="16" color="#666"></uni-icons>
+        <text class="interaction-text">{{ formatNumber(item.readCount || 0) }}</text>
       </view>
 
       <!-- 点赞 -->
-      <view class="interaction-item" @click="handleLike">
+      <view class="interaction-item" >
         <uni-icons
-          :type="isLiked ? 'heart-filled' : 'heart'"
+          :type="item.isLiked ? 'heart-filled' : 'heart'"
           size="16"
-          :color="isLiked ? '#ff4757' : '#999'"
+          :color="item.isLiked ? '#ff4757' : '#666'"
         ></uni-icons>
-        <text class="interaction-text" :class="{ liked: isLiked }">
-          {{ formatNumber(likeCount) }}
+        <text class="interaction-text" :class="{ liked: item.isLiked }">
+          {{ formatNumber(item.likeCount || 0) }}
         </text>
       </view>
 
       <!-- 收藏 -->
-      <view class="interaction-item" @click="handleCollect">
+      <view class="interaction-item">
         <uni-icons
-          :type="isCollected ? 'star-filled' : 'star'"
+          :type="item.isCollected ? 'star-filled' : 'star'"
           size="16"
-          :color="isCollected ? '#ffa502' : '#999'"
+          :color="item.isCollected ? '#ffa502' : '#666'"
         ></uni-icons>
-        <text class="interaction-text" :class="{ collected: isCollected }">
-          {{ formatNumber(collectCount) }}
+        <text class="interaction-text" :class="{ collected: item.isCollected }">
+          {{ formatNumber(item.collectCount || 0) }}
         </text>
       </view>
     </view>
@@ -48,51 +48,12 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
-import dayjs from "dayjs";
-
-// Props 定义
 const props = defineProps({
-  // 新闻内容相关
-  name: {
-    type: String,
-    default: "",
+  item: {
+    type: Object,
+    default: () => ({})
   },
-  avatar: {
-    type: String,
-    default: "",
-  },
-  // 阅读量
-  readCount: {
-    type: Number,
-    default: 0,
-  },
-  // 点赞数
-  likeCount: {
-    type: Number,
-    default: 0,
-  },
-  // 收藏数
-  collectCount: {
-    type: Number,
-    default: 0,
-  },
-  // 是否已点赞
-  isLiked: {
-    type: Boolean,
-    default: false,
-  },
-  // 是否已收藏
-  isCollected: {
-    type: Boolean,
-    default: false,
-  },
-  // 文章ID或其他标识
-  itemId: {
-    type: [String, Number],
-    default: "",
-  },
-});
+})
 
 // Emits 定义
 const emit = defineEmits(["like", "collect", "read", "content-click"]);
@@ -109,43 +70,22 @@ const formatNumber = (num) => {
 
 // 处理内容点击事件
 const handleContentClick = () => {
-  emit("content-click", props.itemId);
+  emit("content-click", props.item);
 };
 
 // 处理阅读事件
 const handleRead = () => {
-  emit("read", props.itemId);
+  emit("read", props.item);
 };
 
-// 处理点赞事件
-const handleLike = () => {
-  emit("like", {
-    itemId: props.itemId,
-    isLiked: props.isLiked,
-    likeCount: props.likeCount,
-  });
-};
 
-// 处理收藏事件
-const handleCollect = () => {
-  emit("collect", {
-    itemId: props.itemId,
-    isCollected: props.isCollected,
-    collectCount: props.collectCount,
-  });
-};
-
-// 处理分享事件
-// const handleShare = () => {
-//   emit("share", props.itemId);
-// };
 </script>
 
 <style lang="scss" scoped>
 .uni-view-container {
   width: 100%;
   border-bottom: 1px solid #f0f0f0;
-  padding: 24rpx 32rpx;
+  padding: 24rpx 5rpx;
 
   &:last-child {
     border-bottom: none;
@@ -170,7 +110,7 @@ const handleCollect = () => {
     justify-content: space-between;
 
     .title {
-      font-size: 30rpx;
+      font-size: 35rpx;
       color: #333;
       display: -webkit-box;
       -webkit-box-orient: vertical;
@@ -230,17 +170,10 @@ const handleCollect = () => {
 }
 
 .interaction-text {
-  font-size: 24rpx;
+  font-size: 40rpx;
   color: #666;
   line-height: 1;
 
-  &.liked {
-    color: #ff4757;
-  }
-
-  &.collected {
-    color: #ffa502;
-  }
 }
 
 // 响应式设计
@@ -250,12 +183,11 @@ const handleCollect = () => {
   }
 
   .interaction-item {
-    gap: 6rpx;
-    padding: 6rpx 10rpx;
+      padding: 6rpx 10rpx;
   }
 
   .interaction-text {
-    font-size: 22rpx;
+    font-size: 35rpxrpx;
   }
 }
 </style>

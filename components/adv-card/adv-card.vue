@@ -1,0 +1,168 @@
+<!-- console.log()  <view class=""> </view> {知}1行动做到 1 错1改1 转0为1 不1则0,     v-if="item.user_id == isAdminRole()"
+      -->
+<script setup>
+import { ref } from 'vue';
+import { showToast, isAdminRole } from "@/utils/common.js";
+
+const props = defineProps({
+  item: {
+    type: Object,
+    default: () => ({}),
+  },
+});
+
+const starbool = ref(false); // 定义收藏状态
+
+// 收藏功能
+const starff = () => {
+  starbool.value = !starbool.value;
+  // 这里可以添加实际的收藏/取消收藏逻辑，例如调用API
+  // uni.showToast({
+  //   title: starbool.value ? '收藏成功' : '取消收藏',
+  //   icon: 'none'
+  // });
+};
+
+// 复制内容或拨打电话
+const clickcopy2 = (content) => {
+  console.log("Copying content or calling:", content);
+  // 实际的复制或拨打电话逻辑
+  // if (typeof content === 'string' && content.match(/^\d+$/)) { // 假设是电话号码
+  //   uni.makePhoneCall({
+  //     phoneNumber: content
+  //   });
+  // } else {
+  //   uni.setClipboardData({
+  //     data: content,
+  //     success: function () {
+  //       uni.showToast({
+  //         title: '复制成功',
+  //         icon: 'none'
+  //       });
+  //     }
+  //   });
+  // }
+};
+
+// 投诉/反馈功能
+const updataid = () => {
+  console.log("Complain/Feedback action triggered.");
+  // 这里可以添加实际的投诉/反馈逻辑
+  // uni.showToast({
+  //   title: '投诉功能待实现',
+  //   icon: 'none'
+  // });
+};
+
+const demoo = async () => {};
+</script>
+<template>
+  <view class="adv-card-container">
+    <view class="adv-card-left">
+      <image class="adv-card-image" :src="item.image || '/static/images/notPic.png'" mode="aspectFill"></image>
+    </view>
+    <view class="adv-card-right">
+      <view class="adv-card-title" @click="clickcopy2(item.content)">
+        {{ item.content }}
+      </view>
+      <view class="adv-card-actions">
+        <view class="adv-card-icons">
+          <!-- 点赞 -->
+          <view class="icon-item">
+            <uni-icons type="heart" size="20" color="#999"></uni-icons>
+            <text>0</text> <!-- 占位符，可替换为实际点赞数 -->
+          </view>
+          <!-- 收藏 -->
+          <view class="icon-item" @click="starff()">
+            <uni-icons v-if="!starbool" type="star" size="20" color="#999"></uni-icons>
+            <uni-icons v-else type="star-filled" size="20" color="#ff0000"></uni-icons>
+            <text v-if="false">5</text> <!-- 占位符，可替换为实际收藏数 -->
+          </view>
+          <!-- 投诉 -->
+          <view class="icon-item" @click="updataid()">
+            <uni-icons type="chatboxes-filled" size="20" color="#999"></uni-icons>
+          </view>
+        </view>
+        <view class="adv-card-call-button" @click="clickcopy2(item.phone)">
+          <button class="mini-btn" type="primary" size="mini">打电话</button>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<style lang="scss" scoped>
+.adv-card-container {
+  display: flex;
+  padding: 20rpx;
+  background-color: #fff;
+  border-radius: 8rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+
+  .adv-card-left {
+    width: 200rpx; // 图片区域宽度
+    height: 200rpx; // 图片区域高度
+    margin-right: 20rpx;
+    flex-shrink: 0; // 防止图片区域缩小
+
+    .adv-card-image {
+      width: 100%;
+      height: 100%;
+      border-radius: 4rpx;
+    }
+  }
+
+  .adv-card-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    .adv-card-title {
+      font-size: 32rpx;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 10rpx;
+      // 限制标题为两行，超出部分显示省略号
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .adv-card-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: auto; // 将操作区域推到底部
+
+      .adv-card-icons {
+        display: flex;
+        gap: 20rpx; // 图标之间的间距
+
+        .icon-item {
+          display: flex;
+          align-items: center;
+          font-size: 24rpx;
+          color: #666;
+
+          text {
+            margin-left: 8rpx;
+          }
+        }
+      }
+
+      .adv-card-call-button {
+        .mini-btn {
+          padding: 0 20rpx;
+          height: 60rpx;
+          line-height: 60rpx;
+          font-size: 28rpx;
+        }
+      }
+    }
+  }
+}
+</style>

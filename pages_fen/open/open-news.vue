@@ -20,20 +20,28 @@ const jump = async () => {
 };
 // 获取分类数组
 const getcategory = async () => {
-  let { errCode, data } = await pddCloudObj.list();
-  if (errCode !== 0) return showToast("获取失败");
-  navlist.value = data;
-  selectcategoryid.value = data[0]._id;
-  console.log(data);
+  try {
+    let { errCode, data } = await pddCloudObj.list();
+    if (errCode !== 0) {
+      showToast("获取分类失败");
+      return false; // 返回false表示获取失败
+    }
+    navlist.value = data;
+    selectcategoryid.value = data[0]._id;
+    console.log("分类数据获取成功:", data);
+    return true; // 返回true表示获取成功
+  } catch (error) {
+    console.error("获取分类出错:", error);
+    showToast("获取分类失败");
+    return false;
+  }
 };
-//getcategory();
 const queryList = async (pageCurrent, pageSize) => {
   try {
     let { errCode, data } = await pddCloudObj.categorylist({
       pageSize,
       pageCurrent,
-
-      category_id: "68f362336523415a2b3a6466",
+      category_id:   selectcategoryid.value
     });
     if (errCode !== 0) return paging.value.complete(false);
     console.log(data);
@@ -42,8 +50,17 @@ const queryList = async (pageCurrent, pageSize) => {
     paging.value.complete(false);
   }
 };
-nextTick(() => {
-  paging.value.reload();
+// 初始化数据 - 先获取分类，再获取列表
+nextTick(async () => {
+  // 先获取分类数据
+  const categorySuccess = await getcategory();
+  
+  // 只有分类获取成功后，才请求列表数据
+  if (categorySuccess) {
+    paging.value.reload();
+  } else {
+    console.log("分类获取失败，不执行列表数据请求");
+  }
 });
 // 我的列表
 const mynew = () => {
@@ -91,12 +108,9 @@ const handleContentClick = (itemId) => {
         :auto="false"
       >
         <template #top>
-          <view class="u-flex top-box" @click="jump">
-            <view class="u-flex search-box">
-              <uni-icons type="search" size="20"></uni-icons>
-              <text class="text u-m-l-8">搜索</text>
-            </view>
-          </view>
+          <view class="u-flex top-box" >
+        <mode-search @on-confirm="jump"></mode-search>
+ </view>
         </template>
         <!-- 分类标签 - 搜索框下方 -->
         <view class="tabs-section">
@@ -107,24 +121,7 @@ const handleContentClick = (itemId) => {
         </template>
 
         <view class="news-list">
-          <uni-view
-            v-for="item in dataList"
-            :key="item._id"
-            :item-id="item._id"
-            :title="item.title"
-            :author="item.nickname"
-            :publish-date="item.publish_date"
-            :avatar="item.avatar"
-            :read-count="item.read_count || 0"
-            :like-count="item.like_count || 0"
-            :collect-count="item.collect_count || 0"
-            :is-liked="item.is_liked || false"
-            :is-collected="item.is_collected || false"
-            @content-click="handleContentClick"
-            @like="handleLike"
-            @collect="handleCollect"
-            @read="handleRead"
-          />
+          <open-item v-for="item in dataList" :item="item" @click="routerTo('/pages_fen/open/open-newsdetail?id='+item._id)"> </open-item>
         </view>
       </z-paging>
     </view>
