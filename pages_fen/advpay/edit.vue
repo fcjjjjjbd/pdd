@@ -51,8 +51,6 @@
 import { showToast, isAdminRole } from "@/utils/common.js";
 import { removeHtmlTags, convertImageToWebP } from "@/utils/tools.js";
 import dayjs from "dayjs";
-import { useNavlistStore } from "@/stores/navlistStore.js";
-const useNavlist = useNavlistStore();
 const db = uniCloud.database();
 const goods_yundx = uniCloud.importObject("goods-backend");
 const pddyun = uniCloud.importObject("client-adv", { customUI: true });
@@ -69,7 +67,7 @@ const dataobj = ref({
   temparr: [], //本地临时图片
   category_id: "",
   total_fee: 2, // 添加分类名称字段
-  phone:  null
+  phone: null,
 });
 const pageType = computed(() => (unref(id) ? "修改" : "新增"));
 

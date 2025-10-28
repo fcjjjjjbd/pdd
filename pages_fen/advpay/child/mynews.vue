@@ -62,11 +62,7 @@ const delTable = async (id) => {
           <view class="info">
             <view
               @click.stop="
-                routerTo(
-                  '/pages_fen/advpay/edit?id=' +
-                    item._id +
-                    (props.categoryId ? '&category_id=' + props.categoryId : '')
-                )
+                routerTo('/pages_fen/advpay/edit?id=' + item._id)
               "
               ><uni-icons type="compose" size="30"></uni-icons>
               修改

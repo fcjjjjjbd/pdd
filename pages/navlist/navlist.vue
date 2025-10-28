@@ -2,22 +2,28 @@
 <template>
   <view class="container">
     <mod-nav-bar title="首页" title-color="#fff"></mod-nav-bar>
-    
+
     <!-- 左边分类 -->
     <view class="left-v">
       <view
         :class="index === isActive ? 'active' : ''"
         @click="clickFun(item._id, index)"
-        v-for="(item, index) in navlistStore.leftList"
+        v-for="(item, index) in categoryList"
         :key="item._id"
       >
-        {{ item.name }}
+        {{ item.title }}
       </view>
     </view>
     <view class="right-v">
       <view class="three-v">
         <text
-          @click="routerTo(`/pages/order/edit?category_id=${rew.category_id}&name=${encodeURIComponent(rew.name)}`)"
+          @click="
+            routerTo(
+              `/pages/order/edit?category_id=${
+                rew._id
+              }&name=${encodeURIComponent(rew.name)}`
+            )
+          "
           class="item"
           v-for="(rew, index) in rights"
           :key="rew._id"
@@ -31,36 +37,38 @@
 </template>
 
 <script setup>
-import { useNavlistStore } from "@/stores/navlistStore";
 import { showToast, isAdminRole, routerTo } from "@/utils/common.js";
-const navlistStore = useNavlistStore();
 
-const db = uniCloud.database();
+const goodsCloudObj = uniCloud.importObject("client-index-goods");
+const categoryList = ref([]);
 
-const dsyunobj = uniCloud.importObject("goods-backend");
 const isActive = ref(0); //选中的左分类index
 const rights = ref([]); //选中的分类右数据
 
-const jump = async () => {
-  uni.navigateTo({
-    url: "/pages/search/search",
-  });
+const getCategory = async () => {
+  try {
+    let { errCode, data, errMsg } = await goodsCloudObj.list();
+    if (errCode !== 0) return showToast(errMsg);
+    console.log(data);
+    categoryList.value = data;
+    rights.value = categoryList.value[0].afenleilist;
+  } catch (err) {
+    console.log(err);
+    showToast(err);
+  }
 };
-
+getCategory();
 const clickFun = (id, index) => {
-  rights.value = navlistStore.rightList.filter((item) => {
-    return item.category_id == id;
-  });
+  rights.value = categoryList.value[index].afenleilist;
+
   isActive.value = index;
 };
 
 onMounted(async () => {
-  await navlistStore.fetchLeftList();
-  await navlistStore.fetchRightList();
-
-  if (navlistStore.leftList.length > 0) {
+  // 如果有分类数据，默认选择第一个分类
+  if (categoryList.value.length > 0) {
     rights.value = navlistStore.rightList.filter((item) => {
-      return item.category_id === navlistStore.leftList[0]._id;
+      return item.category_id === categoryList.value[0]._id;
     });
   }
 });
