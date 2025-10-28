@@ -1,41 +1,28 @@
 <template>
   <view class="user">
-    <!-- #ifdef MP-WEIXIN -->
-    <navigator url="/pages_fena/user/edit"> </navigator>
-    <!-- #endif -->
-    <!-- #ifndef MP-WEIXIN -->
     <navigator url="/uni_modules/uni-id-pages/pages/userinfo/userinfo">
-      <!-- #endif -->
       <view class="top">
         <view class="group">
           <!-- 头像 -->
           <view class="userinfo">
             <view class="pic">
-              <!-- #ifdef MP-WEIXIN -->
               <image
                 :src="
                   userStore?.userInfo?.avatar || '../../static/images/logo.png'
                 "
                 mode="aspectFill"
               ></image>
-              <!-- #endif -->
-              <!-- #ifdef H5 -->
               <image
                 :src="
                   userInfo?.avatar_file?.url || '../../static/images/logo.png'
                 "
                 mode="aspectFill"
               ></image>
-              <!-- #endif -->
             </view>
             <!-- 昵称 -->
             <view class="text" v-if="true">
-              <!-- #ifdef MP-WEIXIN -->
               <view class="nickname">{{ userStore.userInfo.username }}</view>
-              <!-- #endif -->
-              <!-- #ifndef MP-WEIXIN -->
               <view class="nickname">{{ userInfo.nickname }}</view>
-              <!-- #endif -->
               <view class="year"> </view>
             </view>
             <view class="text" v-else>
@@ -107,7 +94,7 @@
             <uni-icons type="arrow-right" size="30"></uni-icons>
           </view>
         </navigator>
-<!-- 
+        <!-- 
         <navigator url="/pages_fena/product/list">
           <view class="item">
             <view class="left"
@@ -118,7 +105,7 @@
           </view>
         </navigator> -->
 
-            <navigator url="/pages_fena/payorder/payorder">
+        <navigator url="/pages_fena/payorder/payorder">
           <view class="item">
             <view class="left"
               ><text class="iconfont icon-a-21-xiugai"></text
@@ -155,14 +142,11 @@
 <script setup>
 import { isAdminRole, routerTo } from "@/utils/common.js";
 import { useUserStore } from "@/stores/user.js";
-import { useNavlistStore } from "@/stores/navlistStore";
 import { store, mutations } from "@/uni_modules/uni-id-pages/common/store.js";
 import { ORDER_STATUS_ENUMS } from "@/utils/config.js";
 const userStore = ref(useUserStore()); // 微信当前pinia用户信息
 
 const orderMenus = ORDER_STATUS_ENUMS().filter((item) => item.myOrder === true);
-
-const navlistStore = useNavlistStore();
 
 const db = uniCloud.database(); // 连接云对象整体
 // h5当前用户信息

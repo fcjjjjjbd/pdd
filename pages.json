@@ -370,13 +370,6 @@
       "root": "pages_fen",
       "pages": [
         {
-          "path": "tuijian/list",
-          "style": {
-            "navigationBarTitleText": "管理员操作"
-          }
-        },
-
-        {
           "path": "feipin-admin/index",
           "style": {
             "navigationBarTitleText": "",

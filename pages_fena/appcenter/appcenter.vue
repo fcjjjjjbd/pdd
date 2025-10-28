@@ -88,8 +88,10 @@ onLoad(async () => {
 });
 // 推荐
 const clicktui = async () => {
-  uni.navigateTo({
-    url: "/pages_fen/tuijian/list",
+  // 页面已删除，暂时禁用导航
+  uni.showToast({
+    title: '功能暂不可用',
+    icon: 'none'
   });
 };
 

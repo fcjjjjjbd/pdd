@@ -55,8 +55,7 @@
 import { showToast, isAdminRole } from "@/utils/common.js";
 import { removeHtmlTags, convertImageToWebP } from "@/utils/tools.js";
 import dayjs from "dayjs";
-import { useNavlistStore } from "@/stores/navlistStore.js";
-const useNavlist = useNavlistStore();
+
 const db = uniCloud.database();
 const goods_yundx = uniCloud.importObject("goods-backend");
 const pddyun = uniCloud.importObject("client-aopen", { customUI: true });

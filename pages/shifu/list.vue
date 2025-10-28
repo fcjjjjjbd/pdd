@@ -18,14 +18,14 @@
 
     <!-- 左边分类 -->
     <view class="left-v">
-      <view
+      <!-- <view
         :class="index === isActive ? 'active' : ''"
         @click="clickFun(item._id, index)"
         v-for="(item, index) in navlistStore.leftList"
         :key="item._id"
       >
         {{ item.name }}
-      </view>
+      </view> -->
     </view>
     <view class="right-v">
       <view class="three-v">
@@ -49,10 +49,6 @@ const db = uniCloud.database();
 const dbCmd = db.command;
 const $ = dbCmd.aggregate;
 
-import { useNavlistStore } from "@/stores/navlistStore";
-
-const navlistStore = useNavlistStore();
-
 const isActive = ref(0); //选中的左分类index
 const rights = ref([]); //选中的分类右数据
 
@@ -75,23 +71,8 @@ const toDetail = (name) => {
   console.log(`点击了项目: ${name}`);
 };
 const clickFun = (id, index) => {
-  rights.value = navlistStore.rightList.filter((item) => {
-    return item.category_id == id;
-  });
-  isActive.value = index;
-  console.log(rights.value);
+  
 };
-
-onMounted(async () => {
-  await navlistStore.fetchLeftList();
-  await navlistStore.fetchRightList();
-
-  if (navlistStore.leftList.length > 0) {
-    rights.value = navlistStore.rightList.filter((item) => {
-      return item.category_id === navlistStore.leftList[0]._id;
-    });
-  }
-});
 // 订单数量
 const geicount = async () => {
   let res = await db

@@ -79,14 +79,14 @@
   "vueVersion": "3",
   "h5": {
     "devServer": {
-      "https": false,
+      "https": true,
       "port": ""
     },
     "router": {
       "mode": "hash",
-      "base": ""
+      "base": "/pdd/"
     },
-    "title": "拼多多",
+    "title": "pdd",
     "sdkConfigs": {
       "maps": {
         "amap": {

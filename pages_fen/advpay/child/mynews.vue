@@ -1,7 +1,14 @@
 <script setup>
 import { ref } from "vue";
-import { routerTo, showModal, showLoading, showToast } from "@/utils/common.js";
 
+import {
+  routerTo,
+  isAdminRole,
+  showModal,
+  showLoading,
+  showToast,
+} from "@/utils/common.js";
+console.log(isAdminRole());
 // 接收父组件传递的分类 id
 const props = defineProps({
   categoryId: {
@@ -19,7 +26,6 @@ const current_id = ref(uniCloud.getCurrentUserInfo().uid); // 当前用户id
 
 const getmy = async () => {
   console.log(unref(current_id));
-
   try {
     let { errCode, data } = await opencloubobj.myopen(current_id.value);
     if (errCode !== 0) return showToast("获取失败");
@@ -61,9 +67,7 @@ const delTable = async (id) => {
           </view>
           <view class="info">
             <view
-              @click.stop="
-                routerTo('/pages_fen/advpay/edit?id=' + item._id)
-              "
+              @click.stop="routerTo('/pages_fen/advpay/edit?id=' + item._id)"
               ><uni-icons type="compose" size="30"></uni-icons>
               修改
             </view>
@@ -76,14 +80,14 @@ const delTable = async (id) => {
         <view class="right-wrap" v-if="item">
           <image
             class="img"
-            :src="item.imageValue[0].fileID"
+            :src="item.imageValue?.[0]?.fileID"
             mode="aspectFill"
           ></image>
         </view>
       </view>
     </view>
-    <!-- 新增文章按钮 -->
-    <view class="add-article-btn" v-if="dataList.length < 2">
+    <!-- dataList.length < 2 || isAdminRole() -->
+    <view class="add-article-btn">
       <button
         @click="
           routerTo(

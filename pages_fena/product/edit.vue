@@ -63,14 +63,7 @@
       ><button type="primary" @click="tijiao">提交商品</button></view
     >
     <!-- 弹窗 -->
-    <uni-popup ref="fenleipp" type="bottom">
-      <view class="fenleipp">
-        <z-tabs :list="useNavlist.leftList" @change="flchange"></z-tabs>
-        <view v-for="item in rights" @click="selext(item._id, item.name)">
-          <uni-section class="mb-10" :title="item.name"></uni-section>
-        </view>
-      </view>
-    </uni-popup>
+    
   </view>
 </template>
 
@@ -78,8 +71,6 @@
 import { showToast, isAdminRole } from "@/utils/common.js";
 import { removeHtmlTags, convertImageToWebP } from "@/utils/tools.js";
 import dayjs from "dayjs";
-import { useNavlistStore } from "@/stores/navlistStore.js";
-const useNavlist = useNavlistStore();
 const db = uniCloud.database();
 const goods_yun = uniCloud.importObject("goods_item");
 const goods_yundx = uniCloud.importObject("goods-backend");
@@ -116,9 +107,7 @@ const selext = async (e, name) => {
 
 // 改变分类
 const flchange = async (e) => {
-  rights.value = useNavlist.rightList.filter((item) => {
-    return item.category_id == useNavlist.leftList[e]._id;
-  });
+  
 };
 
 // 选择好图片
@@ -217,10 +206,7 @@ const init = () => {
 };
 
 const showCategoryPicker = () => {
-  fenleipp.value.open();
-  rights.value = useNavlist.rightList.filter((item) => {
-    return item.category_id == useNavlist.leftList[0]._id;
-  });
+ 
 };
 </script>
 

@@ -19,6 +19,7 @@
     },
     "dependencies": {
         "dayjs": "^1.11.18",
+        "lodash.debounce": "^4.0.8",
         "pinia-plugin-persistedstate": "^4.2.0",
         "xe-utils": "^3.7.9"
     }
