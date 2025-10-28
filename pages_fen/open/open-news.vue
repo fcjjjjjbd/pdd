@@ -12,7 +12,7 @@ const paging = ref(null);
 
 const show1 = ref(null);
 const navlist = ref([]);
-const selectcategoryid = ref();
+const selectcategoryid = ref();     
 const jump = async () => {
   uni.navigateTo({
     url: "/pages_fen/open/open-search",

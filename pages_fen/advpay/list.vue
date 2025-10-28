@@ -19,7 +19,7 @@
       <view class="bottom">
         <view class="btn" @click="addpp">上传</view>
       </view>
-      <uni-popup ref="payPopup" type="bottom" :is-mask-click="false">
+      <uni-popup ref="payPopup" type="bottom">
         <Myedit />
       </uni-popup>
       <!-- 弹窗支付 -->
@@ -32,51 +32,39 @@
 import { showToast, isAdminRole } from "@/utils/common.js";
 import { priceFormat } from "@/utils/tools.js";
 import Myedit from "./child/mynews.vue";
+const db = uniCloud.database(); // 连接云对象整体
 
-const addcloubobj = uniCloud.importObject("goods-backend");
-const db = uniCloud.database();
+const pddCloudObj = uniCloud.importObject("client-adv");
 const dbCmd = db.command;
-const paging = ref(null); //分页
+const query = ref({
+  pageSize: 10,
+  pageCurrent: 1,
+  category_id: "",
+});
+const paging = ref(null);
 const Paylist = ref([]); //列表
 const Pay = ref(null); //支付组件
 const payPopup = ref(null);
-const classyid = ref(null); //分类id
 const current_id = ref(uniCloud.getCurrentUserInfo().uid); // 当前用户id
 const statuss = ref(0); //管理员功能
-const starbool = ref(true); //收藏功能
 onLoad((e) => {
   let { id = null } = e;
-  classyid.value = id;
-  console.log(classyid.value);
+  query.value.category_id = id;
+  console.log(e);
   nextTick(() => {
     paging.value.reload();
   });
 });
 
 const queryList = async (pageNo, pageSize) => {
-  getlist(pageNo, pageSize);
-};
-// 请求数据
-const getlist = async (pageNo, pageSize) => {
-  let skip = (pageNo - 1) * pageSize;
-  let parmobj = {
-    classifyid: classyid.value,
-    pageSize,
-    skip,
-  };
-  let {
-    result: { errCode, data },
-  } = await db
-    .collection("pay-order")
-    .where(` classifyid == "${classyid.value}" && status == 1 `)
-    .orderBy("total_fee", "desc")
-    .field("content,order_no,phone,total_fee,status,user_id")
-    .skip(skip)
-    .limit(pageSize)
-    .get();
-  console.log(data);
-  if (errCode != 0) return;
-  paging.value.complete(data);
+  try {
+    let { errCode, data } = await pddCloudObj.categorylist(unref(query));
+    if (errCode !== 0) return paging.value.complete(false);
+    console.log(data);
+    paging.value.complete(data);
+  } catch (err) {
+    paging.value.complete(false);
+  }
 };
 
 const addpp = () => {

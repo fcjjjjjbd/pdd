@@ -7,11 +7,20 @@ const opencloubobj = uniCloud.importObject("client-aopen", {
 });
 
 const dataList = ref([]);
+const current_id = ref(uniCloud.getCurrentUserInfo().uid) // 当前用户id
+ 
 const getmy = async () => {
-  let { errCode, errMsg, count, data } = await opencloubobj.myopen();
-  if (errCode !== 0) return showToast("获取失败");
+   console.log(unref(current_id));
+ 
+  	try{
+		let {errCode,data} = await opencloubobj.myopen(current_id.value)
+	 if (errCode !== 0) return showToast("获取失败");
   console.log(data);
   dataList.value = data;
+
+	}catch(err){
+		console.log(err);	
+  }	
 };
 getmy();
 // 新增文章按钮点击事件

@@ -396,6 +396,12 @@
           }
         },
         {
+          "path": "advpay/edit",
+          "style": {
+            "navigationBarTitleText": ""
+          }
+        },
+        {
           "path": "open/open-news",
           "style": {
             "navigationBarTitleText": ""
