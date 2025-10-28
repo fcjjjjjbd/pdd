@@ -2,8 +2,13 @@
 <template>
   <view class="home">
     <order-map> </order-map>
-    <view class="info">
-      <view class="name1" @click="goToAdvpayList()">师傅广告费排名</view>
+    <view class="info" @click="goToAdvpayList()">
+      <uv-button
+        text="渐变色按钮"
+        size="normal"
+        color="linear-gradient(to right, rgb(66, 83, 216), rgb(213, 51, 186))"
+        >师傅广告费排名</uv-button
+      >
     </view>
 
     <view>现在发布预约上门</view>
@@ -76,6 +81,10 @@
 const mmbjydx = uniCloud.importObject("goods-backend", {
   customUI: true,
 });
+const addressCloudObj = uniCloud.importObject("client-user-address", {
+  customUI: true,
+});
+
 import { showToast, isAdminRole, addressff, routerTo } from "@/utils/common.js";
 import dayjs from "dayjs";
 import { removeHtmlTags, convertImageToWebP } from "@/utils/tools.js";

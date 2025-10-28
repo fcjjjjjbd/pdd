@@ -2,7 +2,15 @@
 import { ref } from "vue";
 import { routerTo, showModal, showLoading, showToast } from "@/utils/common.js";
 
-const opencloubobj = uniCloud.importObject("client-aopen", {
+// 接收父组件传递的分类 id
+const props = defineProps({
+  categoryId: {
+    type: String,
+    default: "",
+  },
+});
+
+const opencloubobj = uniCloud.importObject("client-adv", {
   customUI: true,
 });
 
@@ -22,12 +30,7 @@ const getmy = async () => {
   }
 };
 getmy();
-// 新增文章按钮点击事件
-const goToEdit = () => {
-  uni.navigateTo({
-    url: "/pages_fen/advpay/edit",
-  });
-};
+
 // 删除
 const delTable = async (id) => {
   try {
@@ -51,19 +54,20 @@ const delTable = async (id) => {
     >我发布的
 
     <view class="list-wrap">
-      <view
-        class="item-wrap"
-        v-for="item in dataList"
-        :key="item._id"
-        @click="routerTo('/pages_fen/open/open-newsdetail?id=' + item._id)"
-      >
+      <view class="item-wrap" v-for="item in dataList" :key="item._id">
         <view class="left-wrap">
           <view class="title">
-            {{ item.name }}
+            {{ item.content }}
           </view>
           <view class="info">
             <view
-              @click.stop="routerTo('/pages_fen/advpay/edit?id=' + item._id)"
+              @click.stop="
+                routerTo(
+                  '/pages_fen/advpay/edit?id=' +
+                    item._id +
+                    (props.categoryId ? '&category_id=' + props.categoryId : '')
+                )
+              "
               ><uni-icons type="compose" size="30"></uni-icons>
               修改
             </view>
@@ -73,15 +77,27 @@ const delTable = async (id) => {
             </view>
           </view>
         </view>
-        <view class="right-wrap" v-if="item.goods_thumb">
-          <image class="img" :src="item.goods_thumb" mode="aspectFill"></image>
+        <view class="right-wrap" v-if="item">
+          <image
+            class="img"
+            :src="item.imageValue[0].fileID"
+            mode="aspectFill"
+          ></image>
         </view>
       </view>
     </view>
-
     <!-- 新增文章按钮 -->
-    <view class="add-article-btn">
-      <button @click="goToEdit">新增文章</button>
+    <view class="add-article-btn" v-if="dataList.length < 2">
+      <button
+        @click="
+          routerTo(
+            '/pages_fen/advpay/edit' +
+              (props.categoryId ? '?category_id=' + props.categoryId : '')
+          )
+        "
+      >
+        新增文章
+      </button>
     </view>
   </view>
 </template>

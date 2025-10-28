@@ -1,7 +1,7 @@
 <!-- console.log()  <view class=""> </view> {知}1行动做到 1 错1改1 转0为1 不1则0,     v-if="item.user_id == isAdminRole()"
       -->
 <script setup>
-import { ref } from 'vue';
+import { ref } from "vue";
 import { showToast, isAdminRole } from "@/utils/common.js";
 
 const props = defineProps({
@@ -10,7 +10,13 @@ const props = defineProps({
     default: () => ({}),
   },
 });
+// 点击拨通电话
 
+const cliphone = (value) => {
+  uni.makePhoneCall({
+    phoneNumber: value,
+  });
+};
 const starbool = ref(false); // 定义收藏状态
 
 // 收藏功能
@@ -21,27 +27,6 @@ const starff = () => {
   //   title: starbool.value ? '收藏成功' : '取消收藏',
   //   icon: 'none'
   // });
-};
-
-// 复制内容或拨打电话
-const clickcopy2 = (content) => {
-  console.log("Copying content or calling:", content);
-  // 实际的复制或拨打电话逻辑
-  // if (typeof content === 'string' && content.match(/^\d+$/)) { // 假设是电话号码
-  //   uni.makePhoneCall({
-  //     phoneNumber: content
-  //   });
-  // } else {
-  //   uni.setClipboardData({
-  //     data: content,
-  //     success: function () {
-  //       uni.showToast({
-  //         title: '复制成功',
-  //         icon: 'none'
-  //       });
-  //     }
-  //   });
-  // }
 };
 
 // 投诉/反馈功能
@@ -59,7 +44,11 @@ const demoo = async () => {};
 <template>
   <view class="adv-card-container">
     <view class="adv-card-left">
-      <image class="adv-card-image" :src="item.image || '/static/images/notPic.png'" mode="aspectFill"></image>
+      <image
+        class="adv-card-image"
+        :src="item.imageValue[0].fileID || '/static/images/notPic.png'"
+        mode="aspectFill"
+      ></image>
     </view>
     <view class="adv-card-right">
       <view class="adv-card-title" @click="clickcopy2(item.content)">
@@ -70,21 +59,44 @@ const demoo = async () => {};
           <!-- 点赞 -->
           <view class="icon-item">
             <uni-icons type="heart" size="20" color="#999"></uni-icons>
-            <text>0</text> <!-- 占位符，可替换为实际点赞数 -->
+            <text>0</text>
+            <!-- 占位符，可替换为实际点赞数 -->
           </view>
           <!-- 收藏 -->
           <view class="icon-item" @click="starff()">
-            <uni-icons v-if="!starbool" type="star" size="20" color="#999"></uni-icons>
-            <uni-icons v-else type="star-filled" size="20" color="#ff0000"></uni-icons>
-            <text v-if="false">5</text> <!-- 占位符，可替换为实际收藏数 -->
+            <uni-icons
+              v-if="!starbool"
+              type="star"
+              size="20"
+              color="#999"
+            ></uni-icons>
+            <uni-icons
+              v-else
+              type="star-filled"
+              size="20"
+              color="#ff0000"
+            ></uni-icons>
+            <text v-if="false">5</text>
+            <!-- 占位符，可替换为实际收藏数 -->
           </view>
           <!-- 投诉 -->
           <view class="icon-item" @click="updataid()">
-            <uni-icons type="chatboxes-filled" size="20" color="#999"></uni-icons>
+            <uni-icons
+              type="chatboxes-filled"
+              size="20"
+              color="#999"
+            ></uni-icons>
           </view>
         </view>
         <view class="adv-card-call-button" @click="clickcopy2(item.phone)">
-          <button class="mini-btn" type="primary" size="mini">打电话</button>
+          <button
+            class="mini-btn"
+            type="primary"
+            size="mini"
+            @click="cliphone(item.phone)"
+          >
+            打电话
+          </button>
         </view>
       </view>
     </view>

@@ -107,7 +107,7 @@
             <uni-icons type="arrow-right" size="30"></uni-icons>
           </view>
         </navigator>
-
+<!-- 
         <navigator url="/pages_fena/product/list">
           <view class="item">
             <view class="left"
@@ -116,18 +116,9 @@
             >
             <uni-icons type="arrow-right" size="30"></uni-icons>
           </view>
-        </navigator>
+        </navigator> -->
 
-        <navigator url="/pages_fena/product/list">
-          <view class="item">
-            <view class="left"
-              ><text class="iconfont icon-a-24-bianji"></text
-              ><text class="text">以前的商品管理</text></view
-            >
-            <uni-icons type="arrow-right" size="30"></uni-icons>
-          </view>
-        </navigator>
-        <navigator url="/pages_fena/payorder/payorder">
+            <navigator url="/pages_fena/payorder/payorder">
           <view class="item">
             <view class="left"
               ><text class="iconfont icon-a-21-xiugai"></text

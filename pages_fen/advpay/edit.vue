@@ -4,6 +4,7 @@
     电话
     <uv-input
       maxlength="11"
+      v-model="dataobj.phone"
       type="number"
       shape="circle"
       placeholder="前置图标"
@@ -63,48 +64,29 @@ const actionSheet = ref(null);
 const list2 = ref([]);
 
 const dataobj = ref({
-  name: "",
   content: "",
   imageValue: [],
   temparr: [], //本地临时图片
   category_id: "",
-  category_name: "", // 添加分类名称字段
-  goods_thumb: "",
+  total_fee: 2, // 添加分类名称字段
+  phone:  null
 });
 const pageType = computed(() => (unref(id) ? "修改" : "新增"));
 
 const rights = ref(null);
-// 获取分类
-const getfenlei = async () => {
-  let { errCode, errMsg, count, data } = await pddyun.list();
-  if (errCode !== 0) return showToast("获取失败");
-  dataobj.value.category_id = data[0]._id;
-  dataobj.value.category_name = data[0].name; // 设置默认分类名称
-  list2.value = data.map((item) => {
-    return {
-      _id: item._id,
-      name: item.name,
-      color: "#000000",
-      fontSize: "30",
-    };
-  });
-};
-getfenlei();
+// 传递type
 onLoad(async (e) => {
   id.value = e.id;
+  // 接收分类 id 参数
+  if (e.category_id) {
+    dataobj.value.category_id = e.category_id;
+  }
   if (id.value) getDetail();
-  uni.setNavigationBarTitle({ title: unref(pageType) });
 });
 const getDetail = async () => {
   let { errCode, data } = await pddyun.detailxg(unref(id));
   dataobj.value = data;
   console.log(data);
-};
-// 选择分类
-const select = async (e) => {
-  console.log(e);
-  dataobj.value.category_id = e._id;
-  dataobj.value.category_name = e.name; // 同步更新分类名称
 };
 
 // 选择好图片
@@ -133,7 +115,6 @@ const addpic = async () => {
     console.log(res);
     dataobj.value.imageValue.push(res);
   }
-  dataobj.value.goods_thumb = dataobj.value.imageValue[0].fileID;
   dataobj.value.temparr = [];
 };
 
@@ -141,8 +122,6 @@ const addpic = async () => {
 const tijiao = async () => {
   dataobj.value.content = removeHtmlTags(dataobj.value.content);
   console.log(dataobj.value);
-  dataobj.value.name = dataobj.value.content.slice(0, 20);
-
   goodsff();
 };
 // 提交云端
@@ -169,29 +148,15 @@ const goodsff = async () => {
     });
   } finally {
     uni.hideLoading();
-    uni.switchTab({
-      url: "/pages_fen/open/open-news",
+    uni.navigateBack({
+      delta: 3,
     });
-    init();
   }
 };
 // 删除本地图片
 const delepic = async (index) => {
   await goods_yundx.deletimg(dataobj.value.imageValue[index].fileID);
   dataobj.value.imageValue.splice(index, 1);
-};
-//恢复默认
-const init = () => {
-  dataobj.value = {
-    content: "",
-    imageValue: [],
-    temparr: [],
-    goods_thumb: "", //本地临时图片
-  };
-};
-
-const selects = () => {
-  actionSheet.value.open();
 };
 </script>
 

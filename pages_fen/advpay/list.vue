@@ -20,7 +20,7 @@
         <view class="btn" @click="addpp">上传</view>
       </view>
       <uni-popup ref="payPopup" type="bottom">
-        <Myedit />
+        <Myedit :category-id="query.category_id" />
       </uni-popup>
       <!-- 弹窗支付 -->
       <uni-pay ref="Pay" @success="paySuccess" @cancel="payCancel"></uni-pay>
