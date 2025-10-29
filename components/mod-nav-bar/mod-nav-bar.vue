@@ -65,7 +65,7 @@ const navBack = ()=>{
 		left:0;
 		top:0;
 		width: 100%;
-		background: v-bind(COLOR_THEME_PRIMARY);
+		background: #FFC600;
 		z-index:8000;
 		.status-bar{
 			width: 100%;

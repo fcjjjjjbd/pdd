@@ -1,16 +1,18 @@
 <!-- create赋值,默认推荐,去除无用优化代码   -->
 <template>
   <view class="home">
-    电话
-    <uv-input
-      maxlength="11"
-      v-model="dataobj.phone"
-      type="number"
-      shape="circle"
-      placeholder="前置图标"
-      prefixIcon="search"
-      prefixIconStyle="font-size: 22px;color: #909399"
-    ></uv-input>
+    <view class="phone">
+      手机号
+      <uv-input
+        maxlength="11"
+        v-model="dataobj.phone"
+        type="number"
+        shape="circle"
+        placeholder="手机号"
+        prefixIconStyle="font-size: 22px;color: #909399"
+      ></uv-input>
+    </view>
+
     <!-- 添加图片 -->
     <view class="picarr">
       <view
@@ -38,7 +40,7 @@
       placeholder="分享技术文章"
       style="width: 100%; min-height: 400rpx"
       class="font-30"
-      maxlength="999"
+      maxlength="30"
     ></textarea>
 
     <view class="tijiao"
@@ -147,7 +149,7 @@ const goodsff = async () => {
   } finally {
     uni.hideLoading();
     uni.navigateBack({
-      delta: 3,
+      delta: 2,
     });
   }
 };
@@ -162,25 +164,9 @@ const delepic = async (index) => {
 .home {
   padding: 20rpx;
 
-  .category-row {
+  .phone {
     display: flex;
     align-items: center;
-  }
-  .row-add {
-    display: flex;
-    flex-direction: column;
-    padding: 20rpx 0;
-    font-size: 30rpx;
-    font-weight: bold;
-
-    .label {
-      width: 300rpx;
-      padding-right: 20rpx;
-    }
-  }
-
-  .title {
-    padding: 30rpx 0;
   }
 
   .picarr {

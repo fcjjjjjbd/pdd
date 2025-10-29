@@ -396,9 +396,7 @@
         },
         {
           "path": "open/open-news",
-          "style": {
-            "navigationBarTitleText": ""
-          }
+          "navigationStyle": "custom"
         },
         {
           "path": "open/open-search",

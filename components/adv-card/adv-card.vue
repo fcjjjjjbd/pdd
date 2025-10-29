@@ -56,12 +56,6 @@ const demoo = async () => {};
       </view>
       <view class="adv-card-actions">
         <view class="adv-card-icons">
-          <!-- 点赞 -->
-          <view class="icon-item">
-            <uni-icons type="heart" size="20" color="#999"></uni-icons>
-            <text>0</text>
-            <!-- 占位符，可替换为实际点赞数 -->
-          </view>
           <!-- 收藏 -->
           <view class="icon-item" @click="starff()">
             <uni-icons
@@ -79,6 +73,12 @@ const demoo = async () => {};
             <text v-if="false">5</text>
             <!-- 占位符，可替换为实际收藏数 -->
           </view>
+          <!-- 差评 -->
+          <view class="icon-item">
+            <uv-icon name="thumb-down" size="20" color="#999"></uv-icon>
+            <!-- 占位符，可替换为实际点赞数 -->
+          </view>
+
           <!-- 投诉 -->
           <view class="icon-item" @click="updataid()">
             <uni-icons
@@ -167,6 +167,7 @@ const demoo = async () => {};
       }
 
       .adv-card-call-button {
+        margin: 0 20rpx;
         .mini-btn {
           padding: 0 20rpx;
           height: 60rpx;

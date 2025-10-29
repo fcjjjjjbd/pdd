@@ -94,9 +94,8 @@ const delTable = async (id) => {
             '/pages_fen/advpay/edit' +
               (props.categoryId ? '?category_id=' + props.categoryId : '')
           )
-        "
-      >
-        新增文章
+        " >
+        新增
       </button>
     </view>
   </view>
