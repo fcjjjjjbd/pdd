@@ -252,18 +252,7 @@
             "navigationBarTitleText": "后台管理首页"
           }
         },
-        {
-          "path": "payorder/payorder",
-          "style": {
-            "navigationBarTitleText": "订单列表"
-          }
-        },
-        {
-          "path": "payorder/detail",
-          "style": {
-            "navigationBarTitleText": "订单详情页"
-          }
-        },
+
         {
           "path": "love/love",
           "style": {

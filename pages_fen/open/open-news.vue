@@ -211,9 +211,6 @@ const handleContentClick = (itemId) => {
     padding: 16rpx 24rpx;
   }
 
-  .tabs-section {
-    padding: 0 24rpx;
-  }
 
   .news-list {
     padding: 20rpx 24rpx;

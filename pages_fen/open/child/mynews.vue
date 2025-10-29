@@ -1,26 +1,31 @@
 <script setup>
 import { ref } from "vue";
-import { routerTo, showModal, showLoading, showToast } from "@/utils/common.js";
+import {
+  routerTo,
+  isAdminRole,
+  showModal,
+  showLoading,
+  showToast,
+} from "@/utils/common.js";
 
 const opencloubobj = uniCloud.importObject("client-aopen", {
   customUI: true,
 });
 
 const dataList = ref([]);
-const current_id = ref(uniCloud.getCurrentUserInfo().uid) // 当前用户id
- 
-const getmy = async () => {
-   console.log(unref(current_id));
- 
-  	try{
-		let {errCode,data} = await opencloubobj.myopen(current_id.value)
-	 if (errCode !== 0) return showToast("获取失败");
-  console.log(data);
-  dataList.value = data;
+const current_id = ref(uniCloud.getCurrentUserInfo().uid); // 当前用户id
 
-	}catch(err){
-		console.log(err);	
-  }	
+const getmy = async () => {
+  console.log(unref(current_id));
+
+  try {
+    let { errCode, data } = await opencloubobj.myopen(current_id.value);
+    if (errCode !== 0) return showToast("获取失败");
+    console.log(data);
+    dataList.value = data;
+  } catch (err) {
+    console.log(err);
+  }
 };
 getmy();
 // 新增文章按钮点击事件
@@ -80,7 +85,7 @@ const delTable = async (id) => {
     </view>
 
     <!-- 新增文章按钮 -->
-    <view class="add-article-btn">
+    <view class="add-article-btn" v-if="dataList.length < 2 || isAdminRole()">
       <button @click="goToEdit">新增文章</button>
     </view>
   </view>

@@ -5,43 +5,49 @@
       <view class="content-wrap">
         <view class="left-wrap">
           <view class="title">{{ item.name }}</view>
+          <!-- 交互栏 -->
+          <view class="interaction-bar">
+            <!-- 阅读量 -->
+            <view class="interaction-item">
+              <uni-icons type="eye" size="25" color="#666"></uni-icons>
+              <text class="interaction-text">{{
+                formatNumber(item.readCount || 0)
+              }}</text>
+            </view>
+
+            <!-- 点赞 -->
+            <view class="interaction-item">
+              <uni-icons
+                :type="item.isLiked ? 'heart-filled' : 'heart'"
+                size="25"
+                :color="item.isLiked ? '#ff4757' : '#666'"
+              ></uni-icons>
+              <text class="interaction-text" :class="{ liked: item.isLiked }">
+                {{ formatNumber(item.likeCount || 0) }}
+              </text>
+            </view>
+
+            <!-- 收藏 -->
+            <view class="interaction-item">
+              <uni-icons
+                :type="item.isCollected ? 'star-filled' : 'star'"
+                size="25"
+                :color="item.isCollected ? '#ffa502' : '#666'"
+              ></uni-icons>
+              <text
+                class="interaction-text"
+                :class="{ collected: item.isCollected }"
+              >
+                {{ formatNumber(item.collectCount || 0) }}
+              </text>
+            </view>
+          </view>
         </view>
-        <view class="right-wrap" >
+
+        <!-- 右边图片 -->
+        <view class="right-wrap">
           <image class="img" :src="item.goods_thumb" mode="aspectFill"></image>
         </view>
-      </view>
-    </view>
-
-    <!-- 交互栏 -->
-    <view class="interaction-bar">
-      <!-- 阅读量 -->
-      <view class="interaction-item" >
-        <uni-icons type="eye" size="16" color="#666"></uni-icons>
-        <text class="interaction-text">{{ formatNumber(item.readCount || 0) }}</text>
-      </view>
-
-      <!-- 点赞 -->
-      <view class="interaction-item" >
-        <uni-icons
-          :type="item.isLiked ? 'heart-filled' : 'heart'"
-          size="16"
-          :color="item.isLiked ? '#ff4757' : '#666'"
-        ></uni-icons>
-        <text class="interaction-text" :class="{ liked: item.isLiked }">
-          {{ formatNumber(item.likeCount || 0) }}
-        </text>
-      </view>
-
-      <!-- 收藏 -->
-      <view class="interaction-item">
-        <uni-icons
-          :type="item.isCollected ? 'star-filled' : 'star'"
-          size="16"
-          :color="item.isCollected ? '#ffa502' : '#666'"
-        ></uni-icons>
-        <text class="interaction-text" :class="{ collected: item.isCollected }">
-          {{ formatNumber(item.collectCount || 0) }}
-        </text>
       </view>
     </view>
   </view>
@@ -51,9 +57,9 @@
 const props = defineProps({
   item: {
     type: Object,
-    default: () => ({})
+    default: () => ({}),
   },
-})
+});
 
 // Emits 定义
 const emit = defineEmits(["like", "collect", "read", "content-click"]);
@@ -77,15 +83,13 @@ const handleContentClick = () => {
 const handleRead = () => {
   emit("read", props.item);
 };
-
-
 </script>
 
 <style lang="scss" scoped>
 .uni-view-container {
   width: 100%;
   border-bottom: 1px solid #f0f0f0;
-  padding: 24rpx 5rpx;
+  padding: 20rpx 5rpx;
 
   &:last-child {
     border-bottom: none;
@@ -110,7 +114,7 @@ const handleRead = () => {
     justify-content: space-between;
 
     .title {
-      font-size: 35rpx;
+      font-size: 30rpx;
       color: #333;
       display: -webkit-box;
       -webkit-box-orient: vertical;
@@ -147,14 +151,14 @@ const handleRead = () => {
   align-items: center;
   justify-content: flex-start;
   gap: 32rpx;
-  padding: 16rpx 0;
+  padding: 0;
 }
 
 .interaction-item {
   display: flex;
   align-items: center;
   gap: 8rpx;
-  padding: 8rpx 12rpx;
+  padding: 0 12rpx;
   border-radius: 20rpx;
   background-color: #f8f9fa;
   transition: all 0.3s ease;
@@ -173,7 +177,6 @@ const handleRead = () => {
   font-size: 40rpx;
   color: #666;
   line-height: 1;
-
 }
 
 // 响应式设计
@@ -183,7 +186,7 @@ const handleRead = () => {
   }
 
   .interaction-item {
-      padding: 6rpx 10rpx;
+    padding: 6rpx 10rpx;
   }
 
   .interaction-text {

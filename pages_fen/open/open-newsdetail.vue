@@ -43,12 +43,9 @@ const clickPic = (index) => {
 
 <template>
   <view class="page-wrap" v-if="detail?.name">
-    <view class="news-content">
-      <uv-parse
-        :content="detail.content"
-        style="font-size: 35rpx; font-weight: bold"
-      ></uv-parse>
-    </view>
+    <text :style="{ 'font-size': '35rpx', 'font-weight': 'bold' }">
+      {{ detail.content }}
+    </text>
     <!-- 图片网格展示区域 -->
     <view class="image-grid" v-if="detail.imageValue.length > 0">
       <view

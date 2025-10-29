@@ -86,15 +86,15 @@ const delTable = async (id) => {
         </view>
       </view>
     </view>
-    <!-- dataList.length < 2 || isAdminRole() -->
-    <view class="add-article-btn">
+    <view class="add-article-btn" v-if="dataList.length < 2 || isAdminRole()">
       <button
         @click="
           routerTo(
             '/pages_fen/advpay/edit' +
               (props.categoryId ? '?category_id=' + props.categoryId : '')
           )
-        " >
+        "
+      >
         新增
       </button>
     </view>

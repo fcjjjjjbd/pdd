@@ -105,16 +105,7 @@
           </view>
         </navigator> -->
 
-        <navigator url="/pages_fena/payorder/payorder">
-          <view class="item">
-            <view class="left"
-              ><text class="iconfont icon-a-21-xiugai"></text
-              ><text class="text">我的订单</text></view
-            >
-            <uni-icons type="arrow-right" size="30"></uni-icons>
-          </view>
-        </navigator>
-
+   
         <navigator url="/pages/shifu/list">
           <view class="item">
             <view class="left"

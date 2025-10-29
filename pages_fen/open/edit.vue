@@ -42,7 +42,7 @@
       placeholder="分享技术文章"
       style="width: 100%; min-height: 400rpx"
       class="font-30"
-      maxlength="999"
+      maxlength="600"
     ></textarea>
 
     <view class="tijiao"
@@ -145,7 +145,7 @@ const addpic = async () => {
 const tijiao = async () => {
   dataobj.value.content = removeHtmlTags(dataobj.value.content);
   console.log(dataobj.value);
-  dataobj.value.name = dataobj.value.content.slice(0, 20);
+  dataobj.value.name = dataobj.value.content.slice(0, 30);
 
   goodsff();
 };
