@@ -93,7 +93,6 @@ import { useOrderStore } from "@/stores/order.js";
 const orderStore = useOrderStore();
 
 const maxStore = ref(usedsmaxStore());
-const addcloubobj = uniCloud.importObject("goods-backend");
 const checkobj = uniCloud.importObject("secCheckContent");
 
 const emit = defineEmits(["Updatelist"]);
@@ -212,19 +211,23 @@ const tijiao = async () => {
   dataobj.value.content = removeHtmlTags(dataobj.value.content);
   uni.showLoading();
   let secRes = await checkobj.textSecCheck(
-    `${dataobj.value.title} ${dataobj.value.content}`,
+    dataobj.value.content,
     "o5tQd7U__aPjwWnoYBPUivS4C_sw"
   );
-  if (secRes.code) {
+  console.log(secRes);
+  if (secRes.code == 0) {
+    // 响应码是0，继续执行
+    goodsff();
+  } else {
+    // 响应码不是0，显示错误提示并返回
     uni.hideLoading();
     uni.showModal({
-      title: secRes.errMsg,
-      content: `发布内容存在"${secRes.result.label}"问题,请重新编辑后发布!`,
+      title: secRes.errMsg || '操作失败',
+      content: secRes.result?.label ? `发布内容存在"${secRes.result.label}"问题,请重新编辑后发布!` : '请检查输入内容后重试',
       showCancel: false,
     });
     return;
   }
-  goodsff();
 };
 
 // 提交云端
@@ -259,7 +262,7 @@ const goodsff = async () => {
       creattime: Date.now(),
       temptime: Date.now() + 345600000,
     };
-    let { errCode, errMsg } = await addcloubobj.addorderinfo(objyun);
+    let { errCode, errMsg } = await mmbjydx.addorderinfo(objyun);
 
     if (errCode !== 0)
       return showToast({

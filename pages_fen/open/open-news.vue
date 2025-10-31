@@ -121,7 +121,7 @@ const handleContentClick = (itemId) => {
         </template>
 
         <view class="news-list">
-          <open-item v-for="item in dataList" :item="item" @click="routerTo('/pages_fen/open/open-newsdetail?id='+item._id)"> </open-item>
+          <aopen-item v-for="item in dataList" :item="item" @click="routerTo('/pages_fen/open/open-newsdetail?id='+item._id)"> </aopen-item>
         </view>
       </z-paging>
     </view>

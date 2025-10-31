@@ -64,15 +64,21 @@
 
       <!-- 产品哦列表 -->
       <view class="searclist" v-else>
-         <open-item v-for="item in searchdata" :key="item.id" :item="item" @click="routerTo('/pages_fen/open/open-newsdetail?id='+item._id)"> </open-item>
-        </view>
-   </z-paging>
+        <aopen-item
+          v-for="item in searchdata"
+          :key="item.id"
+          :item="item"
+          @click="routerTo('/pages_fen/open/open-newsdetail?id=' + item._id)"
+        >
+        </aopen-item>
+      </view>
+    </z-paging>
   </view>
 </template>
 
 <script setup>
-import { routerTo } from '@/utils/common';
-const searchCloudObj = uniCloud.importObject("client-aopen");     
+import { routerTo } from "@/utils/common";
+const searchCloudObj = uniCloud.importObject("client-aopen");
 
 import { showToast } from "@/utils/common.js";
 const db = uniCloud.database();
@@ -80,36 +86,34 @@ const dbCmd = db.command;
 const $ = dbCmd.aggregate;
 const paging = ref(null);
 const query = ref({
-	pageSize:10,
-	pageCurrent:1,
-	keyword:""
-})
+  pageSize: 10,
+  pageCurrent: 1,
+  keyword: "",
+});
 const nodata = ref(false);
 const searchdata = ref([]); //商品数组
 const historySearch = ref(uni.getStorageSync("historySearch") || []); //历史记录
 const hotsearch = ref([]); //热门搜索
 
-onLoad(async () => {
-
-});
+onLoad(async () => {});
 //点击搜索
 const onSearch = () => {
   historySearch.value = [
     ...new Set([query.value.keyword, ...historySearch.value]),
   ].slice(0, 12);
   uni.setStorageSync("historySearch", historySearch.value);
-   paging.value.reload();
+  paging.value.reload();
 };
 // 请求数据
 const queryList = async (pageCurrent, pageSize) => {
- try {
-		query.value = { ...query.value, pageCurrent, pageSize };
-		let { errCode, data } = await searchCloudObj.searchlist(unref(query));
-		if (errCode !== 0) return paging.value.complete(false);
-		paging.value.complete(data);
-	} catch (err) {
-		paging.value.complete(false);
-	}
+  try {
+    query.value = { ...query.value, pageCurrent, pageSize };
+    let { errCode, data } = await searchCloudObj.searchlist(unref(query));
+    if (errCode !== 0) return paging.value.complete(false);
+    paging.value.complete(data);
+  } catch (err) {
+    paging.value.complete(false);
+  }
 };
 
 // 清空
@@ -117,8 +121,7 @@ const onClear = () => {
   clear();
 };
 // 公共清空方法
-const clear = () => {
- };
+const clear = () => {};
 // 标签 搜索
 const clickTab = (tab) => {
   clear();

@@ -426,7 +426,12 @@
   },
   "uniIdRouter": {
     "loginPage": "uni_modules/uni-id-pages/pages/login/login-withpwd",
-    "needLogin": ["pages/self/.*", "pages/order/myorderlist"],
+    "needLogin": [
+      "pages/self/.*",
+      "pages/order/myorderlist",
+      "pages_fen/advpay/edit",
+      "pages_fen/open/edit"
+    ],
     "resToLogin": true
   }
 }

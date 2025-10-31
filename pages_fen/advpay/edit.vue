@@ -50,6 +50,8 @@
 </template>
 
 <script setup>
+const secCheckObj = uniCloud.importObject("secCheckContent");
+
 import { showToast, isAdminRole } from "@/utils/common.js";
 import { removeHtmlTags, convertImageToWebP } from "@/utils/tools.js";
 import dayjs from "dayjs";
@@ -122,7 +124,34 @@ const addpic = async () => {
 const tijiao = async () => {
   dataobj.value.content = removeHtmlTags(dataobj.value.content);
   console.log(dataobj.value);
-  goodsff();
+
+  uni.showLoading();
+  let secRes = await secCheckObj.textSecCheck(
+    dataobj.value.content,
+    "o5tQd7U__aPjwWnoYBPUivS4C_sw"
+  );
+  console.log(secRes);
+  if (secRes.code == 0) {
+    if (!dataobj.value.phone) {
+      uni.showModal({
+        title: "操作失败",
+        content: "请输入手机号",
+        showCancel: false,
+      });
+      return; // 这里已经能阻断后续代码
+    }
+    goodsff();
+  } else {
+    uni.hideLoading();
+    uni.showModal({
+      title: secRes.errMsg || "操作失败",
+      content: secRes.result?.label
+        ? `发布内容存在"${secRes.result.label}"问题,请重新编辑后发布!`
+        : "请检查输入内容后重试",
+      showCancel: false,
+    });
+    return;
+  }
 };
 // 提交云端
 const goodsff = async () => {

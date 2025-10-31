@@ -52,6 +52,7 @@
 </template>
 
 <script setup>
+const secCheckObj = uniCloud.importObject("secCheckContent");
 import { showToast, isAdminRole } from "@/utils/common.js";
 import { removeHtmlTags, convertImageToWebP } from "@/utils/tools.js";
 import dayjs from "dayjs";
@@ -147,7 +148,25 @@ const tijiao = async () => {
   console.log(dataobj.value);
   dataobj.value.name = dataobj.value.content.slice(0, 30);
 
-  goodsff();
+  uni.showLoading();
+  let secRes = await secCheckObj.textSecCheck(
+    dataobj.value.content,
+    "o5tQd7U__aPjwWnoYBPUivS4C_sw"
+  );
+  console.log(secRes);
+  if (secRes.code == 0) {
+    goodsff();
+  } else {
+    uni.hideLoading();
+    uni.showModal({
+      title: secRes.errMsg || "操作失败",
+      content: secRes.result?.label
+        ? `发布内容存在"${secRes.result.label}"问题,请重新编辑后发布!`
+        : "请检查输入内容后重试",
+      showCancel: false,
+    });
+    return;
+  }
 };
 // 提交云端
 const goodsff = async () => {
