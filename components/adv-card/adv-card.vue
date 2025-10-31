@@ -46,7 +46,7 @@ const demoo = async () => {};
     <view class="adv-card-left">
       <image
         class="adv-card-image"
-        :src="item.imageValue[0].fileID || '/static/images/notPic.png'"
+        :src="item.imageValue?.[0]?.fileID || '/static/images/notPic.png'"
         mode="aspectFill"
       ></image>
     </view>
