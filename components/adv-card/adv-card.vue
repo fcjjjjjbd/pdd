@@ -3,7 +3,7 @@
 <script setup>
 import { ref } from "vue";
 import { showToast, isAdminRole } from "@/utils/common.js";
-
+const emit = defineEmits(["openpp"]); // 声明引入
 const props = defineProps({
   item: {
     type: Object,
@@ -29,14 +29,9 @@ const starff = () => {
   // });
 };
 
-// 投诉/反馈功能
-const updataid = () => {
-  console.log("Complain/Feedback action triggered.");
-  // 这里可以添加实际的投诉/反馈逻辑
-  // uni.showToast({
-  //   title: '投诉功能待实现',
-  //   icon: 'none'
-  // });
+//
+const comments = () => {
+  emit("openpp");
 };
 
 const demoo = async () => {};
@@ -70,17 +65,13 @@ const demoo = async () => {};
               size="20"
               color="#ff0000"
             ></uni-icons>
-            <text v-if="false">5</text>
+            <text v-if="true">0</text>
             <!-- 占位符，可替换为实际收藏数 -->
           </view>
           <!-- 差评 -->
-          <view class="icon-item">
-            <uv-icon name="thumb-down" size="20" color="#999"></uv-icon>
-            <!-- 占位符，可替换为实际点赞数 -->
-          </view>
 
-          <!-- 投诉 -->
-          <view class="icon-item" @click="updataid()">
+          <!-- 评论 -->
+          <view class="icon-item" @click="comments">
             <uni-icons
               type="chatboxes-filled"
               size="20"
@@ -159,7 +150,7 @@ const demoo = async () => {};
           align-items: center;
           font-size: 24rpx;
           color: #666;
-
+          padding: 10rpx;
           text {
             margin-left: 8rpx;
           }

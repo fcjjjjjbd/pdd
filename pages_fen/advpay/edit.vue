@@ -24,7 +24,7 @@
       </view>
     </view>
 
-    <textarea v-model="dataobj.content" auto-height placeholder="分享技术文章" style="width: 100%; min-height: 400rpx"
+    <textarea v-model="dataobj.content" auto-height placeholder="详细信息明码标价,明码标价" style="width: 100%; min-height: 400rpx"
       class="font-30" maxlength="30"></textarea>
 
     <view class="tijiao"><button type="primary" @click="tijiao">{{ pageType }}</button></view>
