@@ -1,3 +1,5 @@
+import dayjs from "dayjs";
+
 // 压缩图片上传
 export async function convertImageToWebP(blobUrl, scale = 0.6) {
   return new Promise((resolve, reject) => {
@@ -42,24 +44,7 @@ export function priceFormat(num) {
   return num / 100;
 }
 
-//日期格式化
-export function formatDate(timestamp, format = "yyyy-MM-dd hh:mm:ss") {
-  const date = new Date(timestamp);
-  const year = date.getFullYear();
-  const month = (date.getMonth() + 1).toString().padStart(2, "0");
-  const day = date.getDate().toString().padStart(2, "0");
-  const hours = date.getHours().toString().padStart(2, "0");
-  const minutes = date.getMinutes().toString().padStart(2, "0");
-  const seconds = date.getSeconds().toString().padStart(2, "0");
 
-  return format
-    .replace("yyyy", year)
-    .replace("MM", month)
-    .replace("dd", day)
-    .replace("hh", hours)
-    .replace("mm", minutes)
-    .replace("ss", seconds);
-}
 
 //超出指定字符显示省略号
 export function truncateString(str, num) {
@@ -69,10 +54,7 @@ export function truncateString(str, num) {
     return str;
   }
 }
-// 参数金额把元转化分
-export function convertYuanToFen(amount) {
-  return parseFloat((amount / 100).toFixed(2));
-}
+
 //性别格式化
 export function formatGender(value) {
   const genderMap = {
@@ -83,7 +65,7 @@ export function formatGender(value) {
   return genderMap[value] || "保密";
 }
 
-// 防止写代码混乱
+// 防止程序员写代码混乱
 export function removeHtmlTags(text) {
   return text.replace(/<[^>]*>/g, "");
 }
@@ -137,4 +119,52 @@ function getIp() {
       },
     });
   });
+} //获取缩略图
+export function getSmallImg(url, width = 100) {
+  if (url) return url + "?x-oss-process=image/resize,w_" + width;
+  else return "/static/images/notPic.png";
+}
+
+export function calculateDistance(point1, point2) {
+  // 从数组中提取经纬度，数组格式为 [经度, 纬度]
+  const lon1 = point1[0];
+  const lat1 = point1[1];
+  const lon2 = point2[0];
+  const lat2 = point2[1];
+
+  // 地球半径（公里）
+  const R = 6371;
+
+  // 将角度转换为弧度
+  const toRadians = (degree) => degree * (Math.PI / 180);
+
+  const dLat = toRadians(lat2 - lat1);
+  const dLon = toRadians(lon2 - lon1);
+
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRadians(lat1)) *
+      Math.cos(toRadians(lat2)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  // 计算距离并格式化输出（保留1位小数）
+  const distance = R * c;
+  return `${distance.toFixed(1)}km`;
+}
+// 生成订单号
+export function uuid() {
+  // 生成17位的时间字符串（YYYYMMDDHHmmssSSS）
+  const baseTime = dayjs().format("YYYYMMDDHHmmssSSS");
+
+  // 生成5位随机数（00000-99999），确保补足5位
+  const randomNum = Math.floor(Math.random() * 100000)
+    .toString()
+    .padStart(5, "0");
+
+  // 拼接后总长度为 17 + 5 = 22 位
+  const result = baseTime + randomNum;
+  return result;
 }

@@ -8,13 +8,17 @@
       :default-page-size="6"
       :auto="false"
     >
-      <template #loading>
+     <view class="notice">
+				<scroll-notice></scroll-notice>
+			</view>
+  
+   <template #loading>
         <uni-load-more status="loading"></uni-load-more>
       </template>
 
       <view class="content">
         <view class="item" v-for="(item, index) in Paylist" :key="item._id">
-          <adv-card :item="item" @openpp="handleOpenComments"></adv-card>
+          <adv-card :item="item"  @clickPic="() => clickPic(index)" @openpp="handleOpenComments"></adv-card>
         </view>
       </view>
       <view class="bottom">
@@ -88,7 +92,7 @@ const query = ref({
   category_id: "",
 });
 
-const comment_content = ref("s");
+const comment_content = ref("");
 
 // 消息板相关数据
 const messageInput = ref('');
@@ -127,6 +131,25 @@ const queryList = async (pageNo, pageSize) => {
   } catch (err) {
     paging.value.complete(false);
   }
+};
+// 图片点击预览功能
+
+const clickPic = ( index ) => {
+  console.log('图片点击事件触发，index:', index);
+  console.log('当前项目数据:', Paylist.value[index]);
+  
+  if (!Paylist.value[index] || !Paylist.value[index].imageValue || Paylist.value[index].imageValue.length === 0) {
+    uni.showToast({
+      title: '没有可预览的图片',
+      icon: 'none'
+    });
+    return;
+  }
+  
+  uni.previewImage({
+    urls: Paylist.value[ index ].imageValue.map(item => item.fileID),
+    current: 0 ,
+  });
 };
 // 提交评论
 

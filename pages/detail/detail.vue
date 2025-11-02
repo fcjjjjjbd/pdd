@@ -53,7 +53,6 @@
 
 <script setup>
 import { showToast, isAdminRole } from "@/utils/common.js";
-import { formatDate } from "@/utils/tools.js";
 const db = uniCloud.database();
 const dbCmd = db.command;
 const $ = dbCmd.aggregate;

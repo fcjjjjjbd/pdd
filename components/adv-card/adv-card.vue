@@ -3,13 +3,14 @@
 <script setup>
 import { ref } from "vue";
 import { showToast, isAdminRole } from "@/utils/common.js";
-const emit = defineEmits(["openpp"]); // 声明引入
+const emit = defineEmits(["openpp", "clickPic"]); // 声明引入
 const props = defineProps({
   item: {
     type: Object,
     default: () => ({}),
   },
 });
+
 // 点击拨通电话
 
 const cliphone = (value) => {
@@ -34,15 +35,21 @@ const comments = () => {
   emit("openpp");
 };
 
+// 图片点击事件
+const handleImageClick = () => {
+  emit("clickPic");
+};
+
 const demoo = async () => {};
 </script>
 <template>
   <view class="adv-card-container">
-    <view class="adv-card-left">
+    <view class="adv-card-left" >
       <image
         class="adv-card-image"
         :src="item.imageValue?.[0]?.fileID || '/static/images/notPic.png'"
         mode="aspectFill"
+        @click="handleImageClick"
       ></image>
     </view>
     <view class="adv-card-right">
@@ -72,11 +79,7 @@ const demoo = async () => {};
 
           <!-- 评论 -->
           <view class="icon-item" @click="comments">
-            <uni-icons
-              type="chatboxes-filled"
-              size="20"
-              color="#999"
-            ></uni-icons>
+            <uni-icons type="chat" size="20" color="#999"></uni-icons>
           </view>
         </view>
         <view class="adv-card-call-button" @click="clickcopy2(item.phone)">

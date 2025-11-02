@@ -18,9 +18,6 @@
     ref,
     computed
   } from "vue";
-  import {
-    formatDate
-  } from '../../utils/tools'
   const content = ref([{
       iconPath: 'https://mp-809a65a0-175d-4ce6-b53d-81522f24f79b.cdn.bspapp.com/userAvatar/logo.png',
       text: '全部清空',
