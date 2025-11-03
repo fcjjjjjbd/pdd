@@ -126,9 +126,7 @@
     },
     {
       "path": "pages/self/self",
-      "style": {
-        "navigationBarTitleText": ""
-      }
+      "navigationStyle": "custom"
     },
     {
       "path": "pages/search/search",
@@ -246,12 +244,7 @@
           }
         },
 
-        {
-          "path": "manage/list",
-          "style": {
-            "navigationBarTitleText": "后台管理首页"
-          }
-        },
+
 
         {
           "path": "love/love",

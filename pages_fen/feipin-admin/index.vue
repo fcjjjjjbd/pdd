@@ -90,11 +90,7 @@ const tabsChange = (e) => {
 uni.$on("getdb", () => {
   getdata();
 });
-const goback = () => {
-  uni.navigateTo({
-    url: "/pages_fena/manage/list",
-  });
-};
+
 </script>
 
 <style lang="scss" scoped>

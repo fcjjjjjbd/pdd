@@ -116,15 +116,7 @@
           </view>
         </navigator>
 
-        <navigator url="/pages_fena/manage/list">
-          <view class="item" v-if="isAdminRole()">
-            <view class="left"
-              ><text class="iconfont icon-a-5-xinxi"></text
-              ><text class="text">后台管理</text></view
-            >
-            <uni-icons type="arrow-right" size="30"></uni-icons>
-          </view>
-        </navigator>
+
       </view>
     </view>
   </view>
