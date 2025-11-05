@@ -12,7 +12,6 @@ const props = defineProps({
 });
 
 // 点击拨通电话
-
 const cliphone = (value) => {
   uni.makePhoneCall({
     phoneNumber: value,
@@ -23,11 +22,7 @@ const starbool = ref(false); // 定义收藏状态
 // 收藏功能
 const starff = () => {
   starbool.value = !starbool.value;
-  // 这里可以添加实际的收藏/取消收藏逻辑，例如调用API
-  // uni.showToast({
-  //   title: starbool.value ? '收藏成功' : '取消收藏',
-  //   icon: 'none'
-  // });
+ 
 };
 
 //

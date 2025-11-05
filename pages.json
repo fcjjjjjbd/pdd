@@ -223,12 +223,7 @@
     {
       "root": "pages_fena",
       "pages": [
-        {
-          "path": "managerff/managerff",
-          "style": {
-            "navigationBarTitleText": "管理员操作"
-          }
-        },
+
 
         {
           "path": "feipin/fenlei",
@@ -258,12 +253,7 @@
             "navigationBarTitleText": "举报"
           }
         },
-        {
-          "path": "reviewed/list",
-          "style": {
-            "navigationBarTitleText": "审核列表"
-          }
-        },
+
         {
           "path": "product/edit",
           "style": {
@@ -296,24 +286,9 @@
           }
         },
 
-        {
-          "path": "z2/z2",
-          "style": {
-            "navigationBarTitleText": "明码标价crud"
-          }
-        },
-        {
-          "path": "z3/z3",
-          "style": {
-            "navigationBarTitleText": ""
-          }
-        },
-        {
-          "path": "z4/z4",
-          "style": {
-            "navigationBarTitleText": ""
-          }
-        },
+
+
+
         {
           "path": "detail_price/detail_price",
           "style": {

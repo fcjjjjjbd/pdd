@@ -18,7 +18,9 @@
         ]
     },
     "dependencies": {
+        "@vue/compiler-core": "^3.5.22",
         "dayjs": "^1.11.18",
+        "decode-js": "^1.2.0",
         "lodash.debounce": "^4.0.8",
         "pinia-plugin-persistedstate": "^4.2.0",
         "xe-utils": "^3.7.9"
