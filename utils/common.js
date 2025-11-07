@@ -46,6 +46,15 @@ export function showToast({
     mask,
   });
 }
+//截取字符串省略号
+export function truncateString(str, maxLength) {
+  return str?.length > maxLength ? str.substring(0, maxLength) + "..." : str;
+}
+export function getPageAndParams() {
+  let { route, options } = getCurrentPages()[getCurrentPages().length - 1];
+  let result = "/" + route + "?" + XEUtils.serialize(options);
+  return encodeURIComponent(result);
+}
 
 //判断是否管理员
 export function isAdminRole() {
