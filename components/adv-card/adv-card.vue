@@ -1,14 +1,20 @@
-
+<!-- console.log()  <view class=""> </view> {知}1行动做到 1 错1改1 转0为1 不1则0,     v-if="newItem.user_id == isAdminRole()"
+      -->
 <script setup>
 import { ref } from "vue";
+import debounce from "lodash.debounce";
+const db = uniCloud.database();
 import { showToast, isAdminRole } from "@/utils/common.js";
 const emit = defineEmits(["openpp", "clickPic"]); // 声明引入
+const current_id = uniCloud.getCurrentUserInfo().uid; // 当前用户id
+
 const props = defineProps({
   item: {
     type: Object,
     default: () => ({}),
   },
 });
+const newItem = ref(props.item); //不能直接修改父组件数据
 
 // 点击拨通电话
 const cliphone = (value) => {
@@ -16,13 +22,32 @@ const cliphone = (value) => {
     phoneNumber: value,
   });
 };
-const starbool = ref(false); // 定义收藏状态
 
 // 收藏功能
-const starff = () => {
-  starbool.value = !starbool.value;
- 
-};
+const clickLike = debounce(handleLike, 1000, {
+  leading: true,
+  trailing: false,
+});
+
+async function handleLike() {
+  if (newItem.value.isLike) {
+    newItem.value.like_count--;
+    db.collection("soup-like")
+      .where({
+        soup_id: newItem.value._id,
+        user_id: current_id,
+        like_type: 0,
+      })
+      .remove();
+  } else {
+    newItem.value.like_count++;
+    db.collection("soup-like").add({
+      soup_id: newItem.value._id,
+      like_type: 0,
+    });
+  }
+  newItem.value.isLike = !newItem.value.isLike;
+}
 
 //
 const comments = () => {
@@ -38,7 +63,7 @@ const demoo = async () => {};
 </script>
 <template>
   <view class="adv-card-container">
-    <view class="adv-card-left" >
+    <view class="adv-card-left">
       <image
         class="adv-card-image"
         :src="newItem.imageValue?.[0]?.fileID || '/static/images/logo.png'"
@@ -47,26 +72,25 @@ const demoo = async () => {};
       ></image>
     </view>
     <view class="adv-card-right">
-      <view class="adv-card-title" @click="clickcopy2(item.content)">
-        {{ item.content }}
+      <view class="adv-card-title">
+        {{ newItem.content }}
       </view>
       <view class="adv-card-actions">
         <view class="adv-card-icons">
           <!-- 收藏 -->
-          <view class="icon-item" @click="starff()">
+          <view class="icon-item" @click="clickLike()">
             <uni-icons
-              v-if="!starbool"
-              type="star"
-              size="20"
-              color="#999"
-            ></uni-icons>
-            <uni-icons
-              v-else
+              v-if="newItem.isLike"
               type="star-filled"
               size="20"
               color="#ff0000"
             ></uni-icons>
-            <text v-if="true">0</text>
+            <uni-icons v-else type="star" size="20" color="#999"></uni-icons>
+            <text
+              v-if="newItem.like_count > 0"
+              :style="{ color: newItem.isLike ? '#dd524d' : '#999' }"
+              >{{ newItem.like_count }}</text
+            >
             <!-- 占位符，可替换为实际收藏数 -->
           </view>
 
@@ -75,15 +99,8 @@ const demoo = async () => {};
             <uni-icons type="chat" size="20" color="#999"></uni-icons>
           </view>
         </view>
-        <view class="adv-card-call-button" @click="clickcopy2(item.phone)">
-          <button
-            class="mini-btn"
-            type="primary"
-            size="mini"
-            @click="cliphone(item.phone)"
-          >
-            打电话
-          </button>
+        <view class="adv-card-call-button" @click="cliphone(newItem.phone)">
+          <button class="mini-btn" type="primary" size="mini">打电话</button>
         </view>
       </view>
     </view>

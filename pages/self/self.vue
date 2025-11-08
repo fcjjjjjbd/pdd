@@ -8,12 +8,6 @@
             <view class="pic">
               <image
                 :src="
-                  userStore?.userInfo?.avatar || '../../static/images/logo.png'
-                "
-                mode="aspectFill"
-              ></image>
-              <image
-                :src="
                   userInfo?.avatar_file?.url || '../../static/images/logo.png'
                 "
                 mode="aspectFill"
@@ -21,7 +15,6 @@
             </view>
             <!-- 昵称 -->
             <view class="text" v-if="true">
-              <view class="nickname">{{ userStore.userInfo.username }}</view>
               <view class="nickname">{{ userInfo.nickname }}</view>
               <view class="year"> </view>
             </view>
@@ -105,7 +98,6 @@
           </view>
         </navigator> -->
 
-   
         <navigator url="/pages/shifu/list">
           <view class="item">
             <view class="left"
@@ -115,8 +107,6 @@
             <uni-icons type="arrow-right" size="30"></uni-icons>
           </view>
         </navigator>
-
-
       </view>
     </view>
   </view>

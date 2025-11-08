@@ -1,7 +1,7 @@
 <!-- 4.6 -->
 <template>
   <view class="container">
-    <mod-nav-bar title="美困" title-color="#fff"></mod-nav-bar>
+    <mod-nav-bar title="拼多多" title-color="#fff"></mod-nav-bar>
 
     <!-- 左边分类 -->
     <view class="left-v">

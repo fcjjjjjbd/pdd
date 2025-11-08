@@ -1,5 +1,3 @@
-// 内部公共js
-
 // 合并地址字符串
 export function addressff(string1, string2) {
   return `${string1}${string2}`;
@@ -8,8 +6,12 @@ export function hideLoading() {
   uni.hideLoading();
 }
 export function showLoading(options = "") {
-  if (typeof options === "string") options = { title: options };
-  const { title = "", mask = false } = options;
+  if (typeof options === "string") options = {
+    title: options
+  };
+  const {
+    title = "", mask = false
+  } = options;
   return uni.showLoading({
     title,
     mask,
@@ -52,8 +54,7 @@ export function isAdminRole() {
   return uniCloud.getCurrentUserInfo().role.includes("admin") ? true : false;
 }
 //审核状态组
-export const stateLists = [
-  {
+export const stateLists = [{
     value: "0",
     text: "审核中",
     color: "#E43D33",
@@ -79,10 +80,10 @@ export function stateFormat(value) {
 export function showModal(options = {}) {
   const {
     title = "提示",
-    content = "",
-    confirmText = "确认",
-    cancelText = "取消",
-    showCancel = true,
+      content = "",
+      confirmText = "确认",
+      cancelText = "取消",
+      showCancel = true,
   } = options;
 
   return new Promise((resolve, reject) => {

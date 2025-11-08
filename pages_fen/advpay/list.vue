@@ -1,4 +1,4 @@
-<!-- console.log() 居安思死-->
+<!-- console.log() 居1思死0-->
 <template>
   <view class="self">
     <z-paging
@@ -8,17 +8,21 @@
       :default-page-size="6"
       :auto="false"
     >
-     <view class="notice">
-				<scroll-notice></scroll-notice>
-			</view>
-  
-   <template #loading>
+      <view class="notice">
+        <scroll-notice></scroll-notice>
+      </view>
+
+      <template #loading>
         <uni-load-more status="loading"></uni-load-more>
       </template>
 
       <view class="content">
         <view class="item" v-for="(item, index) in Paylist" :key="item._id">
-          <adv-card :item="item"  @clickPic="() => clickPic(index)" @openpp="handleOpenComments"></adv-card>
+          <adv-card
+            :item="item"
+            @click="clickPicc(index)"
+            @openpp="handleOpenComments"
+          ></adv-card>
         </view>
       </view>
       <view class="bottom">
@@ -37,37 +41,43 @@
               <uni-icons type="close" size="20" color="#666"></uni-icons>
             </view>
           </view>
-          
+
           <!-- 消息列表 -->
           <scroll-view class="message-list" scroll-y="true">
-            <view class="message-item" v-for="(item, index) in messageList" :key="index">
-              <view class="nickname-tag">
-                {{ item.nickname }}:
-              </view>
+            <view
+              class="message-item"
+              v-for="(item, index) in messageList"
+              :key="index"
+            >
+              <view class="nickname-tag"> {{ item.nickname }}: </view>
               <view class="message-content">
                 {{ item.content }}
               </view>
             </view>
-            
+
             <!-- 空状态 -->
             <view class="empty-state" v-if="messageList.length === 0">
               <text class="empty-text">暂无消息</text>
             </view>
           </scroll-view>
-          
+
           <!-- 输入区域 -->
           <view class="input-area">
             <view class="input-wrapper">
-              <uni-easyinput 
-                v-model="messageInput" 
-                placeholder="请输入消息内容..." 
+              <uni-easyinput
+                v-model="messageInput"
+                placeholder="请输入消息内容..."
                 :maxlength="100"
                 :auto-height="true"
                 class="message-input"
               ></uni-easyinput>
               <view class="char-count">{{ messageInput.length }}/100</view>
             </view>
-            <view class="send-btn" @click="submitMessage" :class="{ active: messageInput.trim() }">
+            <view
+              class="send-btn"
+              @click="submitMessage"
+              :class="{ active: messageInput.trim() }"
+            >
               发送
             </view>
           </view>
@@ -82,10 +92,9 @@
 import { showToast, isAdminRole } from "@/utils/common.js";
 import { priceFormat } from "@/utils/tools.js";
 import Myedit from "./child/mynews.vue";
-const db = uniCloud.database(); // 连接云对象整体
-
-const pddCloudObj = uniCloud.importObject("client-adv");
+const db = uniCloud.database();
 const dbCmd = db.command;
+const $ = dbCmd.aggregate;
 const query = ref({
   pageSize: 10,
   pageCurrent: 1,
@@ -95,23 +104,22 @@ const query = ref({
 const comment_content = ref("");
 
 // 消息板相关数据
-const messageInput = ref('');
+const messageInput = ref("");
 const messageList = ref([
   {
-    nickname: '张三',
-    content: '科技一全链APP软件工程师在哪里'
+    nickname: "张三",
+    content: "科技一全链APP软件工程师在哪里",
   },
   {
-    nickname: '李四',
-    content: '科技一全链APP软件工程师哈哈哈😄😄'
-  }
+    nickname: "李四",
+    content: "科技一全链APP软件工程师哈哈哈😄😄",
+  },
 ]);
 
 const paging = ref(null);
 const Paylist = ref([]); //列表
 const usePopup = ref(null);
 const payPopup = ref(null);
-
 const current_id = ref(uniCloud.getCurrentUserInfo().uid); // 当前用户id
 onLoad((e) => {
   let { id = null } = e;
@@ -123,32 +131,14 @@ onLoad((e) => {
 });
 
 const queryList = async (pageNo, pageSize) => {
-  try {
-    let { errCode, data } = await pddCloudObj.categorylist(unref(query));
-    if (errCode !== 0) return paging.value.complete(false);
-    console.log(data);
-    paging.value.complete(data);
-  } catch (err) {
-    paging.value.complete(false);
-  }
+  
 };
 // 图片点击预览功能
 
-const clickPic = ( index ) => {
-  console.log('图片点击事件触发，index:', index);
-  console.log('当前项目数据:', Paylist.value[index]);
-  
-  if (!Paylist.value[index] || !Paylist.value[index].imageValue || Paylist.value[index].imageValue.length === 0) {
-    uni.showToast({
-      title: '没有可预览的图片',
-      icon: 'none'
-    });
-    return;
-  }
-  
+const clickPicc = (index) => {
   uni.previewImage({
-    urls: Paylist.value[ index ].imageValue.map(item => item.fileID),
-    current: 0 ,
+    urls: Paylist.value[index].imageValue.map((item) => item.fileID),
+    current: 0,
   });
 };
 // 提交评论
@@ -173,7 +163,7 @@ const loadMessages = async () => {
     // const result = await db.collection('messages').get();
     // messageList.value = result.data;
   } catch (error) {
-    console.error('加载消息失败:', error);
+    console.error("加载消息失败:", error);
   }
 };
 
@@ -231,6 +221,7 @@ const removeid = async (id, index) => {
               align-items: center;
 
               margin-right: 5rpx;
+
               .wen {
               }
             }

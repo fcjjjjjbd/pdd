@@ -5,11 +5,11 @@
       手机号
       <uv-input
         maxlength="11"
-        v-model="dataobj.phone"
+        v-model.number="dataobj.phone"
         type="number"
         shape="circle"
         placeholder="手机号"
-        prefixIconStyle="font-size: 22px;color: #909399"
+        prefixIconStyle="font-size: 22rpx;color: #909399"
       ></uv-input>
     </view>
 
@@ -23,7 +23,7 @@
         <uni-icons type="plus" size="39"></uni-icons>
       </view>
 
-      <view class="box pic" v-for="(item, index) in dataobj.imageValue">
+      <view class="box pic" v-for="(item, index) in dataobj.imageValue" :key="index">
         <image class="img" :src="item.fileID" mode="aspectFit"></image>
         <view class="mask">
           <view class="icon"> </view>
