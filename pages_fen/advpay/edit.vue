@@ -5,7 +5,7 @@
       手机号
       <uv-input
         maxlength="11"
-        v-model.number="dataobj.phone"
+        v-model="dataobj.phone"
         type="number"
         shape="circle"
         placeholder="手机号"

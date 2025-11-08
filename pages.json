@@ -134,7 +134,12 @@
         "navigationBarTitleText": ""
       }
     },
- 
+    {
+      "path": "pages/login/auto_login",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
     {
       "path": "pages/login/login",
       "style": {
@@ -218,6 +223,8 @@
     {
       "root": "pages_fena",
       "pages": [
+
+
         {
           "path": "feipin/fenlei",
           "style": {
@@ -231,6 +238,8 @@
             "navigationBarTitleText": "投诉"
           }
         },
+
+
 
         {
           "path": "love/love",
@@ -276,6 +285,9 @@
             "navigationBarTitleText": "用户中心"
           }
         },
+
+
+
 
         {
           "path": "detail_price/detail_price",

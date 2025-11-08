@@ -1,18 +1,20 @@
+<!-- 我的收藏 -->
 <template>
-  <view class="pages">
-    <z-paging
-      ref="paging"
-      safe-area-inset-bottom
-      v-model="soupData"
-      @query="queryList"
-    >
+  <view class="soupLayout">
+
+    <z-paging ref="paging" v-model="dataList" @query="queryList" :default-page-size="4">
+
+      <!-- 一开始加载状态 -->
       <template #loading>
-        <uni-load-more status="loading"></uni-load-more>
+        <view class="">
+          <uni-load-more status="loading"></uni-load-more>
+        </view>
       </template>
 
       <view class="list">
-        <view class="item" v-for="item in soupData" :key="item._id">
-          <adv-card :item="item"></adv-card>
+        <view class="item" v-for="item in dataList" :key="item._id">
+          <goods-item :item="item"></goods-item>
+
         </view>
       </view>
     </z-paging>
@@ -20,60 +22,51 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { showToast } from "../../utils/common";
-const soupData = ref([]);
-const paging = ref(null);
-const db = uniCloud.database();
+  import {
+    ref
+  } from 'vue';
+  const db = uniCloud.database();
+  const paging = ref(null)
+  const dataList = ref([])
 
-const queryList = (pageNo, pageSize) => {
-  getSoupList(pageNo, pageSize);
-};
-
-const getSoupList = async (pageNo, pageSize) => {
-  let likeTemp = db
-    .collection("soup-like")
-    .where(`user_id == $cloudEnv_uid`)
-    .getTemp();
-  let soupTemp = db.collection("pdd-adv").getTemp();
-  let {
-    result: { errCode, data },
-  } = await db
-    .collection(likeTemp, soupTemp)
-    .field(
-      `
-    create_date as publish_date,
-    arrayElemAt(soup_id._id, 0) as _id,
-    arrayElemAt(soup_id.content, 0) as content,
-    arrayElemAt(soup_id.like_count, 0) as like_count,
-    arrayElemAt(soup_id.comment_count, 0) as comment_count,
-    arrayElemAt(soup_id.phone, 0) as phone,
-    arrayElemAt(soup_id.like_count, 0) as like_count,
-   arrayElemAt(soup_id.imageValue, 0) as imageValue
-      `
-    )
-    .orderBy("create_time desc")
-    .get();
-  console.log(data);
-
-  // 为每个对象添加isLike: true
-  if (data && data.length > 0) {
-    data = data.map((item) => ({
-      ...item,
-      isLike: true,
-    }));
+  // 请求数据   
+  const queryList = async (pageNo, pageSize) => {
+    getgoodsList(pageNo, pageSize);
   }
+  const getgoodsList = async (pageNo, pageSize) => {
+    let skip = (pageNo - 1) * pageSize
+    const collectdd = db.collection('collect_g').where(` user_id ==$cloudEnv_uid `).getTemp();
+    const detaill = db.collection('goods_detail').field(
+      "_id, address,  collect_count, goods_thumb,like_count,title").getTemp();
+    let {
+      result: {
+        data,
+        errCode
+      }
+    } = await db.collection(collectdd, detaill).field(`		
+		arrayElemAt(goods_id._id, 0) as _id,
+		arrayElemAt(goods_id.title, 0) as title,
+    arrayElemAt(goods_id.address, 0) as address,
+    arrayElemAt(goods_id.collect_count, 0) as collect_count,
+    arrayElemAt(goods_id.goods_thumb, 0) as goods_thumb,
+    arrayElemAt(goods_id.like_count, 0) as like_count
+		`)
+      .skip(skip)
+      .limit(pageSize).get();
+    if (errCode != 0) return showToast("操作有误");
+    console.log(data);
+    paging.value.complete(data);
 
-  if (errCode != 0) return showToast("操作有误");
-
-  paging.value.complete(data);
-};
+  }
 </script>
 
 <style lang="scss" scoped>
-.pages {
-  .list {
-    padding: 30rpx 30rpx 0;
+  .soupLayout {
+
+    .list {
+      padding: 30rpx 0;
+
+
+    }
   }
-}
 </style>

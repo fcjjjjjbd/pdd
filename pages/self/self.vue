@@ -3,30 +3,34 @@
     <navigator url="/uni_modules/uni-id-pages/pages/userinfo/userinfo">
       <view class="top">
         <view class="group">
-          <view class="user-wrap">
-       
+          <!-- 头像 -->
           <view class="userinfo">
-            <view class="left" @click="handleLogin">
+            <view class="pic">
               <image
-                class="img"
-                :src="userInfo.avatar || '/static/images/logo.png'"
+                :src="
+                  userStore?.userInfo?.avatar || '../../static/images/logo.png'
+                "
+                mode="aspectFill"
+              ></image>
+              <image
+                :src="
+                  userInfo?.avatar_file?.url || '../../static/images/logo.png'
+                "
                 mode="aspectFill"
               ></image>
             </view>
-            <view class="right">
-              <view class="head" @click="handleLogin">
-                <view class="nickname" v-if="!hasLogin">游客，请登录</view>
-                <view class="nickname" v-else>
-                  {{ truncateString(userInfo.nickname, 8) }}
-                </view>
-                <view class="tag">正式会员</view>
-              </view>
-              <view class="id" v-if="hasLogin">
-                ID：
-                <text selectable>{{ userInfo._id }}</text>
-              </view>
+            <!-- 昵称 -->
+            <view class="text" v-if="true">
+              <view class="nickname">{{ userStore.userInfo.username }}</view>
+              <view class="nickname">{{ userInfo.nickname }}</view>
+              <view class="year"> </view>
+            </view>
+            <view class="text" v-else>
+              <view class="nickname">点击登录</view>
             </view>
           </view>
+          <view class="more">
+            <uni-icons type="arrow-right" size="30"></uni-icons>
           </view>
         </view>
 
@@ -47,6 +51,28 @@
         </view>
       </view>
     </navigator>
+
+    <!-- 我的订单 -->
+    <view class="order-wrap">
+      <view class="head">
+        <view class="label">我的订单</view>
+        <view class="value" @click="routerTo('/pages/order/myorderlist')">
+          查看全部
+          <uni-icons type="right" color="#999"></uni-icons>
+        </view>
+      </view>
+      <view class="list">
+        <view class="item" v-for="item in orderMenus" :key="item.value">
+          <view class="icon-wrap">
+            <!-- <text class="iconfont" :class="item.icon"></text>
+             -->
+            <uni-icons type="contact" size="30"></uni-icons>
+            <view class="tag">3</view>
+          </view>
+          <view class="label">{{ item.text }}</view>
+        </view>
+      </view>
+    </view>
 
     <view class="main">
       <view class="group">
@@ -79,6 +105,7 @@
           </view>
         </navigator> -->
 
+   
         <navigator url="/pages/shifu/list">
           <view class="item">
             <view class="left"
@@ -88,36 +115,25 @@
             <uni-icons type="arrow-right" size="30"></uni-icons>
           </view>
         </navigator>
+
+
       </view>
     </view>
   </view>
 </template>
 
 <script setup>
-import {
-  getPageAndParams,
-  routerTo,
-  showModal,
-  truncateString,
-} from "../../utils/common";
-import { mutations, store } from "@/uni_modules/uni-id-pages/common/store.js";
+import { isAdminRole, routerTo } from "@/utils/common.js";
+import { useUserStore } from "@/stores/user.js";
+import { store, mutations } from "@/uni_modules/uni-id-pages/common/store.js";
+import { ORDER_STATUS_ENUMS } from "@/utils/config.js";
+const userStore = ref(useUserStore()); // 微信当前pinia用户信息
+
+const orderMenus = ORDER_STATUS_ENUMS().filter((item) => item.myOrder === true);
 
 const db = uniCloud.database(); // 连接云对象整体
-const hasLogin = computed(() => store.hasLogin);
 // h5当前用户信息
 const userInfo = computed(() => store.userInfo);
-const handleLogin = () => {
-  if (unref(hasLogin)) {
-    routerTo("/uni_modules/uni-id-pages/pages/userinfo/userinfo");
-  } else {
-    routerTo(
-      "/" +
-        pagesJson.uniIdRouter.loginPage +
-        "?uniIdRedirectUrl=" +
-        getPageAndParams()
-    );
-  }
-};
 </script>
 
 <style lang="scss">
@@ -140,66 +156,45 @@ const handleLogin = () => {
       width: 100%;
       color: #fff;
 
-     	.user-wrap {
-			width: 100%;
-			padding: 32rpx;
-			border-radius: 12rpx;
-			background-color: #fff;
-			margin-bottom: 32rpx;
-			position: relative;
+      .userinfo {
+        display: flex;
+        width: 100%;
+        align-items: center;
 
-			.userinfo {
-				display: flex;
-				gap: 20rpx;
-				position: relative;
+        .pic {
+          width: 120rpx;
+          height: 120rpx;
+          border-radius: 50%;
+          overflow: hidden;
+          border: 2px solid #fff;
 
-				.left {
-					width: 100rpx;
-					height: 100rpx;
-					border-radius: 50%;
-					overflow: hidden;
-					flex-shrink: 0;
+          image {
+            width: 100%;
+            height: 100%;
+          }
+        }
 
-					.img {
-						width: 100%;
-						height: 100%;
-					}
-				}
+        .text {
+          padding-left: 20rpx;
 
-				.right {
-					display: flex;
-					flex-direction: column;
-					justify-content: center;
-					gap: 10rpx;
+          .nickname {
+            font-size: 44rpx;
+            font-weight: 600;
+          }
 
-					.head {
-						display: flex;
-						gap: 20rpx;
+          .year {
+            font-size: 26rpx;
+            opacity: 0.6;
+            padding-top: 5rpx;
+          }
+        }
+      }
 
-						.nickname {
-							font-size: 32rpx;
-							font-weight: bolder;
-							color: #000;
-						}
-
-						.tag {
-							background: #eccc7d;
-							color: #ae6337;
-							font-size: 22rpx;
-							padding: 2rpx 16rpx;
-							display: flex;
-							align-items: center;
-							border-radius: 20rpx;
-						}
-					}
-
-					.id {
-						font-size: 22rpx;
-						color: #999;
-					}
-				}
-			}
-       }
+      .more {
+        .iconfont {
+          font-size: 40rpx;
+        }
+      }
     }
 
     .bg {

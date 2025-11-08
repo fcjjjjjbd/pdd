@@ -1,182 +1,86 @@
-<script setup>
-  import {
-    ref
-  } from "vue";
-  import {
-    onLoad
-  } from "@dcloudio/uni-app";
-  import {
-    hideLoading,
-    routerTo,
-    showLoading,
-    showToast
-  } from "@/utils/common";
-  import {
-    mutations,
-    store
-  } from "@/uni_modules/uni-id-pages/common/store";
-  const uniIdCo = uniCloud.importObject('uni-id-co', {
-    customUI: true
-  })
-
-  const agreements = ref(null);
-
-  let uniIdRedirectUrl = '';
-
-  onLoad((e) => {
-    uniIdRedirectUrl = e.uniIdRedirectUrl
-  })
-
-  const wxLogin = async () => {
-    try {
-      if (!agreements.value.isAgree) return agreements.value.popup(wxLogin)
-      showLoading({
-        title: "登录中",
-        mask: true
-      })
-      let {
-        code
-      } = await uni.login()
-      let {
-        errCode,
-        ...rest
-      } = await uniIdCo.loginByWeixin({
-        code
-      });
-      if (errCode !== 0) return showToast("登录失败请重试")
-      mutations.loginSuccess({
-        ...rest,
-        uniIdRedirectUrl: decodeURIComponent(uniIdRedirectUrl)
-      })
-    } catch (err) {
-      console.log(err);
-      showToast(err)
-    } finally {
-      hideLoading()
-    }
-
-
-  }
-
-  const gotoPwd = () => {
-    routerTo('/uni_modules/uni-id-pages/pages/login/login-withpwd?uniIdRedirectUrl=' + uniIdRedirectUrl, 'redirectTo')
-  }
-</script>
-
+<!-- h5登录 -->
 <template>
-  <view class="page-wrap">
-
-    <view class="page-content">
-      <view class="logo-wrap">
-        <view class="pic">
-          <image src="/static/images/logo.png" mode="aspectFill"></image>
-        </view>
-        <view class="text">
-          <view class="big">九两酒商城</view>
-          <view class="small">品质生活畅享美酒</view>
-        </view>
-      </view>
-
-      <view class="group">
-        <view class="btn weixin" hover-class="btnHover" hover-start-time="50" hover-stay-time="50"
-          @click.stop="wxLogin">
-          <uni-icons type="weixin" size="30" color="#fff"></uni-icons>
-          <text>微信一键登录</text>
-        </view>
-        <view class="btn pwd" hover-class="btnHover" @click="gotoPwd">
-          <uni-icons type="locked-filled" size="25" color="#BDAF8D"></uni-icons>
-          <text>账号密码登录</text>
-        </view>
-      </view>
-
-      <view class="agreement">
-        <uni-id-pages-agreements scope="login" ref="agreements"></uni-id-pages-agreements>
-      </view>
-    </view>
-
+  <view class="">
+    <button @click="login">一键登录{{name}}</button>
   </view>
 </template>
 
-<style scoped lang="scss">
-  .page-wrap {
-    .page-content {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      min-height: 50vh;
-      padding-top: 200rpx;
-
-      .logo-wrap {
-        display: flex;
-        justify-content: center;
-
-        .pic {
-          width: 100rpx;
-          height: 100rpx;
-          border-radius: 20rpx;
-          overflow: hidden;
-
-          image {
-            width: 100%;
-            height: 100%;
-          }
-        }
-
-        .text {
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-          padding-left: 20rpx;
-          color: #BDAF8D;
-
-          .big {
-            font-size: 60rpx;
-            line-height: 1em;
-            font-weight: bold;
-          }
-
-          .small {
-            font-size: 22rpx;
-            letter-spacing: 0.76em;
-          }
-        }
+<script>
+  export default {
+    data() {
+      return {
+        name: "演员"
       }
-
-      .group {
-        padding: 160rpx 60rpx 40rpx;
-        display: flex;
-        flex-direction: column;
-        gap: 40rpx;
-
-        .btn {
-          width: 100%;
-          height: 100rpx;
-          border: 1px solid #BDAF8D;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          border-radius: 10rpx;
-          font-size: 40rpx;
-          color: #BDAF8D;
-
-          text {
-            padding-left: 10rpx;
+    },
+    methods: {
+      login() {
+        //在这里写一键登录的代码
+        uni.preLogin({
+          provider: 'univerify',
+          success() { //预登录成功
+            // 显示一键登录选项
+            uni.login({
+              provider: 'univerify',
+              univerifyStyle: {
+                // 自定义登录框样式
+                //参考`univerifyStyle 数据结构`
+                //具体样式设计请去uni-app文档查看
+                //不填写任何自定义登录框样式的话就会采取默认样式
+              },
+              success(res) { // 登录成功
+                console.log(res.authResult.access_token);
+                console.log(res.authResult.openid);
+                // 此处获取了openid和access_token
+                // {openid:'登录授权唯一标识',access_token:'接口返回的 token'}
+                // 通过uniCloud.callFunction函数实现前端获取手机号
+                uniCloud.callFunction({
+                    name: "testLogin", // 填写你自己的云函数名称
+                    //传入上面获取的openid和access_token获取手机号
+                    data: {
+                      access_token: res.authResult.access_token, // 客户端一键登录接口返回的access_token
+                      openid: res.authResult.openid // 客户端一键登录接口返回的openid
+                    }
+                  })
+                  .then((dataRes) => {
+                    //此处已经成功获取手机号等信息
+                    console.log("云函数返回的参数", dataRes)
+                    let phone = dataRes.result.data.phoneNumber
+                    // 获取手机号后根据自己的需求做后面的登录操作即可
+                    //...
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                    console.log("云函数报错", err)
+                    uni.showToast({
+                      title: err.errMsg,
+                      icon: "none"
+                    })
+                    this_ = this
+                    setTimeout(() => {
+                      uni.closeAuthView() //关闭一键登录弹出窗口
+                      this_.onClickMsgLogin()
+                    }, 500)
+                  })
+              },
+              fail(res) { // 登录失败
+                console.log(res.errCode)
+                console.log(res.errMsg)
+              }
+            })
+          },
+          fail(res) {
+            // 预登录失败
+            // 不显示一键登录选项（或置灰）
+            // 根据错误信息判断失败原因，如有需要可将错误提交给统计服务器
+            console.log(res.errCode)
+            console.log(res.errMsg)
           }
-        }
+        })
 
-        .weixin {
-          background: #BDAF8D;
-          color: #fff;
-        }
-
-        .btnHover {
-          transform: scale(0.98);
-        }
-      }
-
-      .agreement {
-        padding: 0 60rpx 0;
       }
     }
   }
+</script>
+
+<style>
 </style>

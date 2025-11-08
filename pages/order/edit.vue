@@ -186,7 +186,8 @@ const addpic = () => {
 onLoad((e) => {
   urlobj.value = e;
   console.log(urlobj.value);
- });
+  getnav();
+});
 const fullName = computed(() => {
   return (trpevalue.value + urlobj.value.name).replace(/\s+/g, ""); // 去除中间空格
 });
@@ -221,10 +222,8 @@ const tijiao = async () => {
     // 响应码不是0，显示错误提示并返回
     uni.hideLoading();
     uni.showModal({
-      title: secRes.errMsg || "操作失败",
-      content: secRes.result?.label
-        ? `发布内容存在"${secRes.result.label}"问题,请重新编辑后发布!`
-        : "请检查输入内容后重试",
+      title: secRes.errMsg || '操作失败',
+      content: secRes.result?.label ? `发布内容存在"${secRes.result.label}"问题,请重新编辑后发布!` : '请检查输入内容后重试',
       showCancel: false,
     });
     return;
