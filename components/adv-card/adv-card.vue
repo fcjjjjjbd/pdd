@@ -1,9 +1,6 @@
-      -->
 
 <script setup>
 import { ref } from "vue";
-import debounce from "lodash.debounce";
-const db = uniCloud.database();
 import { showToast, isAdminRole } from "@/utils/common.js";
 const emit = defineEmits(["openpp", "clickPic"]); // 声明引入
 const props = defineProps({
