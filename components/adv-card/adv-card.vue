@@ -1,7 +1,6 @@
 <!-- console.log()  <view class=""> </view> {知}1行动做到 1 错1改1 转0为1 不1则0,     v-if="newItem.user_id == isAdminRole()"
       -->
 <script setup>
-
 import { ref } from "vue";
 import debounce from "lodash.debounce";
 const db = uniCloud.database();
@@ -67,7 +66,7 @@ const demoo = async () => {};
     <view class="adv-card-left">
       <image
         class="adv-card-image"
-        :src="newItem.imageValue?.[0]?.fileID || '/static/images/notPic.png'"
+        :src="newItem.imageValue?.[0]?.fileID || '/static/images/logo.png'"
         mode="aspectFill"
         @click="handleImageClick"
       ></image>
@@ -94,7 +93,7 @@ const demoo = async () => {};
             >
             <!-- 占位符，可替换为实际收藏数 -->
           </view>
-         
+
           <!-- 评论 -->
           <view class="icon-item" @click="comments">
             <uni-icons type="chat" size="20" color="#999"></uni-icons>

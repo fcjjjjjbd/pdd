@@ -381,17 +381,13 @@
     "custom": {}
   },
   "uniIdRouter": {
-    // #ifndef MP-WEIXIN
-    "loginPage": "uni_modules/uni-id-pages/pages/login/login-withpwd",
-    // #endif
-    // #ifdef MP-WEIXIN
-    "loginPage": "pages/login/login",
-    // #endif
-    "needLogin": [
+     "loginPage": "uni_modules/uni-id-pages/pages/login/login-withpwd",
+      "needLogin": [
       "pages/self/.*",
       "pages/order/myorderlist",
       "pages_fen/advpay/edit",
-      "pages_fen/open/edit"
+      "pages_fen/open/edit",
+      "uni_modules/uni-id-pages/pages/userinfo/userinfo"
     ]
   }
 }
