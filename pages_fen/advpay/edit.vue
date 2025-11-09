@@ -23,7 +23,11 @@
         <uni-icons type="plus" size="39"></uni-icons>
       </view>
 
-      <view class="box pic" v-for="(item, index) in dataobj.imageValue" :key="index">
+      <view
+        class="box pic"
+        v-for="(item, index) in dataobj.imageValue"
+        :key="index"
+      >
         <image class="img" :src="item.fileID" mode="aspectFit"></image>
         <view class="mask">
           <view class="icon"> </view>
@@ -40,7 +44,7 @@
       placeholder="详细信息明码标价,明码标价"
       style="width: 100%; min-height: 400rpx"
       class="font-30"
-      maxlength="30"
+      maxlength="60"
     ></textarea>
     <view v-if="isAdminRole()" class="likes">
       收藏量:
