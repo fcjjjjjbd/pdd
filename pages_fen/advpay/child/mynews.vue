@@ -80,7 +80,7 @@ const delTable = async (id) => {
         <view class="right-wrap" v-if="item">
           <image
             class="img"
-            :src="item.imageValue?.[0]?.fileID"
+            :src="item.imageValue?.[0]?.fileID || '/static/images/notPic.png'"
             mode="aspectFill"
           ></image>
         </view>

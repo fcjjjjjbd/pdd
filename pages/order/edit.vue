@@ -11,8 +11,10 @@
       >
     </view>
 
-    <view>现在发布预约上门</view>
-    <view class="chosse" @click="chosse"
+    <view @click="chosse">
+      <button size="mini">明码标价</button>
+    </view>
+    <view class="chosse" @click="chossetype"
       >选择类型:
       <view class="typee">{{ fullName }}</view>
       <view><uni-icons type="right" size="30"></uni-icons></view>
@@ -69,11 +71,42 @@
       </view>
     </view>
 
-    <!-- <delivery-layout :deliveryInfo="addressobj"></delivery-layout>-->
-
     <view class="tijiao"
       ><button type="primary" @click="tijiao">预约上门</button></view
     >
+    <!-- 弹窗 -->
+
+    <!-- 类型选择弹窗 -->
+    <uni-popup ref="typePopup" type="bottom" background-color="#fff">
+      <view class="popup-content">
+        <view class="popup-header">
+          <text class="popup-title">选择服务类型</text>
+          <uni-icons
+            type="closeempty"
+            size="24"
+            @click="closeTypePopup"
+          ></uni-icons>
+        </view>
+        <view class="popup-body">
+          <uni-table border stripe emptyText="暂无数据">
+            <uni-tr>
+              <uni-th align="center" width="80">类型</uni-th>
+              <uni-th align="center" width="100">描述</uni-th>
+              <uni-th align="center" width="60">操作</uni-th>
+            </uni-tr>
+            <uni-tr v-for="(item, index) in typeTableData" :key="index">
+              <uni-td align="center">{{ item.name }}</uni-td>
+              <uni-td align="center">{{ item.desc }}</uni-td>
+              <uni-td align="center">
+                <button size="mini" type="primary" @click="selectType(item)">
+                  选择
+                </button>
+              </uni-td>
+            </uni-tr>
+          </uni-table>
+        </view>
+      </view>
+    </uni-popup>
   </view>
 </template>
 
@@ -120,17 +153,35 @@ let typelist = [
 ];
 const trpevalue = ref(typelist[0]); //默认选择
 
+// 表格数据
+const typeTableData = ref([
+  { name: "维修", desc: "家电维修、水电维修等服务" },
+  { name: "安装", desc: "家电安装、家具安装等服务" },
+  { name: "清洗保洁", desc: "家电清洗、家庭保洁等服务" },
+  { name: "上门回收", desc: "废品回收、旧物回收等服务" },
+  { name: "移机", desc: "空调移机、家电移位等服务" },
+  { name: "淘宝订单", desc: "淘宝相关服务订单" },
+  { name: "拆除", desc: "家电拆除、装修拆除等服务" },
+  { name: "装修", desc: "家庭装修、局部装修等服务" },
+]);
+
+// 弹窗引用
+const typePopup = ref(null);
+
 // 选择类型
 const chosse = () => {
-  uni.showActionSheet({
-    itemList: typelist,
-    success: function (res) {
-      trpevalue.value = typelist[res.tapIndex];
-    },
-    fail: function (res) {
-      console.log(res.errMsg);
-    },
-  });
+  typePopup.value.open();
+};
+
+// 关闭弹窗
+const closeTypePopup = () => {
+  typePopup.value.close();
+};
+
+// 选择类型
+const selectType = (item) => {
+  trpevalue.value = item.name;
+  closeTypePopup();
 };
 const getAddress = async () => {
   try {
@@ -188,6 +239,18 @@ onLoad((e) => {
   console.log(urlobj.value);
   getnav();
 });
+// 选择类型
+const chossetype = () => {
+  uni.showActionSheet({
+    itemList: typelist,
+    success: function (res) {
+      trpevalue.value = typelist[res.tapIndex];
+    },
+    fail: function (res) {
+      console.log(res.errMsg);
+    },
+  });
+};
 const fullName = computed(() => {
   return (trpevalue.value + urlobj.value.name).replace(/\s+/g, ""); // 去除中间空格
 });
@@ -222,8 +285,10 @@ const tijiao = async () => {
     // 响应码不是0，显示错误提示并返回
     uni.hideLoading();
     uni.showModal({
-      title: secRes.errMsg || '操作失败',
-      content: secRes.result?.label ? `发布内容存在"${secRes.result.label}"问题,请重新编辑后发布!` : '请检查输入内容后重试',
+      title: secRes.errMsg || "操作失败",
+      content: secRes.result?.label
+        ? `发布内容存在"${secRes.result.label}"问题,请重新编辑后发布!`
+        : "请检查输入内容后重试",
       showCancel: false,
     });
     return;
@@ -443,6 +508,32 @@ const goToAdvpayList = () => {
       line-height: 88rpx;
       font-size: 32rpx;
       border-radius: 44rpx;
+    }
+  }
+
+  // 弹窗样式
+  .popup-content {
+    padding: 30rpx;
+    max-height: 80vh;
+
+    .popup-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30rpx;
+      padding-bottom: 20rpx;
+      border-bottom: 1px solid #eee;
+
+      .popup-title {
+        font-size: 32rpx;
+        font-weight: bold;
+        color: #333;
+      }
+    }
+
+    .popup-body {
+      max-height: 60vh;
+      overflow-y: auto;
     }
   }
 }

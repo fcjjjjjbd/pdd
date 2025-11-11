@@ -9,7 +9,7 @@ const dataList = ref([
   },
   {
     _id: 2,
-    title: "公告2",
+    title: "每个明码标价写价格,不写删除,",
   },
   
 ]);

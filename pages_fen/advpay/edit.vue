@@ -1,18 +1,7 @@
 <!-- create赋值,默认推荐,去除无用优化代码   -->
 <template>
   <view class="home">
-    <view class="phone">
-      手机号
-      <uv-input
-        maxlength="11"
-        v-model.number="dataobj.phone"
-        type="number"
-        shape="circle"
-        placeholder="手机号"
-        prefixIconStyle="font-size: 22rpx;color: #909399"
-      ></uv-input>
-    </view>
-
+   
     <!-- 添加图片 -->
     <view class="picarr">
       <view
@@ -46,6 +35,29 @@
       class="font-30"
       maxlength="60"
     ></textarea>
+     <view class="phone">
+      手机号
+      <uv-input
+        maxlength="11"
+        v-model.number="dataobj.phone"
+        type="number"
+        shape="circle"
+        placeholder="手机号"
+        prefixIconStyle="font-size: 22rpx;color: #909399"
+      ></uv-input>
+    </view>
+
+     <view class="phone">
+      微信号
+      <uv-input
+        maxlength="25"
+        v-model="dataobj.wx_count "
+         shape="circle"
+            placeholder="选填"
+       prefixIconStyle="font-size: 22rpx;color: #909399"
+      ></uv-input>
+    </view>
+
     <view v-if="isAdminRole()" class="likes">
       收藏量:
       <uv-number-box
@@ -88,6 +100,7 @@ const dataobj = ref({
   total_fee: 2, // 添加分类名称字段
   phone: null,
   like_count: 0,
+  wx_count:""
 });
 const pageType = computed(() => (unref(id) ? "修改" : "新增"));
 

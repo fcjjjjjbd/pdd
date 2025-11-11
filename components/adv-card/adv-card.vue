@@ -15,7 +15,19 @@ const props = defineProps({
   },
 });
 const newItem = ref(props.item); //不能直接修改父组件数据
-
+//点击id复制内容
+function copyy(value) {
+  if (!value) return;
+  uni.setClipboardData({
+    data: value,
+    success: (res) => {
+      console.log(res);
+    },
+    fail: (err) => {
+      console.log(err);
+    },
+  });
+}
 // 点击拨通电话
 const cliphone = (value) => {
   uni.makePhoneCall({
@@ -66,7 +78,7 @@ const demoo = async () => {};
     <view class="adv-card-left">
       <image
         class="adv-card-image"
-        :src="newItem.imageValue?.[0]?.fileID || '/static/images/logo.png'"
+        :src="newItem.imageValue?.[0]?.fileID || '/static/images/notPic.png'"
         mode="aspectFill"
         @click="handleImageClick"
       ></image>
@@ -99,8 +111,27 @@ const demoo = async () => {};
             <uni-icons type="chat" size="20" color="#999"></uni-icons>
           </view>
         </view>
-        <view class="adv-card-call-button" @click="cliphone(newItem.phone)">
-          <button class="mini-btn" type="primary" size="mini">打电话</button>
+        <view class="adv-card-call-button">
+          <view v-if="newItem.phone">
+            <button
+              class="mini-btn"
+              type="primary"
+              size="mini"
+              @click="cliphone(newItem.phone)"
+            >
+              打电话
+            </button>
+          </view>
+          <view v-else>
+            <button
+              class="mini-btn"
+              type="primary"
+              size="mini"
+              @click="copyy(newItem.wx_count)"
+            >
+              复制微信
+            </button>
+          </view>
         </view>
       </view>
     </view>
@@ -171,7 +202,8 @@ const demoo = async () => {};
       }
 
       .adv-card-call-button {
-        margin: 0 20rpx;
+        display: flex;
+        margin: 0 5rpx;
         .mini-btn {
           padding: 0 20rpx;
           height: 60rpx;

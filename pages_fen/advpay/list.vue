@@ -36,7 +36,7 @@
         <view class="message-board">
           <!-- 头部 -->
           <view class="message-header">
-            <view class="header-title">消息列表</view>
+            <view class="header-title">对师傅评价</view>
             <view class="close-btn" @click="closeMessageBoard">
               <uni-icons type="close" size="20" color="#666"></uni-icons>
             </view>
@@ -112,7 +112,7 @@ const messageList = ref([
   },
   {
     nickname: "李四",
-    content: "科技一全链APP软件工程师哈哈哈😄😄",
+    content: "科技一全链APP软件工程师哈哈哈",
   },
 ]);
 
@@ -179,6 +179,7 @@ const queryList = async (pageNo, pageSize) => {
           else: false,
         }),
         like_count: 1,
+        wx_count: 1,
         comment_count: 1,
         content: 1,
         imageValue: 1,
