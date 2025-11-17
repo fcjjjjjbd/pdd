@@ -24,10 +24,9 @@ const opencloubobj = uniCloud.importObject("client-adv", {
 const dataList = ref([]);
 const current_id = ref(uniCloud.getCurrentUserInfo().uid); // 当前用户id
 
-const getmy = async () => {
-  console.log(unref(current_id));
+const queryList = async(pageCurrent, pageSize)=>{
   try {
-    let { errCode, data } = await opencloubobj.myopen(current_id.value);
+    let { errCode, data } = await opencloubobj.myopen({pageCurrent, pageSize, current_id: current_id.value});
     if (errCode !== 0) return showToast("获取失败");
     console.log(data);
     dataList.value = data;
@@ -35,7 +34,6 @@ const getmy = async () => {
     console.log(err);
   }
 };
-getmy();
 
 // 删除
 const delTable = async (id) => {
@@ -57,7 +55,9 @@ const delTable = async (id) => {
 </script>
 <template>
   <view class="home"
-    >我发布的
+    >
+      <z-paging ref="paging" v-model="dataList" @query="queryList" :default-page-size="8" >
+    我发布的
 
     <view class="list-wrap">
       <view class="item-wrap" v-for="item in dataList" :key="item._id">
@@ -98,6 +98,8 @@ const delTable = async (id) => {
         新增
       </button>
     </view>
+     </z-paging>
+
   </view>
 </template>
 

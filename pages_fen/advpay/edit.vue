@@ -48,7 +48,7 @@
     </view>
 
      <view class="phone">
-      微信号
+      微信号(选填)
       <uv-input
         maxlength="25"
         v-model="dataobj.wx_count "

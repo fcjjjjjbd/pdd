@@ -1,7 +1,7 @@
 <!-- 4.6 -->
 <template>
   <view class="container">
-    <mod-nav-bar title="拼多多" title-color="#fff"></mod-nav-bar>
+    <mod-nav-bar title="pdd" title-color="#fff"></mod-nav-bar>
 
     <!-- 左边分类 -->
     <view class="left-v">
@@ -11,7 +11,7 @@
         v-for="(item, index) in categoryList"
         :key="item._id"
       >
-        {{ item.title }}
+        {{ item.name }}
       </view>
     </view>
     <view class="right-v">
@@ -39,7 +39,7 @@
 <script setup>
 import { showToast, isAdminRole, routerTo } from "@/utils/common.js";
 
-const goodsCloudObj = uniCloud.importObject("client-index-goods");
+const goodsCloudObj = uniCloud.importObject("client-product-goods");
 const categoryList = ref([]);
 
 const isActive = ref(0); //选中的左分类index
@@ -51,7 +51,7 @@ const getCategory = async () => {
     if (errCode !== 0) return showToast(errMsg);
     console.log(data);
     categoryList.value = data;
-    rights.value = categoryList.value[0].afenleilist;
+    rights.value = categoryList.value[0].goods;
   } catch (err) {
     console.log(err);
     showToast(err);
@@ -59,7 +59,7 @@ const getCategory = async () => {
 };
 getCategory();
 const clickFun = (id, index) => {
-  rights.value = categoryList.value[index].afenleilist;
+  rights.value = categoryList.value[index].goods;
 
   isActive.value = index;
 };

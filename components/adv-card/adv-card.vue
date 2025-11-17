@@ -122,14 +122,14 @@ const demoo = async () => {};
               打电话
             </button>
           </view>
-          <view v-else>
+          <view v-if="newItem.wx_count">
             <button
               class="mini-btn"
               type="primary"
               size="mini"
               @click="copyy(newItem.wx_count)"
             >
-              复制微信
+              微信
             </button>
           </view>
         </view>

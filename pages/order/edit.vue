@@ -80,7 +80,7 @@
     <uni-popup ref="typePopup" type="bottom" background-color="#fff">
       <view class="popup-content">
         <view class="popup-header">
-          <text class="popup-title">选择服务类型</text>
+          <text class="popup-title">明码标价</text>
           <uni-icons
             type="closeempty"
             size="24"
@@ -90,13 +90,13 @@
         <view class="popup-body">
           <uni-table border stripe emptyText="暂无数据">
             <uni-tr>
-              <uni-th align="center" width="80">类型</uni-th>
-              <uni-th align="center" width="100">描述</uni-th>
+              <uni-th align="center" width="80">上门服务类型</uni-th>
+              <uni-th align="center" width="100">价格</uni-th>
               <uni-th align="center" width="60">操作</uni-th>
             </uni-tr>
             <uni-tr v-for="(item, index) in typeTableData" :key="index">
               <uni-td align="center">{{ item.name }}</uni-td>
-              <uni-td align="center">{{ item.desc }}</uni-td>
+              <uni-td align="center">{{ formatPrice(item.price) }}</uni-td>
               <uni-td align="center">
                 <button size="mini" type="primary" @click="selectType(item)">
                   选择
@@ -117,22 +117,22 @@ const mmbjydx = uniCloud.importObject("goods-backend", {
 const addressCloudObj = uniCloud.importObject("client-user-address", {
   customUI: true,
 });
+const goodsCloudObj = uniCloud.importObject("client-product-goods", {
+  customUI: true,
+});
 
 import { showToast, isAdminRole, addressff, routerTo } from "@/utils/common.js";
+import{formatPrice}from"@/utils/format.js";
 import dayjs from "dayjs";
 import { removeHtmlTags, convertImageToWebP } from "@/utils/tools.js";
-import { usedsmaxStore } from "@/stores/dsmax.js";
 import { useOrderStore } from "@/stores/order.js";
 const orderStore = useOrderStore();
-
-const maxStore = ref(usedsmaxStore());
 const checkobj = uniCloud.importObject("secCheckContent");
 
 const emit = defineEmits(["Updatelist"]);
 const current_id = ref(uniCloud.getCurrentUserInfo().uid); // 当前用户id
 
 const urlobj = ref({}); //url参数
-const priceInfo = ref([]); //表单数据
 const dataobj = ref({
   content: "",
   imageValue: [],
@@ -147,23 +147,14 @@ let typelist = [
   "清洗保洁",
   "上门回收",
   "移机",
-  "淘宝订单",
-  "拆除",
+  "电商订单",
+  "拆卸",
   "装修",
 ];
 const trpevalue = ref(typelist[0]); //默认选择
 
 // 表格数据
-const typeTableData = ref([
-  { name: "维修", desc: "家电维修、水电维修等服务" },
-  { name: "安装", desc: "家电安装、家具安装等服务" },
-  { name: "清洗保洁", desc: "家电清洗、家庭保洁等服务" },
-  { name: "上门回收", desc: "废品回收、旧物回收等服务" },
-  { name: "移机", desc: "空调移机、家电移位等服务" },
-  { name: "淘宝订单", desc: "淘宝相关服务订单" },
-  { name: "拆除", desc: "家电拆除、装修拆除等服务" },
-  { name: "装修", desc: "家庭装修、局部装修等服务" },
-]);
+const typeTableData = ref([]);
 
 // 弹窗引用
 const typePopup = ref(null);
@@ -194,36 +185,6 @@ const getAddress = async () => {
   }
 };
 getAddress();
-// 获取表格数据
-const getnav = async () => {
-  let { data } = await mmbjydx.getmmbj(urlobj.value._id);
-  console.log(data);
-  priceInfo.value = data;
-};
-//新增价格
-const jgadmin = async () => {
-  uni.navigateTo({
-    url: "/pages_fena/detail_price/detail_price?idd=" + urlobj.value._id,
-  });
-};
-// 复制地址
-const clickcopy2 = (value) => {
-  uni.setClipboardData({
-    data: value,
-    success: () => {
-      uni.showToast({
-        title: "复制成功",
-        icon: "success",
-      });
-    },
-    fail: () => {
-      uni.showToast({
-        title: "复制失败",
-        icon: "none",
-      });
-    },
-  });
-};
 
 // 选择好图片
 const addpic = () => {
@@ -237,7 +198,7 @@ const addpic = () => {
 onLoad((e) => {
   urlobj.value = e;
   console.log(urlobj.value);
-  getnav();
+  getskuarr();
 });
 // 选择类型
 const chossetype = () => {
@@ -250,6 +211,19 @@ const chossetype = () => {
       console.log(res.errMsg);
     },
   });
+};
+const getskuarr = async () => {
+  try {
+    let { errCode, data, errMsg } = await goodsCloudObj.skuarr({
+      id: urlobj.value.category_id,
+    });
+    if (errCode !== 0) return showToast(errMsg);
+    console.log(data);
+    typeTableData.value = data[0].sku;
+  } catch (err) {
+    console.log(err);
+    showToast(err.message || err);
+  }
 };
 const fullName = computed(() => {
   return (trpevalue.value + urlobj.value.name).replace(/\s+/g, ""); // 去除中间空格
