@@ -51,7 +51,8 @@ const getCategory = async () => {
     if (errCode !== 0) return showToast(errMsg);
     console.log(data);
     categoryList.value = data;
-    rights.value = categoryList.value[0].goods;
+    rights.value = categoryList.value[0].goods
+;
   } catch (err) {
     console.log(err);
     showToast(err);
@@ -59,7 +60,8 @@ const getCategory = async () => {
 };
 getCategory();
 const clickFun = (id, index) => {
-  rights.value = categoryList.value[index].goods;
+  rights.value = categoryList.value[index].goods
+
 
   isActive.value = index;
 };

@@ -34,7 +34,10 @@ const cliphone = (value) => {
     phoneNumber: value,
   });
 };
-
+// 删除
+const delets = (id) => {
+  let res = db.collection('pdd-adv').doc(id).remove(); 
+ };
 // 收藏功能
 const clickLike = debounce(handleLike, 1000, {
   leading: true,
@@ -130,6 +133,15 @@ const demoo = async () => {};
               @click="copyy(newItem.wx_count)"
             >
               微信
+            </button>
+          </view>
+            <view v-if="isAdminRole()">
+            <button
+              class="mini-btn"
+               size="mini"
+              @click="delets(newItem._id)"
+            >
+              删
             </button>
           </view>
         </view>
