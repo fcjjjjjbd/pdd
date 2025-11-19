@@ -51,8 +51,8 @@ const getCategory = async () => {
     if (errCode !== 0) return showToast(errMsg);
     console.log(data);
     categoryList.value = data;
-    rights.value = categoryList.value[0].goods
-;
+    rights.value = categoryList.value[0].goods;
+
   } catch (err) {
     console.log(err);
     showToast(err);

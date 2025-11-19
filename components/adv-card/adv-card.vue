@@ -122,7 +122,7 @@ const demoo = async () => {};
               size="mini"
               @click="cliphone(newItem.phone)"
             >
-              打电话
+              电话
             </button>
           </view>
           <view v-if="newItem.wx_count">
@@ -185,7 +185,7 @@ const demoo = async () => {};
       margin-bottom: 10rpx;
       // 限制标题为两行，超出部分显示省略号
       display: -webkit-box;
-      -webkit-line-clamp: 2;
+      -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -217,10 +217,10 @@ const demoo = async () => {};
         display: flex;
         margin: 0 5rpx;
         .mini-btn {
-          padding: 0 20rpx;
-          height: 60rpx;
+          padding: 0 10rpx;
+          height: 70rpx;
           line-height: 60rpx;
-          font-size: 28rpx;
+          font-size: 25rpx;
         }
       }
     }
