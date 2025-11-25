@@ -14,8 +14,8 @@
     <view @click="chosse">
       <button size="mini">明码标价</button>
     </view>
-    <!-- @click="chossetype" -->
-    <view class="chosse" 
+    <!--  -->
+    <view class="chosse"  @click="chossetype"
       >选择类型:
       <view class="typee">{{ fullName }}</view>
       <view><uni-icons type="right" size="30"></uni-icons></view>

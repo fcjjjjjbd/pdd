@@ -42,7 +42,7 @@
       placeholder="分享技术文章"
       style="width: 100%; min-height: 400rpx"
       class="font-30"
-      maxlength="600"
+      maxlength="2000"
     ></textarea>
 
     <view class="tijiao"

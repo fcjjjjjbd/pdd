@@ -15,6 +15,9 @@
       <template #loading>
         <uni-load-more status="loading"></uni-load-more>
       </template>
+ <adv-card
+            :item="demoitem"
+              ></adv-card>
 
       <view class="content">
         <view class="item" v-for="(item, index) in Paylist" :key="item._id">
@@ -103,7 +106,16 @@ const query = ref({
 
 const comment_content = ref("");
 
-// 消息板相关数据
+const demoitem = ref({
+  _id: "191e6d50337a9fca9fbe4cac",
+  content: "平台全国最低价,电话咨询预约上门",
+  phone: "13453555442",
+  wx_count: "13453555442",
+  imageValue: [],
+  comment_count: 0,
+  like_count: 99,
+  isLike: false
+});
 const messageInput = ref("");
 const messageList = ref([
   {
