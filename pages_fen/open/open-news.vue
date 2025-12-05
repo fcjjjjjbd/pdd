@@ -12,7 +12,7 @@ const paging = ref(null);
 
 const show1 = ref(null);
 const navlist = ref([]);
-const selectcategoryid = ref();     
+const selectcategoryid = ref();
 const jump = async () => {
   uni.navigateTo({
     url: "/pages_fen/open/open-search",
@@ -41,7 +41,7 @@ const queryList = async (pageCurrent, pageSize) => {
     let { errCode, data } = await pddCloudObj.categorylist({
       pageSize,
       pageCurrent,
-      category_id:   selectcategoryid.value
+      category_id: selectcategoryid.value,
     });
     if (errCode !== 0) return paging.value.complete(false);
     console.log(data);
@@ -54,7 +54,7 @@ const queryList = async (pageCurrent, pageSize) => {
 nextTick(async () => {
   // 先获取分类数据
   const categorySuccess = await getcategory();
-  
+
   // 只有分类获取成功后，才请求列表数据
   if (categorySuccess) {
     paging.value.reload();
@@ -93,7 +93,25 @@ const handleRead = (itemId) => {
 
 // 处理内容点击事件
 const handleContentClick = (itemId) => {
-  routerTo("/pages_fen/open/open-newsdetail?id=" + itemId);
+  routerTo("/pages_fen/open/opendetail?id=" + itemId);
+};
+
+// 公告点击事件
+const clickshare = async () => {
+  // TODO: 实现公告功能
+  console.log("点击了公告");
+};
+
+// 售后点击事件
+const clicktui = async () => {
+  // TODO: 实现售后功能
+  console.log("点击了售后");
+};
+
+// 推荐点击事件
+const clickrecommend = async () => {
+  // TODO: 实现推荐功能
+  console.log("点击了推荐");
 };
 </script>
 
@@ -108,10 +126,26 @@ const handleContentClick = (itemId) => {
         :auto="false"
       >
         <template #top>
-          <view class="u-flex top-box" >
-        <mode-search @on-confirm="jump"></mode-search>
- </view>
+          <view class="u-flex top-box">
+            <mode-search @on-confirm="jump"></mode-search>
+          </view>
         </template>
+        <!--
+        <view class="top" >
+          <view class="box">
+            <uni-icons type="info" size="28"></uni-icons>
+            <view class="text">公告</view>
+          </view>
+          <view class="box" @click="clickshare">
+            <uni-icons type="download" size="23"></uni-icons>
+            <view class="text">售后</view>
+          </view>
+          <view class="box" @click="clicktui">
+            <uni-icons type="download" size="23"></uni-icons>
+            <view class="text">推荐</view>
+          </view>
+        </view>
+        -->
         <!-- 分类标签 - 搜索框下方 -->
         <view class="tabs-section">
           <uv-tabs :list="navlist" @click="navclick" />
@@ -121,7 +155,12 @@ const handleContentClick = (itemId) => {
         </template>
 
         <view class="news-list">
-          <aopen-item v-for="item in dataList" :item="item" @click="routerTo('/pages_fen/open/open-newsdetail?id='+item._id)"> </aopen-item>
+          <aopen-item
+            v-for="item in dataList"
+            :item="item"
+            @click="routerTo('/pages_fen/open/opendetail?id=' + item._id)"
+          >
+          </aopen-item>
         </view>
       </z-paging>
     </view>
@@ -143,8 +182,31 @@ const handleContentClick = (itemId) => {
 </template>
 
 <style lang="scss" scoped>
-// 页面主容器
+.top {
+  background: rgba(255, 255, 255, 0.8);
+  height: 120rpx;
+  border-radius: 120rpx;
+  color: #000;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  box-shadow: 0rpx 2rpx 12rpx rgba(0, 0, 0, 0.1);
+  // backdrop-filter: blur(20rpx);
 
+  .box {
+    flex-direction: column;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 2rpx 12rpx;
+
+    .text {
+      font-size: 28rpx;
+      color: $text-font-color-2;
+    }
+  }
+}
 // 分类标签区域 - 搜索框下方
 .tabs-section {
   position: sticky;
@@ -210,7 +272,6 @@ const handleContentClick = (itemId) => {
   .search-section {
     padding: 16rpx 24rpx;
   }
-
 
   .news-list {
     padding: 20rpx 24rpx;

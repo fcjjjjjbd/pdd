@@ -223,8 +223,6 @@
     {
       "root": "pages_fena",
       "pages": [
-
-
         {
           "path": "feipin/fenlei",
           "style": {
@@ -238,8 +236,6 @@
             "navigationBarTitleText": "投诉"
           }
         },
-
-
 
         {
           "path": "love/love",
@@ -282,12 +278,9 @@
         {
           "path": "appcenter/appcenter",
           "style": {
-            "navigationBarTitleText": "用户中心"
+            "navigationBarTitleText": "推广中心"
           }
         },
-
-
-
 
         {
           "path": "detail_price/detail_price",
@@ -362,7 +355,7 @@
           }
         },
         {
-          "path": "open/open-newsdetail",
+          "path": "open/opendetail",
           "style": {
             "navigationBarTitleText": ""
           }
@@ -382,20 +375,12 @@
       ]
     }
   ],
-  "globalStyle": {
-    "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "uni-app",
-    "navigationBarBackgroundColor": "#F8F8F8",
-    "backgroundColor": "#F8F8F8"
-  },
-
   "easycom": {
     "custom": {}
   },
   "uniIdRouter": {
-     "loginPage": "uni_modules/uni-id-pages/pages/login/login-withpwd",
-      "needLogin": [
-      "pages/self/.*",
+    "loginPage": "uni_modules/uni-id-pages/pages/login/login-withpwd",
+    "needLogin": [
       "pages/order/myorderlist",
       "pages_fen/advpay/edit",
       "pages_fen/open/edit",

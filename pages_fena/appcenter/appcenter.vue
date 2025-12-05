@@ -2,66 +2,35 @@
 <template>
   <view class="Layout">
     <view class="top u-m-b-20">
-      <view class="box">
-        <uni-icons type="info" size="28"></uni-icons>
-        <view class="text">公告</view>
-      </view>
-      <view class="box" @click="clickshare">
-        <uni-icons type="download" size="23"></uni-icons>
-        <view class="text">售后</view>
-      </view>
       <view class="box" @click="clicktui">
         <uni-icons type="download" size="23"></uni-icons>
-        <view class="text">推荐</view>
-      </view>
-    </view>
-    <!-- 公告 -->
-    <view class="content">
-      <view class="item" v-for="item in advarr" :key="item._id">
-        {{ item.name }}
+        <view class="text">推荐排行</view>
       </view>
     </view>
 
-    <!-- 分享 -->
-    <uni-popup ref="infoPopup" type="bottom">
-      <view class="share">
-        <scroll-view scroll-y>
-          <view class="info">
-            <view class="code">
-              售后微信加好友: stayapp
-              <view class="pic">
-                <image class="img" :src="dingpic" mode="aspetFit"></image>
-              </view>
+    <view class="share">
+      <scroll-view scroll-y>
+        <view class="info">
+          <view class="code">
+            <view class="pic">
+              <image
+                class="img"
+                src="https://mp-f18d6178-7240-42d3-98b7-73076158595e.cdn.bspapp.com/cloudstorage/image.png"
+                mode="aspectFit"
+              ></image>
+            </view>
+          
+            
+            售后微信群: stayapp
+            <!-- <view class="pic">
+              <image class="img" :src="dingpic" mode="aspectFit"></image>
+            </view> -->
 
-              <view class="pic">
-                <image
-                  class="img"
-                  src="https://mp-809a65a0-175d-4ce6-b53d-81522f24f79b.cdn.bspapp.com/userAvatar/down.jpg"
-                  mode="aspectFit"
-                ></image>
-              </view>
-              <view class="pic">
-                <image class="img" :src="dingpic" mode="aspetFit"></image>
-              </view>
-            </view>
-            <button
-              @click="copyy(name1)"
-              size="mini"
-              type="primary"
-              class="u-m-t-10 u-m-b-10"
-            >
-              复制网站地址
-            </button>
-            <view class="code">
-              网站二维码
-              <view class="pic">
-                <image class="img" :src="imgurl" mode="aspetFit"></image>
-              </view>
-            </view>
+                 </view>
+        
           </view>
         </scroll-view>
-      </view>
-    </uni-popup>
+    </view>
   </view>
 </template>
 
@@ -90,8 +59,8 @@ onLoad(async () => {
 const clicktui = async () => {
   // 页面已删除，暂时禁用导航
   uni.showToast({
-    title: '功能暂不可用',
-    icon: 'none'
+    title: "功能暂不可用",
+    icon: "none",
   });
 };
 

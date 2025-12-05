@@ -68,7 +68,7 @@
           v-for="item in searchdata"
           :key="item.id"
           :item="item"
-          @click="routerTo('/pages_fen/open/open-newsdetail?id=' + item._id)"
+          @click="routerTo('/pages_fen/open/opendetail?id=' + item._id)"
         >
         </aopen-item>
       </view>

@@ -3,6 +3,39 @@
   <view class="container">
     <mod-nav-bar title="pdd" title-color="#fff"></mod-nav-bar>
 
+    <!-- 搜索框区域 -->
+    <view class="top-box">
+      <view class="search-box">
+        <uni-search-bar
+          placeholder="搜索商品"
+          @confirm="onSearch"
+          @clear="onClear"
+          cancelButton="none"
+          focus-color="#007aff"
+          bg-color="#f0f2f6"
+        />
+      </view>
+      <view class="text">搜索</view>
+    </view>
+
+    <!-- 功能按钮区域 -->
+    <view class="top">
+      <view class="box" @click="clickPromote">
+        <uni-icons type="info" size="28"></uni-icons>
+        <view class="text">推广</view>
+      </view>
+      <!--
+      <view class="box" @click="clickshare">
+        <uni-icons type="download" size="23"></uni-icons>
+        <view class="text">售后</view>
+      </view>
+      <view class="box" @click="clicktui">
+        <uni-icons type="download" size="23"></uni-icons>
+        <view class="text">推荐</view>
+      </view>
+      -->
+    </view>
+
     <!-- 左边分类 -->
     <view class="left-v">
       <view
@@ -52,18 +85,36 @@ const getCategory = async () => {
     console.log(data);
     categoryList.value = data;
     rights.value = categoryList.value[0].goods;
-
   } catch (err) {
     console.log(err);
     showToast(err);
   }
 };
 getCategory();
-const clickFun = (id, index) => {
-  rights.value = categoryList.value[index].goods
+const clickPromote = () => {
+  routerTo("/pages_fena/appcenter/appcenter");
+};
 
+const clickshare = () => {
+  // 售后功能
+  showToast("售后功能开发中...");
+};
 
-  isActive.value = index;
+const clicktui = () => {
+  // 推荐功能
+  showToast("推荐功能开发中...");
+};
+// 搜索相关方法
+const onSearch = (e) => {
+  const keyword = e.value;
+  console.log("搜索关键词:", keyword);
+  // TODO: 实现搜索逻辑
+  showToast("搜索功能开发中...");
+};
+
+const onClear = () => {
+  console.log("清空搜索");
+  // TODO: 实现清空搜索逻辑
 };
 
 onMounted(async () => {
@@ -82,25 +133,60 @@ onMounted(async () => {
     width: 100%;
     height: 88rpx;
     background-color: #fff;
+    display: flex;
     align-items: center;
     padding: 0 20rpx;
     justify-content: space-between;
     margin-bottom: 20rpx;
     color: #333;
+    position: relative;
+    z-index: 10;
 
     .search-box {
       flex: 1;
       background-color: #f0f2f6;
-      height: 90rpx;
+      height: 70rpx;
       border-radius: 8rpx;
+      display: flex;
       align-items: center;
+      padding: 0 20rpx;
+      margin-right: 20rpx;
     }
 
     .text {
       font-size: 35rpx;
+      color: #007aff;
+      white-space: nowrap;
     }
   }
+  .top {
+    background: rgba(255, 255, 255, 0.8);
+    height: 120rpx;
+    border-radius: 120rpx;
+    color: #000;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    box-shadow: 0rpx 2rpx 12rpx rgba(0, 0, 0, 0.1);
+    margin: 0 20rpx 20rpx 20rpx;
+    position: relative;
+    z-index: 5;
+    // backdrop-filter: blur(20rpx);
 
+    .box {
+      flex-direction: column;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 2rpx 12rpx;
+
+      .text {
+        font-size: 28rpx;
+        color: $text-font-color-2;
+      }
+    }
+  }
   .scrollNav {
     padding: 30rpx;
 
@@ -132,9 +218,11 @@ onMounted(async () => {
   .left-v {
     width: 200rpx;
     background-color: #f5f5f5;
-    height: 100vh;
+    height: calc(100vh - 250rpx);
     float: left;
     border-right: 1rpx solid black;
+    position: relative;
+    z-index: 1;
 
     view {
       @extend .baseClass;
@@ -152,9 +240,11 @@ onMounted(async () => {
   .right-v {
     width: 550rpx;
     background-color: #fff;
-    height: 100vh;
+    height: calc(100vh - 250rpx);
     float: right;
     overflow: scroll;
+    position: relative;
+    z-index: 1;
 
     .three-v {
       padding: 10rpx;
