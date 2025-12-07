@@ -12,8 +12,9 @@
     </view>
 
     <view @click="chosse">
-      <button size="mini">明码标价</button>
-    </view>
+<button type="primary" size="small" text="明码标价"></button>
+	
+          </view>
     <!--  -->
     <view class="chosse"  @click="chossetype"
       >选择类型:

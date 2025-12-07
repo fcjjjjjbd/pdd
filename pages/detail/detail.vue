@@ -16,7 +16,8 @@
         <mp-html :content="item.content" />
       </view>
 
-      <!-- 评论区 -->
+      <!-- 评论区1 -->
+       
       <view>
         <view class="comment" v-if="commentarr.length">
           <view class="list" v-for="item in commentarr" :key="item._id">
