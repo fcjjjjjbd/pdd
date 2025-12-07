@@ -97,7 +97,7 @@ const dataobj = ref({
   imageValue: [],
   temparr: [], //本地临时图片
   category_id: "",
-  total_fee: 2, // 添加分类名称字段
+  total_fee: 100, 
   phone: null,
   like_count: 0,
   wx_count:""
@@ -184,7 +184,7 @@ const goodsff = async () => {
     let order_no = uuid();
     dataobj.value = {
       ...dataobj.value,
-      total_fee: 1,
+      total_fee: 100,
       description: "分类对应广告费",
       order_no,
     };
@@ -202,7 +202,7 @@ const goodsff = async () => {
 
     payRef.value.createOrder({
       provider: "alipay",
-      total_fee: 1,
+      total_fee: 100,
       type: "goods",
       order_no,
       description: "测试支付",

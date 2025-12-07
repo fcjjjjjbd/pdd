@@ -108,12 +108,12 @@ const comment_content = ref("");
 
 const demoitem = ref({
   _id: "191e6d50337a9fca9fbe4cac",
-  content: "平台全国最低价,电话咨询预约上门",
+  content: "每一个全国最低低价,电话预约上门13453555442",
   phone: "13453555442",
   wx_count: "13453555442",
   imageValue: [],
   comment_count: 0,
-  like_count: 99,
+  like_count: 1,
   isLike: false
 });
 const messageInput = ref("");
@@ -165,6 +165,7 @@ const queryList = async (pageNo, pageSize) => {
           .done(),
         as: "userInfo",
       })
+      /*
       .lookup({
         from: "soup-like",
         let: {
@@ -184,6 +185,7 @@ const queryList = async (pageNo, pageSize) => {
           .done(),
         as: "likeState",
       })
+      */
       .project({
         isLike: $.cond({
           if: $.gt([$.arrayElemAt(["$likeState.length", 0]), 0]),

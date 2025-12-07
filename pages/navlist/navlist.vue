@@ -94,7 +94,10 @@ getCategory();
 const clickPromote = () => {
   routerTo("/pages_fena/appcenter/appcenter");
 };
-
+const clickFun = (id, index) => {
+  isActive.value = index;
+  rights.value = categoryList.value[index].goods;
+};
 const clickshare = () => {
   // 售后功能
   showToast("售后功能开发中...");

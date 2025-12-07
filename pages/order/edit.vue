@@ -2,19 +2,27 @@
 <template>
   <view class="home">
     <order-map> </order-map>
-    <view class="info" @click="goToAdvpayList()">
-      <uv-button
-        text="渐变色按钮"
-        size="normal"
-        color="linear-gradient(to right, rgb(66, 83, 216), rgb(213, 51, 186))"
-        >师傅广告费排名</uv-button
-      >
+    <view class="btn-group">
+      <view class="btn-item" @click="chosse">
+        <uv-button
+          text="渐变色按钮"
+          size="normal"
+          color="linear-gradient(to right, rgb(66, 83, 216), rgb(213, 51, 186))"
+          >明码标价</uv-button
+        >
+      </view>
+
+      <view class="btn-item" @click="goToAdvpayList()">
+        <uv-button
+          text="渐变色按钮"
+          size="normal"
+          color="linear-gradient(to right, rgb(66, 83, 216), rgb(213, 51, 186))"
+          >师傅排名</uv-button
+        >
+      </view>
     </view>
 
-    <view @click="chosse">
-<button type="primary" size="small" text="明码标价"></button>
-	
-          </view>
+   
     <!--  -->
     <view class="chosse"  @click="chossetype"
       >选择类型:
@@ -113,7 +121,7 @@
     </view>
     </uni-popup>
   </view>
-</template>
+  </template>
 
 <script setup>
 const mmbjydx = uniCloud.importObject("goods-backend", {
@@ -339,6 +347,17 @@ const goToAdvpayList = () => {
 <style lang="scss" scoped>
 .home {
   padding: 20rpx;
+
+  .btn-group {
+    display: flex;
+    justify-content: space-between;
+    gap: 20rpx;
+    margin-bottom: 30rpx;
+
+    .btn-item {
+      flex: 1;
+    }
+  }
 
   .info {
     margin-bottom: 30rpx;
