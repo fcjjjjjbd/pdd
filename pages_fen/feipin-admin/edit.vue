@@ -41,6 +41,7 @@
         placeholder-style="color:#a7a7a7"
         placeholder="1"
       />
+      
     </view>
     <view class="row-add">
       <text class="label">进价渠道</text>

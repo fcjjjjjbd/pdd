@@ -68,11 +68,34 @@ const clickPic = (index) => {
     >
   </view>
   <uni-load-more status="loading" v-else></uni-load-more>
+
+  <!-- 底部交互栏 -->
+  <view class="interaction-bar">
+    <view class="action-item">
+      <uni-icons type="search" size="24" color="#333"></uni-icons>
+      <text class="text">搜索</text>
+    </view>
+    <view class="action-item">
+      <uni-icons type="star" size="24" color="#333"></uni-icons>
+      <text class="text">收藏</text>
+    </view>
+    <view class="action-item">
+      <uni-icons type="chat" size="24" color="#333"></uni-icons>
+      <text class="text">资源列表</text>
+    </view>
+    <view class="action-item">
+      <uni-icons type="redo" size="24" color="#333"></uni-icons>
+      <text class="text">分享</text>
+    </view>
+  </view>
 </template>
 
 <style lang="scss" scoped>
 .page-wrap {
   padding: 24rpx 32rpx;
+  padding-bottom: calc(
+    120rpx + env(safe-area-inset-bottom)
+  ); // 增加底部内边距，防止被交互栏遮挡
   .news-title {
     font-size: 36rpx;
     font-weight: bolder;
@@ -119,6 +142,42 @@ const clickPic = (index) => {
         border-radius: 8rpx;
         background-color: #f0f0f0;
       }
+    }
+  }
+}
+
+// 底部交互栏样式
+.interaction-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100rpx;
+  background-color: #ffffff;
+  border-top: 1rpx solid #eeeeee;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding-bottom: env(safe-area-inset-bottom);
+  box-shadow: 0 -2rpx 10rpx rgba(0, 0, 0, 0.05);
+  z-index: 999;
+
+  .action-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    height: 100%;
+
+    .text {
+      font-size: 20rpx;
+      color: #333;
+      margin-top: 4rpx;
+    }
+
+    &:active {
+      opacity: 0.7;
     }
   }
 }
