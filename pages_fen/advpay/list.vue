@@ -1,4 +1,3 @@
-<!-- console.log() 居1思死0-->
 <template>
   <view class="self">
     <z-paging
@@ -15,9 +14,8 @@
       <template #loading>
         <uni-load-more status="loading"></uni-load-more>
       </template>
- <adv-card
-            :item="demoitem"
-              ></adv-card>
+
+      <adv-card :item="demoitem"></adv-card>
 
       <view class="content">
         <view class="item" v-for="(item, index) in Paylist" :key="item._id">
@@ -25,6 +23,8 @@
             :item="item"
             @clickPic="clickPicc(index)"
             @openpp="handleOpenComments"
+            @deleteItem="handleDeleteItem"
+            @editItem="handleEditItem"
           ></adv-card>
         </view>
       </view>
@@ -92,8 +92,6 @@
 </template>
 
 <script setup>
-import { showToast, isAdminRole } from "@/utils/common.js";
-import { priceFormat } from "@/utils/tools.js";
 import Myedit from "./child/mynews.vue";
 const db = uniCloud.database();
 const dbCmd = db.command;
@@ -104,18 +102,6 @@ const query = ref({
   category_id: "",
 });
 
-const comment_content = ref("");
-
-const demoitem = ref({
-  _id: "191e6d50337a9fca9fbe4cac",
-  content: "每一个全国最低低价,电话预约上门13453555442",
-  phone: "13453555442",
-  wx_count: "13453555442",
-  imageValue: [],
-  comment_count: 0,
-  like_count: 1,
-  isLike: false
-});
 const messageInput = ref("");
 const messageList = ref([
   {
@@ -129,10 +115,21 @@ const messageList = ref([
 ]);
 
 const paging = ref(null);
+const demoitem = ref({
+  _id: "191e6d50337a9fca9fbe4cac",
+  content: "每一个全国最低低价,电话预约上门13453555442",
+  phone: "13453555442",
+  wx_count: "13453555442",
+  imageValue: [],
+  comment_count: 0,
+  like_count: 1,
+  isLike: false,
+});
+
 const Paylist = ref([]); //列表
 const usePopup = ref(null);
 const payPopup = ref(null);
-const current_id = ref(uniCloud.getCurrentUserInfo().uid); // 当前用户id
+
 onLoad((e) => {
   let { id = null } = e;
   query.value.category_id = id;
@@ -201,8 +198,10 @@ const queryList = async (pageNo, pageSize) => {
         phone: 1,
         order_status: 1,
         userInfo: $.arrayElemAt(["$userInfo", 0]),
+        hotstatus: 1,
       })
       .sort({
+        hotstatus: -1,
         like_count: -1,
       })
       .skip(queryData.pageCurrent)
@@ -241,25 +240,15 @@ const closeMessageBoard = () => {
   usePopup.value.close();
 };
 
-const loadMessages = async () => {
-  try {
-    // 这里可以添加从数据库加载消息的逻辑
-    // const result = await db.collection('messages').get();
-    // messageList.value = result.data;
-  } catch (error) {
-    console.error("加载消息失败:", error);
+const handleDeleteItem = (deletedId) => {
+  const index = Paylist.value.findIndex((item) => item._id === deletedId);
+  if (index !== -1) {
+    Paylist.value.splice(index, 1);
   }
 };
 
-// 删除
-const removeid = async (id, index) => {
-  let res = await uni.showModal({
-    title: "是否删除",
-  });
-  if (res.confirm) {
-    await db.collection("pay-order").doc(id).remove(); //删除商品
-    Paylist.value.splice(index, 1);
-  }
+const handleEditItem = (editId) => {
+  routerTo(`/pages_fen/advpay/edit?id=${editId}`);
 };
 </script>
 
@@ -281,37 +270,6 @@ const removeid = async (id, index) => {
       font-weight: bold;
       border-bottom: 1rpx solid $text-font-color-3;
       padding-bottom: 10rpx;
-
-      .left {
-        display: flex;
-        align-items: center;
-        font-size: 24rpx;
-        color: $text-font-color-2;
-      }
-
-      .right {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-
-        .info {
-          @include flex-box();
-
-          .rights {
-            display: flex;
-
-            .item {
-              display: flex;
-              align-items: center;
-
-              margin-right: 5rpx;
-
-              .wen {
-              }
-            }
-          }
-        }
-      }
     }
   }
 
@@ -388,37 +346,6 @@ const removeid = async (id, index) => {
 
         &:last-child {
           border-bottom: none;
-        }
-
-        .status-tag {
-          flex-shrink: 0;
-          padding: 8rpx 16rpx;
-          border-radius: 8rpx;
-          font-size: 24rpx;
-          font-weight: 500;
-          margin-right: 20rpx;
-          min-width: 80rpx;
-          text-align: center;
-
-          &.pending {
-            background: #e3f2fd;
-            color: #1976d2;
-          }
-
-          &.completed {
-            background: #e8f5e8;
-            color: #2e7d32;
-          }
-
-          &.processing {
-            background: #fff3e0;
-            color: #f57c00;
-          }
-
-          &.cancelled {
-            background: #ffebee;
-            color: #d32f2f;
-          }
         }
 
         .message-content {

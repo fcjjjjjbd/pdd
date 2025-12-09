@@ -1,7 +1,6 @@
 <!-- create赋值,默认推荐,去除无用优化代码   -->
 <template>
   <view class="home">
-   
     <!-- 添加图片 -->
     <view class="picarr">
       <view
@@ -35,7 +34,7 @@
       class="font-30"
       maxlength="60"
     ></textarea>
-     <view class="phone">
+    <view class="phone">
       手机号
       <uv-input
         maxlength="11"
@@ -47,15 +46,24 @@
       ></uv-input>
     </view>
 
-     <view class="phone">
+    <view class="phone">
       微信号(选填)
       <uv-input
         maxlength="25"
-        v-model="dataobj.wx_count "
-         shape="circle"
-            placeholder="选填"
-       prefixIconStyle="font-size: 22rpx;color: #909399"
+        v-model="dataobj.wx_count"
+        shape="circle"
+        placeholder="选填"
+        prefixIconStyle="font-size: 22rpx;color: #909399"
       ></uv-input>
+    </view>
+
+    <view class="phone" v-if="isAdminRole()">
+      推荐
+      <switch
+        :checked="dataobj.hotstatus"
+        @change="(e) => (dataobj.hotstatus = e.detail.value)"
+        style="margin-left: 20rpx; transform: scale(0.8)"
+      />
     </view>
 
     <view v-if="isAdminRole()" class="likes">
@@ -97,10 +105,11 @@ const dataobj = ref({
   imageValue: [],
   temparr: [], //本地临时图片
   category_id: "",
-  total_fee: 100, 
+  total_fee: 100,
   phone: null,
   like_count: 0,
-  wx_count:""
+  wx_count: "",
+  hotstatus: false,
 });
 const pageType = computed(() => (unref(id) ? "修改" : "新增"));
 
