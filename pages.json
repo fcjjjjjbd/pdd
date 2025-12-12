@@ -126,7 +126,9 @@
     },
     {
       "path": "pages/self/self",
-      "navigationStyle": "custom"
+      "style": {
+        "navigationStyle": "custom"
+      }
     },
     {
       "path": "pages/search/search",
@@ -224,29 +226,9 @@
       "root": "pages_fena",
       "pages": [
         {
-          "path": "feipin/fenlei",
-          "style": {
-            "navigationBarTitleText": "上门回收"
-          }
-        },
-
-        {
-          "path": "gonggao/gonggao",
-          "style": {
-            "navigationBarTitleText": "投诉"
-          }
-        },
-
-        {
           "path": "love/love",
           "style": {
             "navigationBarTitleText": "收藏的商品"
-          }
-        },
-        {
-          "path": "jubao/jubao",
-          "style": {
-            "navigationBarTitleText": "举报"
           }
         },
 
@@ -264,12 +246,6 @@
         },
 
         {
-          "path": "user/edit",
-          "style": {
-            "navigationBarTitleText": ""
-          }
-        },
-        {
           "path": "historyarr/historyarr",
           "style": {
             "navigationBarTitleText": "历史记录"
@@ -279,13 +255,6 @@
           "path": "appcenter/appcenter",
           "style": {
             "navigationBarTitleText": "推广中心"
-          }
-        },
-
-        {
-          "path": "detail_price/detail_price",
-          "style": {
-            "navigationBarTitleText": ""
           }
         }
       ]
@@ -346,7 +315,9 @@
         },
         {
           "path": "open/open-news",
-          "navigationStyle": "custom"
+          "style": {
+            "navigationStyle": "custom"
+          }
         },
         {
           "path": "open/open-search",

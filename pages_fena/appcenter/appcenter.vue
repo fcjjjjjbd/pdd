@@ -15,46 +15,25 @@
             <view class="pic">
               <image
                 class="img"
-                src="https://mp-f18d6178-7240-42d3-98b7-73076158595e.cdn.bspapp.com/cloudstorage/image.png"
+                src="https://mp-f18d6178-7240-42d3-98b7-73076158595e.cdn.bspapp.com/cloudstorage/58524128-ec73-4e18-b6f1-fc62e65cbaaf.png"
                 mode="aspectFit"
               ></image>
             </view>
-          
-            
-            售后微信群: stayapp
-            <!-- <view class="pic">
+   <!-- <view class="pic">
               <image class="img" :src="dingpic" mode="aspectFit"></image>
             </view> -->
-
-                 </view>
-        
           </view>
-        </scroll-view>
+        </view>
+      </scroll-view>
     </view>
   </view>
 </template>
 
 <script setup>
 import { showToast } from "../../utils/common";
-const dsyunobj = uniCloud.importObject("goods-backend");
-const db = uniCloud.database();
 const infoPopup = ref(null);
 const advarr = ref([]); //公告数组
-const name1 = ref(null); //网站地址
-const imgurl = ref(null); //网站二维码
-const dingpic = ref(null); //钉钉二维码
 
-onLoad(async () => {
-  let {
-    result: { data, errCode },
-  } = await db.collection("demo_mix").doc("67048b620d2b31998cb1f356").get({
-    getOne: true,
-  });
-  console.log(data);
-  imgurl.value = data.yy;
-  name1.value = data.rr;
-  dingpic.value = data.tt;
-});
 // 推荐
 const clicktui = async () => {
   // 页面已删除，暂时禁用导航
@@ -63,15 +42,6 @@ const clicktui = async () => {
     icon: "none",
   });
 };
-
-//   公告列表
-const getAdver = async () => {
-  let { data, errCode } = await dsyunobj.usergg();
-
-  if (errCode != 0) return;
-  advarr.value = data;
-};
-getAdver();
 // 复制网站二维码
 const copyy = async (value) => {
   uni.setClipboardData({
