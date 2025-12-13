@@ -22,9 +22,8 @@
       </view>
     </view>
 
-   
     <!--  -->
-    <view class="chosse"  @click="chossetype"
+    <view class="chosse" @click="chossetype"
       >选择类型:
       <view class="typee">{{ fullName }}</view>
       <view><uni-icons type="right" size="30"></uni-icons></view>
@@ -105,23 +104,27 @@
               <uni-th align="center" width="50">操作</uni-th>
             </uni-tr>
             <uni-tr v-for="(item, index) in typeTableData.sku" :key="index">
-              <uni-td align="center" style="font-weight: bold; font-size: 32rpx;">{{ item.name }}</uni-td>
-              <uni-td align="center">{{ formatPrice(item.market_price) }}</uni-td>
-              <uni-td align="center">
-                <button size="mini" type="warn" @click="selectType(item)">
-                  选择
-                </button>
-              </uni-td>
+              <uni-td
+                align="center"
+                style="font-weight: bold; font-size: 32rpx"
+                >{{ item.name }}</uni-td
+              >
+              <uni-td align="center" style="color: red"
+                >{{ formatPrice(item.market_price) }}¥</uni-td
+              >
+              <uni-td @click="selectType(item)">
+                   选择
+                  </uni-td>
             </uni-tr>
           </uni-table>
         </view>
-     批发渠道
-     <view><uv-parse :content="typeTableData.goods_desc"></uv-parse>
-	    </view> 
-    </view>
+      <view>  预约上门13453555442</view>
+        批发渠道
+        <view><uv-parse :content="typeTableData.goods_desc"></uv-parse> </view>
+      </view>
     </uni-popup>
   </view>
-  </template>
+</template>
 
 <script setup>
 const mmbjydx = uniCloud.importObject("goods-backend", {
@@ -135,7 +138,7 @@ const goodsCloudObj = uniCloud.importObject("client-product-goods", {
 });
 
 import { showToast, isAdminRole, addressff, routerTo } from "@/utils/common.js";
-import{formatPrice}from"@/utils/format.js";
+import { formatPrice } from "@/utils/format.js";
 import dayjs from "dayjs";
 import { removeHtmlTags, convertImageToWebP } from "@/utils/tools.js";
 import { useOrderStore } from "@/stores/order.js";

@@ -15,8 +15,6 @@
         <uni-load-more status="loading"></uni-load-more>
       </template>
 
-      <adv-card :item="demoitem"></adv-card>
-
       <view class="content">
         <view class="item" v-for="(item, index) in Paylist" :key="item._id">
           <adv-card
@@ -115,16 +113,6 @@ const messageList = ref([
 ]);
 
 const paging = ref(null);
-const demoitem = ref({
-  _id: "191e6d50337a9fca9fbe4cac",
-  content: "每一个全国最低低价,电话预约上门13453555442",
-  phone: "13453555442",
-  wx_count: "13453555442",
-  imageValue: [],
-  comment_count: 0,
-  like_count: 1,
-  isLike: false,
-});
 
 const Paylist = ref([]); //列表
 const usePopup = ref(null);
