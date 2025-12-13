@@ -342,6 +342,12 @@
           "style": {
             "navigationBarTitleText": ""
           }
+        },
+        {
+          "path": "advpay/detail",
+          "style": {
+            "navigationBarTitleText": ""
+          }
         }
       ]
     }
