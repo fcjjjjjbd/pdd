@@ -117,6 +117,16 @@ const handleRemove = async () => {
 const submitForm = async () => {
   try {
     await unref(formRef).validate();
+    // 修复缺少经纬度报错，模拟默认经纬度
+    if (
+      !formData.value.location ||
+      (Array.isArray(formData.value.location) &&
+        formData.value.location.length === 0) ||
+      (typeof formData.value.location === "object" &&
+        Object.keys(formData.value.location).length === 0)
+    ) {
+      formData.value.location = [116.397428, 39.90923];
+    }
     showLoading({ mask: true });
 	    // #ifdef MP-WEIXIN 
 		 let { errCode } = unref(formData)._id
