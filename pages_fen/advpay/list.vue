@@ -19,6 +19,7 @@
         <view class="item" v-for="(item, index) in Paylist" :key="item._id">
           <adv-card
             :item="item"
+            @click="toDetail(item._id)"
             @clickPic="clickPicc(index)"
             @openpp="handleOpenComments"
             @deleteItem="handleDeleteItem"
@@ -138,6 +139,7 @@ const queryList = async (pageNo, pageSize) => {
       .collection("pdd-adv")
       .aggregate()
       .match(`category_id=='${unref(query).category_id}' && order_status != 0 `)
+      /*
       .lookup({
         from: "uni-id-users",
         let: {
@@ -150,7 +152,7 @@ const queryList = async (pageNo, pageSize) => {
           .done(),
         as: "userInfo",
       })
-      /*
+     
       .lookup({
         from: "soup-like",
         let: {
@@ -204,6 +206,13 @@ const queryList = async (pageNo, pageSize) => {
     paging.value.complete(false);
   }
 };
+// 跳转详情页
+const toDetail = (id) => {
+  uni.navigateTo({
+    url: `/pages_fen/advpay/detail?id=${id}`,
+  });
+};
+
 // 图片点击预览功能
 
 const clickPicc = (index) => {

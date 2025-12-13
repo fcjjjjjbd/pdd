@@ -200,7 +200,7 @@ const getAddress = async () => {
     console.log(err);
   }
 };
-getAddress();
+ getAddress();
 
 // 选择好图片
 const addpic = () => {

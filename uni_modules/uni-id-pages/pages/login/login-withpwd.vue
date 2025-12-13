@@ -45,8 +45,7 @@
     ></uni-id-pages-agreements>
     <button class="uni-btn" type="primary" @click="pwdLogin">永久登录</button>
     <view>新用户先注册,后登录</view>
-    <view>登录不上,换浏览器登录</view>
-    <!-- 忘记密码 -->
+      <!-- 忘记密码 -->
     <view class="link-box">
       <view v-if="!zhuce">
         <text class="link" @click="toRegister">{{
