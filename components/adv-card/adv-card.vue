@@ -3,8 +3,8 @@
 <script setup>
 import debounce from "lodash.debounce";
 const db = uniCloud.database();
-import { showToast, isAdminRole, routerTo } from "@/utils/common.js";
-const emit = defineEmits(["openpp", "clickPic", "deleteItem", "editItem"]); // 声明引入
+import { showToast } from "@/utils/common.js";
+const emit = defineEmits(["clickPic"]); // 声明引入
 const current_id = uniCloud.getCurrentUserInfo().uid; // 当前用户id
 
 const props = defineProps({
@@ -14,49 +14,13 @@ const props = defineProps({
   },
 });
 const newItem = ref(props.item); //不能直接修改父组件数据
-//点击id复制内容
-function copyy(value) {
-  if (!value) return;
-  uni.setClipboardData({
-    data: value,
-    success: (res) => {
-      console.log(res);
-    },
-    fail: (err) => {
-      console.log(err);
-    },
-  });
-}
 // 点击拨通电话
 const cliphone = (value) => {
   uni.makePhoneCall({
     phoneNumber: value,
   });
 };
-// 删除
-const delets = async (id) => {
-  const res = await uni.showModal({
-    title: "提示",
-    content: "确定要删除此项吗？",
-    confirmText: "删除",
-    cancelText: "取消",
-  });
 
-  if (res.confirm) {
-    try {
-      await db.collection("pdd-adv").doc(id).remove();
-      showToast("删除成功");
-      emit("deleteItem", id); // 通知父组件删除成功
-    } catch (error) {
-      console.error("删除失败", error);
-      showToast("删除失败");
-    }
-  }
-};
-
-const edit = (id) => {
-  emit("editItem", id); // 通知父组件进行编辑
-};
 // 收藏功能
 const clickLike = debounce(handleLike, 1000, {
   leading: true,
@@ -82,11 +46,6 @@ async function handleLike() {
   }
   newItem.value.isLike = !newItem.value.isLike;
 }
-
-//
-const comments = () => {
-  emit("openpp");
-};
 
 // 图片点击事件
 const handleImageClick = () => {
@@ -136,8 +95,11 @@ const demoo = async () => {};
             </view>
 
             <!-- 评论 -->
-            <view class="icon-item" @click.stop="comments">
+            <view class="icon-item">
               <uni-icons type="chat" size="22" color="#bfbfbf"></uni-icons>
+              <text v-if="newItem.comment_count > 0" class="count-text">
+                {{ newItem.comment_count }}
+              </text>
             </view>
           </view>
 
@@ -149,26 +111,6 @@ const demoo = async () => {};
             >
               <text>电话</text>
             </view>
-            <view
-              v-if="newItem.wx_count"
-              class="action-btn wechat"
-              @click.stop="copyy(newItem.wx_count)"
-            >
-              <text>微信</text>
-            </view>
-          </view>
-        </view>
-
-        <!-- 管理员区域 -->
-        <view class="admin-area" v-if="isAdminRole()">
-          <view class="admin-btn delete" @click.stop="delets(newItem._id)">
-            删除
-          </view>
-          <view
-            class="admin-btn edit"
-            @click.stop="routerTo('/pages_fen/advpay/edit?id=' + newItem._id)"
-          >
-            修改
           </view>
         </view>
       </view>
@@ -281,43 +223,10 @@ const demoo = async () => {};
             box-shadow: 0 4rpx 12rpx rgba(79, 172, 254, 0.3);
           }
 
-          &.wechat {
-            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-            box-shadow: 0 4rpx 12rpx rgba(67, 233, 123, 0.3);
-          }
-
           &:active {
             opacity: 0.9;
             transform: translateY(2rpx);
           }
-        }
-      }
-    }
-
-    .admin-area {
-      margin-top: 20rpx;
-      padding-top: 16rpx;
-      border-top: 1rpx dashed #eee;
-      display: flex;
-      justify-content: flex-end;
-      gap: 16rpx;
-
-      .admin-btn {
-        padding: 8rpx 24rpx;
-        border-radius: 8rpx;
-        font-size: 22rpx;
-        cursor: pointer;
-
-        &.delete {
-          background-color: #fff1f0;
-          color: #ff4d4f;
-          border: 1rpx solid #ffa39e;
-        }
-
-        &.edit {
-          background-color: #e6f7ff;
-          color: #1890ff;
-          border: 1rpx solid #91d5ff;
         }
       }
     }

@@ -51,7 +51,6 @@
             class="grid-item"
             v-for="(img, index) in detail.imageValue"
             :key="index"
-            @click="previewImage(index)"
           >
             <image
               :src="img.url || img.fileID"
@@ -59,6 +58,12 @@
               class="grid-img"
             ></image>
           </view>
+        </view>
+
+        <!-- 管理员区域 -->
+        <view class="admin-area" v-if="isAdminRole()">
+          <view class="admin-btn delete" @click="handleDelete"> 删除 </view>
+          <view class="admin-btn edit" @click="handleEdit"> 修改 </view>
         </view>
       </view>
 
@@ -154,6 +159,7 @@
 </template>
 
 <script setup>
+import { showToast, isAdminRole, routerTo } from "@/utils/common.js";
 const db = uniCloud.database();
 const dbCmd = db.command;
 const $ = dbCmd.aggregate;
@@ -184,68 +190,21 @@ const commentList = ref([
 onLoad((options) => {
   if (options.id) {
     id.value = options.id;
+    console.log(id);
     getDetail();
   }
 });
 
 const getDetail = async () => {
-   try {
-        let {
-      result: { errCode, data },
-    } = await db
+  loading.value = true;
+  try {
+    const res = await db
       .collection("pdd-adv")
       .aggregate()
-        .match({
+      .match({
         _id: id.value,
       })
-      .lookup({
-        from: "uni-id-users",
-        let: {
-          uid: "$user_id",
-        },
-        pipeline: [
-          {
-            $match: {
-              $expr: {
-                $eq: ["$_id", "$$uid"],
-              },
-            },
-          },
-          {
-            $project: {
-              nickname: 1,
-              avatar_file: 1,
-            },
-          },
-        ],
-        as: "userInfo",
-      })
-      .lookup({
-        from: "soup-like",
-        let: {
-          soupID: "$_id",
-        },
-        pipeline: $.pipeline()
-          .match(
-            dbCmd.expr(
-              $.and([
-                $.eq(["$like_type", 0]),
-                $.eq(["$$soupID", "$soup_id"]),
-                $.eq(["$user_id", current_id.value]),
-              ])
-            )
-          )
-          .count("length")
-          .done(),
-        as: "likeState",
-      })
-      // */
       .project({
-        isLike: $.cond({
-          if: $.gt([$.arrayElemAt(["$likeState.length", 0]), 0]),
-          then: true,
-          else: false,
-        }),
         like_count: 1,
         wx_count: 1,
         comment_count: 1,
@@ -256,22 +215,14 @@ const getDetail = async () => {
         order_status: 1,
         userInfo: $.arrayElemAt(["$userInfo", 0]),
         hotstatus: 1,
+        createTime: 1,
       })
-      .sort({
-        hotstatus: -1,
-        like_count: -1,
-      })
-      .skip(queryData.pageCurrent)
-      .limit(queryData.pageSize)
       .end();
 
-    if (errCode !== 0) return paging.value.complete(false);
-    paging.value.complete(data);
-
-    console.log(data);
-  
-
- 
+    if (res.result.data && res.result.data.length > 0) {
+      detail.value = res.result.data[0];
+      checkFavorite();
+    }
   } catch (e) {
     console.error(e);
     uni.showToast({
@@ -281,16 +232,6 @@ const getDetail = async () => {
   } finally {
     loading.value = false;
   }
-};
-
-const previewImage = (current) => {
-  if (!detail.value.imageValue || !Array.isArray(detail.value.imageValue))
-    return;
-  const urls = detail.value.imageValue.map((item) => item.url || item.fileID);
-  uni.previewImage({
-    current,
-    urls,
-  });
 };
 
 const toggleFavorite = () => {
@@ -340,6 +281,30 @@ const handleReport = () => {
   });
 };
 
+const handleDelete = async () => {
+  const res = await uni.showModal({
+    title: "提示",
+    content: "确定要删除此项吗？",
+    confirmText: "删除",
+    cancelText: "取消",
+  });
+
+  if (res.confirm) {
+    try {
+      await db.collection("pdd-adv").doc(id.value).remove();
+      showToast("删除成功");
+      uni.navigateBack();
+    } catch (error) {
+      console.error("删除失败", error);
+      showToast("删除失败");
+    }
+  }
+};
+
+const handleEdit = () => {
+  routerTo(`/pages_fen/advpay/edit?id=${id.value}`);
+};
+
 const submitComment = () => {
   if (!commentContent.value.trim()) {
     return uni.showToast({ title: "请输入评论内容", icon: "none" });
@@ -365,7 +330,9 @@ const submitComment = () => {
 .detail-container {
   min-height: 100vh;
   background-color: #f8f8f8;
-  padding-bottom: 120rpx; /* 为底部输入框留出空间 */
+  padding-bottom: calc(
+    120rpx + env(safe-area-inset-bottom)
+  ); /* 为底部固定操作栏留出空间 */
 }
 
 .loading-box,
@@ -446,15 +413,50 @@ const submitComment = () => {
       }
     }
   }
+
+  .admin-area {
+    margin-top: 30rpx;
+    padding-top: 20rpx;
+    border-top: 1rpx dashed #eee;
+    display: flex;
+    justify-content: flex-end;
+    gap: 20rpx;
+
+    .admin-btn {
+      padding: 10rpx 30rpx;
+      border-radius: 8rpx;
+      font-size: 24rpx;
+      cursor: pointer;
+
+      &.delete {
+        background-color: #fff1f0;
+        color: #ff4d4f;
+        border: 1rpx solid #ffa39e;
+      }
+
+      &.edit {
+        background-color: #e6f7ff;
+        color: #1890ff;
+        border: 1rpx solid #91d5ff;
+      }
+    }
+  }
 }
 
 /* 3. 功能操作区 */
 .action-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
   background-color: #fff;
   padding: 20rpx 0;
   display: flex;
   justify-content: space-around;
-  margin-bottom: 20rpx;
+  z-index: 999;
+  border-top: 1rpx solid #eee;
+  padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
+  box-sizing: border-box;
 
   .action-item {
     display: flex;
@@ -547,20 +549,15 @@ const submitComment = () => {
   }
 }
 
-/* 底部输入框 */
+/* 底部输入框 - 改为跟随页面滚动，不固定 */
 .footer-input-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
   background-color: #fff;
   border-top: 1rpx solid #eee;
   padding: 20rpx 30rpx;
   display: flex;
   align-items: center;
-  z-index: 999;
   box-sizing: border-box;
-  padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
+  /* 移除 fixed 定位，使其位于页面底部 */
 
   .input-wrapper {
     flex: 1;

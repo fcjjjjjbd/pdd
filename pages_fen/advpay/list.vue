@@ -21,7 +21,6 @@
             :item="item"
             @click="toDetail(item._id)"
             @clickPic="clickPicc(index)"
-            @openpp="handleOpenComments"
             @deleteItem="handleDeleteItem"
             @editItem="handleEditItem"
           ></adv-card>
@@ -32,59 +31,6 @@
       </view>
       <uni-popup ref="payPopup" type="bottom">
         <Myedit :category-id="query.category_id" />
-      </uni-popup>
-      <!--留言板-->
-      <uni-popup ref="usePopup" type="bottom">
-        <view class="message-board">
-          <!-- 头部 -->
-          <view class="message-header">
-            <view class="header-title">对师傅评价</view>
-            <view class="close-btn" @click="closeMessageBoard">
-              <uni-icons type="close" size="20" color="#666"></uni-icons>
-            </view>
-          </view>
-
-          <!-- 消息列表 -->
-          <scroll-view class="message-list" scroll-y="true">
-            <view
-              class="message-item"
-              v-for="(item, index) in messageList"
-              :key="index"
-            >
-              <view class="nickname-tag"> {{ item.nickname }}: </view>
-              <view class="message-content">
-                {{ item.content }}
-              </view>
-            </view>
-
-            <!-- 空状态 -->
-            <view class="empty-state" v-if="messageList.length === 0">
-              <text class="empty-text">暂无消息</text>
-            </view>
-          </scroll-view>
-
-          <!-- 输入区域 -->
-          <view class="input-area">
-            <view class="input-wrapper">
-              <uni-easyinput
-                v-model="messageInput"
-                placeholder="请输入消息内容..."
-                :maxlength="100"
-                :auto-height="true"
-                class="message-input"
-              ></uni-easyinput>
-              <view class="char-count">{{ messageInput.length }}/100</view>
-            </view>
-            <view
-              class="send-btn"
-              @click="submitMessage"
-              :class="{ active: messageInput.trim() }"
-            >
-              发送
-            </view>
-          </view>
-        </view>
-        <view class="safe-area-bottom"></view>
       </uni-popup>
     </z-paging>
   </view>
@@ -101,22 +47,9 @@ const query = ref({
   category_id: "",
 });
 
-const messageInput = ref("");
-const messageList = ref([
-  {
-    nickname: "张三",
-    content: "科技一全链APP软件工程师在哪里",
-  },
-  {
-    nickname: "李四",
-    content: "科技一全链APP软件工程师哈哈哈",
-  },
-]);
-
 const paging = ref(null);
 
 const Paylist = ref([]); //列表
-const usePopup = ref(null);
 const payPopup = ref(null);
 
 onLoad((e) => {
@@ -223,18 +156,8 @@ const clickPicc = (index) => {
 };
 // 提交评论
 
-const submitMessage = () => {};
 const addpp = () => {
   payPopup.value.open();
-};
-
-const handleOpenComments = () => {
-  usePopup.value.open();
-};
-
-// 消息板相关方法
-const closeMessageBoard = () => {
-  usePopup.value.close();
 };
 
 const handleDeleteItem = (deletedId) => {
@@ -297,126 +220,6 @@ const handleEditItem = (editId) => {
       font-size: 32rpx;
       margin-left: 190rpx;
     }
-  }
-
-  // 消息板样式
-  .message-board {
-    background: #fff;
-    border-radius: 20rpx 20rpx 0 0;
-    max-height: 80vh;
-    display: flex;
-    flex-direction: column;
-
-    .message-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 30rpx 40rpx 20rpx;
-      border-bottom: 1rpx solid #f0f0f0;
-
-      .header-title {
-        font-size: 36rpx;
-        font-weight: 600;
-        color: #333;
-      }
-
-      .close-btn {
-        padding: 10rpx;
-        border-radius: 50%;
-        background: #f8f8f8;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-    }
-
-    .message-list {
-      flex: 1;
-      padding: 20rpx 40rpx;
-      max-height: 60vh;
-
-      .message-item {
-        display: flex;
-        align-items: flex-start;
-        padding: 24rpx 0;
-        border-bottom: 1rpx solid #f5f5f5;
-
-        &:last-child {
-          border-bottom: none;
-        }
-
-        .message-content {
-          flex: 1;
-          font-size: 28rpx;
-          color: #333;
-          line-height: 1.6;
-          word-break: break-all;
-        }
-      }
-
-      .empty-state {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 300rpx;
-
-        .empty-text {
-          font-size: 28rpx;
-          color: #999;
-        }
-      }
-    }
-
-    .input-area {
-      display: flex;
-      align-items: flex-end;
-      padding: 20rpx 40rpx 40rpx;
-      border-top: 1rpx solid #f0f0f0;
-      background: #fff;
-
-      .input-wrapper {
-        flex: 1;
-        margin-right: 20rpx;
-        position: relative;
-
-        .message-input {
-          background: #f8f8f8;
-          border-radius: 20rpx;
-          padding: 20rpx 24rpx;
-          font-size: 28rpx;
-          min-height: 80rpx;
-          max-height: 200rpx;
-        }
-
-        .char-count {
-          position: absolute;
-          bottom: -30rpx;
-          right: 10rpx;
-          font-size: 22rpx;
-          color: #999;
-        }
-      }
-
-      .send-btn {
-        padding: 20rpx 32rpx;
-        background: #e0e0e0;
-        color: #999;
-        border-radius: 20rpx;
-        font-size: 28rpx;
-        font-weight: 500;
-        transition: all 0.3s ease;
-
-        &.active {
-          background: #007aff;
-          color: #fff;
-        }
-      }
-    }
-  }
-
-  .safe-area-bottom {
-    height: env(safe-area-inset-bottom);
-    background: #fff;
   }
 }
 </style>
