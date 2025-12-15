@@ -97,33 +97,18 @@
       <!-- 分隔条 -->
       <view class="divider"></view>
 
-      <!-- 4. 评论区 -->
-      <view class="comment-section">
-        <view class="section-title">全部评论 ({{ commentList.length }})</view>
-
-        <view class="comment-list">
-          <view
-            class="comment-item"
-            v-for="(comment, index) in commentList"
-            :key="index"
-          >
-            <image
-              class="comment-avatar"
-              :src="comment.avatar || '/static/user-default.png'"
-              mode="aspectFill"
-            ></image>
-            <view class="comment-right">
-              <view class="comment-header">
-                <text class="comment-user">{{ comment.nickname }}</text>
-                <text class="comment-time">{{ comment.time }}</text>
-              </view>
-              <text class="comment-text">{{ comment.content }}</text>
+     <!-- 评论区1 -->  
+      <view>
+        <view class="comment" v-if="commentarr.length">
+          <view class="list" v-for="item in commentarr" :key="item._id">
+            <view class="row">
+              <comment-item :item="item"></comment-item>
             </view>
           </view>
+        </view>
 
-          <view v-if="commentList.length === 0" class="empty-comment">
-            <text>暂无评论，快来抢沙发吧~</text>
-          </view>
+        <view v-if="!nodata && !commentarr.length" style="padding: 60rpx">
+          <uni-load-more status="loading"></uni-load-more>
         </view>
       </view>
 
