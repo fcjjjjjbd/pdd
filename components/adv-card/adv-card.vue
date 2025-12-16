@@ -13,7 +13,7 @@ const props = defineProps({
     default: () => ({}),
   },
 });
-const newItem = ref(props.item); //不能直接修改父组件数据
+const newItem = ref(props.item);
 // 点击拨通电话
 const cliphone = (value) => {
   uni.makePhoneCall({
@@ -21,31 +21,7 @@ const cliphone = (value) => {
   });
 };
 
-// 收藏功能
-const clickLike = debounce(handleLike, 1000, {
-  leading: true,
-  trailing: false,
-});
 
-async function handleLike() {
-  if (newItem.value.isLike) {
-    newItem.value.like_count--;
-    db.collection("soup-like")
-      .where({
-        soup_id: newItem.value._id,
-        user_id: current_id,
-        like_type: 0,
-      })
-      .remove();
-  } else {
-    newItem.value.like_count++;
-    db.collection("soup-like").add({
-      soup_id: newItem.value._id,
-      like_type: 0,
-    });
-  }
-  newItem.value.isLike = !newItem.value.isLike;
-}
 
 // 图片点击事件
 const handleImageClick = () => {

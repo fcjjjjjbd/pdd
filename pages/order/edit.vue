@@ -3,6 +3,15 @@
   <view class="home">
     <order-map> </order-map>
     <view class="btn-group">
+      <view class="btn-item" @click="goToAdvpayList()">
+        <uv-button
+          text="渐变色按钮"
+          size="normal"
+          color="linear-gradient(to right, rgb(66, 83, 216), rgb(213, 51, 186))"
+          >师傅排名</uv-button
+        >
+      </view>
+
       <view class="btn-item" @click="chosse">
         <uv-button
           text="渐变色按钮"
@@ -12,15 +21,7 @@
         >
       </view>
 
-      <view class="btn-item" @click="goToAdvpayList()">
-        <uv-button
-          text="渐变色按钮"
-          size="normal"
-          color="linear-gradient(to right, rgb(66, 83, 216), rgb(213, 51, 186))"
-          >师傅排名</uv-button
-        >
-      </view>
-    </view>
+          </view>
 
     <!--  -->
     <view class="chosse" @click="chossetype"

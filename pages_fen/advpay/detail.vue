@@ -1,103 +1,42 @@
 <template>
-  <view class="detail-container">
-    <template v-if="loading">
-      <view class="loading-box">
+  <view class="home" v-if="item">
+    <z-paging
+      ref="paging"
+      v-model="commentarr"
+      @query="queryList"
+      :default-page-size="6"
+    >
+      <template #loading>
         <uni-load-more status="loading"></uni-load-more>
-      </view>
-    </template>
+      </template>
 
-    <template v-else-if="detail._id">
-      <!-- 1. 页面头部区域 -->
-      <view class="header">
-        <view class="user-info">
-          <image
-            class="avatar"
-            :src="
-              detail.userInfo &&
-              detail.userInfo[0] &&
-              detail.userInfo[0].avatar_file
-                ? detail.userInfo[0].avatar_file.url
-                : '/static/user-default.png'
-            "
-            mode="aspectFill"
-          ></image>
-          <view class="info-right">
-            <text class="nickname">{{
-              detail.userInfo && detail.userInfo[0]
-                ? detail.userInfo[0].nickname
-                : "匿名用户"
-            }}</text>
-            <uni-dateformat
-              :date="detail.createTime"
-              format="yyyy-MM-dd hh:mm"
-              class="time"
-            ></uni-dateformat>
-          </view>
+      <view class="main">
+        <mp-html :content="item.content" />
+      </view>
+
+      <!-- 作者信息 -->
+      <view class="author-card">
+        <image
+          class="avatar"
+          :src="
+            item.userInfo &&
+            item.userInfo.avatar_file &&
+            item.userInfo.avatar_file.url
+              ? item.userInfo.avatar_file.url
+              : '/static/user-default.png'
+          "
+          mode="aspectFill"
+        ></image>
+        <view class="info">
+          <text class="nickname">{{
+            (item.userInfo && item.userInfo.nickname) || "匿名用户"
+          }}</text>
+          <text class="tip">发布者</text>
         </view>
       </view>
 
-      <!-- 2. 内容展示区 -->
-      <view class="content-area">
-        <view class="article-content">
-          <rich-text :nodes="detail.content"></rich-text>
-        </view>
+      <!-- 评论区1 -->
 
-        <!-- 图片瀑布流 -->
-        <view
-          class="image-grid"
-          v-if="detail.imageValue && detail.imageValue.length > 0"
-        >
-          <view
-            class="grid-item"
-            v-for="(img, index) in detail.imageValue"
-            :key="index"
-          >
-            <image
-              :src="img.url || img.fileID"
-              mode="aspectFill"
-              class="grid-img"
-            ></image>
-          </view>
-        </view>
-
-        <!-- 管理员区域 -->
-        <view class="admin-area" v-if="isAdminRole()">
-          <view class="admin-btn delete" @click="handleDelete"> 删除 </view>
-          <view class="admin-btn edit" @click="handleEdit"> 修改 </view>
-        </view>
-      </view>
-
-      <!-- 3. 功能操作区 -->
-      <view class="action-bar">
-        <view class="action-item" @click="toggleFavorite">
-          <uni-icons
-            :type="isFavorite ? 'star-filled' : 'star'"
-            size="24"
-            :color="isFavorite ? '#ffca3e' : '#666'"
-          ></uni-icons>
-          <text>{{ isFavorite ? "已收藏" : "收藏" }}</text>
-        </view>
-
-        <view class="action-item" @click="makePhoneCall" v-if="detail.phone">
-          <uni-icons type="phone-filled" size="24" color="#007aff"></uni-icons>
-          <text>拨打电话</text>
-        </view>
-
-        <view class="action-item" @click="copyWechat" v-if="detail.wx_count">
-          <uni-icons type="weixin" size="24" color="#4cd964"></uni-icons>
-          <text>复制微信</text>
-        </view>
-
-        <view class="action-item" @click="handleReport">
-          <uni-icons type="info" size="24" color="#dd524d"></uni-icons>
-          <text>举报</text>
-        </view>
-      </view>
-
-      <!-- 分隔条 -->
-      <view class="divider"></view>
-
-     <!-- 评论区1 -->  
       <view>
         <view class="comment" v-if="commentarr.length">
           <view class="list" v-for="item in commentarr" :key="item._id">
@@ -108,458 +47,311 @@
         </view>
 
         <view v-if="!nodata && !commentarr.length" style="padding: 60rpx">
-          <uni-load-more status="loading"></uni-load-more>
         </view>
       </view>
+      <!-- 底部图标栏 -->
+      <template #bottom>
+        <adv-action-bar
+          :detail="item"
+          @comment="handelComment"
+        ></adv-action-bar>
+      </template>
+      <view class="safe-area-bottom"></view>
+    </z-paging>
 
-      <!-- 底部占位，防止输入框遮挡 -->
-      <view class="footer-placeholder"></view>
-    </template>
-
-    <template v-else>
-      <view class="error-box">
-        <text>内容不存在或已被删除</text>
-      </view>
-    </template>
-
-    <!-- 底部评论输入框 -->
-    <view class="footer-input-bar">
-      <view class="input-wrapper">
-        <uni-easyinput
-          v-model="commentContent"
-          placeholder="说点什么吧..."
-          :inputBorder="false"
-          confirmType="send"
-          @confirm="submitComment"
-        ></uni-easyinput>
-      </view>
-      <view
-        class="send-btn"
-        @click="submitComment"
-        :class="{ active: commentContent.trim() }"
-        >发送</view
-      >
-    </view>
+    <!-- 评论输入框弹窗 -->
+    <uni-popup type="bottom" ref="commentpp">
+      <comment-replay
+        ref="child"
+        :source="source"
+        @success="replySuccess"
+      ></comment-replay>
+    </uni-popup>
   </view>
 </template>
 
 <script setup>
-import { showToast, isAdminRole, routerTo } from "@/utils/common.js";
+import { showToast, isAdminRole } from "@/utils/common.js";
 const db = uniCloud.database();
 const dbCmd = db.command;
 const $ = dbCmd.aggregate;
+const item = ref();
+const nodata = ref(false);
+const goodsydx = uniCloud.importObject("goods_item");
+const current_id = uniCloud.getCurrentUserInfo().uid; // 当前用户id
 
-const id = ref("");
-const detail = ref({});
-const loading = ref(true);
-const isFavorite = ref(false);
+const commentpp = ref(null);
+const child = ref(null);
+const source = ref({});
+const commentcs = ref({});
+const paging = ref(null);
+const commentarr = ref([]); // 评论数组
 
-// 评论相关
-const commentContent = ref("");
-const commentList = ref([
-  // 模拟数据
-  {
-    nickname: "热心网友",
-    avatar: "",
-    content: "看起来很不错！",
-    time: "2023-12-12 10:00",
-  },
-  {
-    nickname: "路人甲",
-    avatar: "",
-    content: "支持一下楼主",
-    time: "2023-12-12 10:30",
-  },
-]);
-
-onLoad((options) => {
-  if (options.id) {
-    id.value = options.id;
-    console.log(id);
-    getDetail();
-  }
+const jgPopup = ref(null); //crud价格弹窗
+// 详情页id
+let detailid;
+onLoad((e) => {
+  detailid = e.id;
+  console.log(detailid);
+  getdata();
 });
 
-const getDetail = async () => {
-  loading.value = true;
-  try {
-    const res = await db
-      .collection("pdd-adv")
-      .aggregate()
-      .match({
-        _id: id.value,
-      })
-      .project({
-        like_count: 1,
-        wx_count: 1,
-        comment_count: 1,
-        content: 1,
-        imageValue: 1,
-        order_no: 1,
-        phone: 1,
-        order_status: 1,
-        userInfo: $.arrayElemAt(["$userInfo", 0]),
-        hotstatus: 1,
-        createTime: 1,
-      })
-      .end();
-
-    if (res.result.data && res.result.data.length > 0) {
-      detail.value = res.result.data[0];
-      checkFavorite();
-    }
-  } catch (e) {
-    console.error(e);
-    uni.showToast({
-      title: "获取详情失败",
-      icon: "none",
-    });
-  } finally {
-    loading.value = false;
-  }
+// 举报页面
+const tousu = (idd) => {
+  uni.navigateTo({
+    url: "/pages_fena/jubao/jubao?id=" + idd,
+  });
 };
 
-const toggleFavorite = () => {
-  isFavorite.value = !isFavorite.value;
+//  提交评论后事件
+const replySuccess = () => {
+  showToast("发布评论成功");
+  commentpp.value.close();
+  paging.value.refresh();
+};
+
+// 删除立即渲染
+uni.$on("deleter", () => {
   uni.showToast({
-    title: isFavorite.value ? "收藏成功" : "已取消收藏",
-    icon: "none",
+    title: "删除了",
+    duration: 1000,
   });
+  nextTick(() => {
+    paging.value.refresh();
+  });
+});
+// 获取item评论
+const queryList = async (pageNo, pageSize) => {
+  return;
+  getcomment(pageNo, pageSize);
 };
-
-const checkFavorite = () => {
-  // 这里应该调用API检查是否收藏，暂时随机模拟
-  isFavorite.value = false;
-};
-
-const makePhoneCall = () => {
-  if (detail.value.phone) {
-    uni.makePhoneCall({
-      phoneNumber: String(detail.value.phone),
-    });
-  }
-};
-
-const copyWechat = () => {
-  if (detail.value.wx_count) {
-    uni.setClipboardData({
-      data: detail.value.wx_count,
-      success: () => {
-        uni.showToast({
-          title: "微信已复制",
-          icon: "none",
-        });
+const getcomment = async (pageNo, pageSize) => {
+  let skip = (pageNo - 1) * pageSize;
+  let {
+    result: { errCode, data },
+  } = await db
+    .collection("goods_comment")
+    .aggregate()
+    .match({
+      soup_id: detailid,
+      comment_type: 0,
+    })
+    //  每个评论头像昵称
+    .lookup({
+      from: "uni-id-users",
+      let: {
+        uid: "$user_id",
       },
-    });
+      pipeline: $.pipeline()
+        .match(dbCmd.expr($.eq(["$_id", "$$uid"])))
+        .project({
+          username: 1,
+          avatar: 1,
+        })
+        .done(),
+      as: "userInfo",
+    })
+    //  每个评论回复的个数
+    .lookup({
+      from: "goods_comment",
+      let: {
+        uuid: "$_id",
+      },
+      pipeline: $.pipeline()
+        .match(dbCmd.expr($.eq(["$reply_parent_id", "$$uuid"])))
+        .count("length")
+        .done(),
+      as: "childcount",
+    })
+    //  每个评论的回复的2个信息
+    .lookup({
+      from: "goods_comment",
+      let: {
+        uuid: "$_id",
+      },
+      pipeline: $.pipeline()
+        .match(dbCmd.expr($.eq(["$reply_parent_id", "$$uuid"])))
+        .project({
+          comment_content: 1,
+          user_id: 1,
+        })
+        .lookup({
+          from: "uni-id-users",
+          let: {
+            uid: "$user_id",
+          },
+          pipeline: $.pipeline()
+            .match(dbCmd.expr($.eq(["$_id", "$$uid"])))
+            .project({
+              username: 1,
+            })
+            .done(),
+          as: "userInfo",
+        })
+        .sort({
+          like_count: -1,
+        })
+        .limit(2)
+        .project({
+          username: $.arrayElemAt(["$userInfo.username", 0]),
+          comment_content: 1,
+        })
+        .done(),
+      as: "child2info",
+    })
+    // 当前用户对item评论bool点赞
+    .lookup({
+      from: "goods_like",
+      let: {
+        commentid: "$_id",
+      },
+      pipeline: $.pipeline()
+        .match(
+          dbCmd.expr(
+            $.and([
+              $.eq(["$comment_id", "$$commentid"]),
+              $.eq(["$user_id", current_id]),
+            ])
+          )
+        )
+        .count("length")
+        .done(),
+      as: "likeInfo",
+    })
+
+    .project({
+      likeInfo: $.cond({
+        if: $.gt([$.arrayElemAt(["$likeInfo.length", 0]), 0]),
+        then: true,
+        else: false,
+      }),
+      childcount: $.arrayElemAt(["$childcount.length", 0]),
+      child2info: 1,
+      comment_date: 1,
+      userInfo: $.arrayElemAt(["$userInfo", 0]),
+      bool_remove: 1,
+      comment_content: 1,
+      comment_type: 1,
+      comment_count: 1,
+      like_count: 1,
+      soup_id: 1,
+    })
+    .sort({
+      comment_date: -1,
+    })
+    .skip(skip)
+    .limit(pageSize)
+    .end();
+  if (data.length == 0) nodata.value = true;
+  if (errCode != 0) return;
+  console.log(data);
+  paging.value.complete(data);
+};
+// 接受回复页面点赞事件
+uni.$on("like", (e) => {
+  let index = commentarr.value.findIndex((item) => item._id == e._id);
+  if (index < 0) return;
+  commentarr.value[index] = {
+    ...commentarr.value[index],
+    ...e,
+  };
+});
+// 詳情頁
+const getdata = async () => {
+  let {
+    result: { errCode, data },
+  } = await db
+    .collection("pdd-adv")
+    .aggregate()
+    .match({
+      _id: detailid,
+    })
+
+    .project({
+      isLike: $.cond({
+        if: $.gt([$.arrayElemAt(["$likeState.length", 0]), 0]),
+        then: true,
+        else: false,
+      }),
+      like_count: 1,
+      wx_count: 1,
+      comment_count: 1,
+      content: 1,
+      imageValue: 1,
+      order_no: 1,
+      phone: 1,
+      order_status: 1,
+      userInfo: $.arrayElemAt(["$userInfo", 0]),
+      hotstatus: 1,
+    })
+
+    .end();
+  if (errCode != 0) return showToast("信息有误，请重新刷新", "none");
+
+  console.log(data);
+  if (data.length > 0) {
+    item.value = data[0];
+    source.value = {
+      soup_id: data[0]._id,
+      comment_type: 0,
+    };
   }
 };
 
-const handleReport = () => {
-  uni.showActionSheet({
-    itemList: ["垃圾广告", "违法违规", "涉黄涉暴", "其他"],
-    success: (res) => {
-      uni.showToast({
-        title: "举报已提交",
-        icon: "none",
-      });
-    },
-  });
-};
-
-const handleDelete = async () => {
-  const res = await uni.showModal({
-    title: "提示",
-    content: "确定要删除此项吗？",
-    confirmText: "删除",
-    cancelText: "取消",
-  });
-
-  if (res.confirm) {
-    try {
-      await db.collection("pdd-adv").doc(id.value).remove();
-      showToast("删除成功");
-      uni.navigateBack();
-    } catch (error) {
-      console.error("删除失败", error);
-      showToast("删除失败");
-    }
-  }
-};
-
-const handleEdit = () => {
-  routerTo(`/pages_fen/advpay/edit?id=${id.value}`);
-};
-
-const submitComment = () => {
-  if (!commentContent.value.trim()) {
-    return uni.showToast({ title: "请输入评论内容", icon: "none" });
-  }
-
-  // 模拟发送
-  uni.showLoading({ title: "发送中" });
-  setTimeout(() => {
-    uni.hideLoading();
-    commentList.value.unshift({
-      nickname: "我",
-      avatar: "",
-      content: commentContent.value,
-      time: new Date().toLocaleString(),
-    });
-    commentContent.value = "";
-    uni.showToast({ title: "评论成功", icon: "none" });
-  }, 500);
+// 显示提交评论弹窗
+const handelComment = async () => {
+  await commentpp.value.open();
+  child.value.focusFn();
 };
 </script>
 
 <style lang="scss" scoped>
-.detail-container {
-  min-height: 100vh;
-  background-color: #f8f8f8;
-  padding-bottom: calc(
-    120rpx + env(safe-area-inset-bottom)
-  ); /* 为底部固定操作栏留出空间 */
+.home {
+  padding: 30rpx;
 }
 
-.loading-box,
-.error-box {
+.main {
+  text {
+    line-height: 1.2;
+    font-size: 40rpx;
+  }
+}
+
+.author-card {
   display: flex;
-  justify-content: center;
   align-items: center;
-  height: 50vh;
-  color: #999;
-}
+  padding: 30rpx 0;
+  margin-top: 20rpx;
+  border-top: 1rpx solid #f5f5f5;
+  border-bottom: 1rpx solid #f5f5f5;
 
-/* 1. 头部区域 */
-.header {
-  background-color: #fff;
-  padding: 30rpx;
-  margin-bottom: 20rpx;
-
-  .user-info {
-    display: flex;
-    align-items: center;
-
-    .avatar {
-      width: 80rpx;
-      height: 80rpx;
-      border-radius: 50%;
-      margin-right: 20rpx;
-      background-color: #eee;
-    }
-
-    .info-right {
-      display: flex;
-      flex-direction: column;
-
-      .nickname {
-        font-size: 32rpx;
-        font-weight: bold;
-        color: #333;
-        margin-bottom: 6rpx;
-      }
-
-      .time {
-        font-size: 24rpx;
-        color: #999;
-      }
-    }
-  }
-}
-
-/* 2. 内容区域 */
-.content-area {
-  background-color: #fff;
-  padding: 30rpx;
-  margin-bottom: 20rpx;
-
-  .article-content {
-    font-size: 30rpx;
-    color: #333;
-    line-height: 1.6;
-    margin-bottom: 30rpx;
+  .avatar {
+    width: 80rpx;
+    height: 80rpx;
+    border-radius: 50%;
+    margin-right: 20rpx;
+    background-color: #eee;
   }
 
-  .image-grid {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-
-    .grid-item {
-      width: 48%; /* 每行2列，留出间隙 */
-      height: 300rpx;
-      margin-bottom: 20rpx;
-      border-radius: 10rpx;
-      overflow: hidden;
-      background-color: #f0f0f0;
-
-      .grid-img {
-        width: 100%;
-        height: 100%;
-      }
-    }
-  }
-
-  .admin-area {
-    margin-top: 30rpx;
-    padding-top: 20rpx;
-    border-top: 1rpx dashed #eee;
-    display: flex;
-    justify-content: flex-end;
-    gap: 20rpx;
-
-    .admin-btn {
-      padding: 10rpx 30rpx;
-      border-radius: 8rpx;
-      font-size: 24rpx;
-      cursor: pointer;
-
-      &.delete {
-        background-color: #fff1f0;
-        color: #ff4d4f;
-        border: 1rpx solid #ffa39e;
-      }
-
-      &.edit {
-        background-color: #e6f7ff;
-        color: #1890ff;
-        border: 1rpx solid #91d5ff;
-      }
-    }
-  }
-}
-
-/* 3. 功能操作区 */
-.action-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background-color: #fff;
-  padding: 20rpx 0;
-  display: flex;
-  justify-content: space-around;
-  z-index: 999;
-  border-top: 1rpx solid #eee;
-  padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
-  box-sizing: border-box;
-
-  .action-item {
+  .info {
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
 
-    text {
-      font-size: 24rpx;
-      color: #666;
-      margin-top: 10rpx;
-    }
-  }
-}
-
-.divider {
-  height: 1rpx;
-  background-color: #eee;
-  margin: 0 30rpx;
-}
-
-/* 4. 评论区 */
-.comment-section {
-  background-color: #fff;
-  padding: 30rpx;
-
-  .section-title {
-    font-size: 30rpx;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 30rpx;
-    border-left: 6rpx solid #007aff;
-    padding-left: 16rpx;
-  }
-
-  .comment-list {
-    .comment-item {
-      display: flex;
-      margin-bottom: 30rpx;
-      border-bottom: 1rpx solid #f5f5f5;
-      padding-bottom: 20rpx;
-
-      &:last-child {
-        border-bottom: none;
-      }
-
-      .comment-avatar {
-        width: 70rpx;
-        height: 70rpx;
-        border-radius: 50%;
-        margin-right: 20rpx;
-        background-color: #eee;
-      }
-
-      .comment-right {
-        flex: 1;
-
-        .comment-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 10rpx;
-
-          .comment-user {
-            font-size: 28rpx;
-            font-weight: 500;
-            color: #333;
-          }
-
-          .comment-time {
-            font-size: 24rpx;
-            color: #999;
-          }
-        }
-
-        .comment-text {
-          font-size: 28rpx;
-          color: #666;
-          line-height: 1.5;
-        }
-      }
-    }
-
-    .empty-comment {
-      text-align: center;
-      padding: 40rpx 0;
-      color: #999;
-      font-size: 26rpx;
-    }
-  }
-}
-
-/* 底部输入框 - 改为跟随页面滚动，不固定 */
-.footer-input-bar {
-  background-color: #fff;
-  border-top: 1rpx solid #eee;
-  padding: 20rpx 30rpx;
-  display: flex;
-  align-items: center;
-  box-sizing: border-box;
-  /* 移除 fixed 定位，使其位于页面底部 */
-
-  .input-wrapper {
-    flex: 1;
-    background-color: #f5f5f5;
-    border-radius: 40rpx;
-    padding: 0 20rpx;
-    margin-right: 20rpx;
-  }
-
-  .send-btn {
-    font-size: 30rpx;
-    color: #999;
-    padding: 10rpx 20rpx;
-
-    &.active {
-      color: #007aff;
+    .nickname {
+      font-size: 30rpx;
       font-weight: bold;
+      color: #333;
+      margin-bottom: 6rpx;
+    }
+
+    .tip {
+      font-size: 24rpx;
+      color: #999;
+      background-color: #f0f0f0;
+      padding: 2rpx 10rpx;
+      border-radius: 6rpx;
+      align-self: flex-start;
     }
   }
 }

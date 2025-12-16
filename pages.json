@@ -4,12 +4,7 @@
       "path": "pages/navlist/navlist",
       "navigationStyle": "custom"
     },
-    {
-      "path": "pages/detail/detail",
-      "style": {
-        "navigationBarTitleText": "商品详情"
-      }
-    },
+   
     {
       "path": "pages/my/addressItem",
       "style": {
@@ -148,13 +143,7 @@
         "navigationBarTitleText": ""
       }
     },
-    {
-      "path": "pages/detail/replay",
-      "style": {
-        "navigationBarTitleText": "评论回复详情"
-      }
-    },
-
+  
     {
       "path": "pages/order/edit",
       "style": {
