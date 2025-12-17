@@ -6,13 +6,13 @@
       @query="queryList"
       :default-page-size="6"
     >
-      <template #loading>
+      <!-- <template #loading>
         <uni-load-more status="loading"></uni-load-more>
-      </template>
+      </template> -->
 
-      <view class="main">
-        <mp-html :content="item.content" />
-      </view>
+      <text class="soupContent" >
+        {{ item.content }}
+      </text>
 
       <!-- 作者信息 -->
       <view class="author-card">
@@ -308,50 +308,53 @@ const handelComment = async () => {
 <style lang="scss" scoped>
 .home {
   padding: 30rpx;
-}
-
-.main {
-  text {
-    line-height: 1.2;
-    font-size: 40rpx;
-  }
-}
-
-.author-card {
-  display: flex;
-  align-items: center;
-  padding: 30rpx 0;
-  margin-top: 20rpx;
-  border-top: 1rpx solid #f5f5f5;
-  border-bottom: 1rpx solid #f5f5f5;
-
-  .avatar {
-    width: 80rpx;
-    height: 80rpx;
-    border-radius: 50%;
-    margin-right: 20rpx;
-    background-color: #eee;
+  .soupContent {
+    font-size: 50rpx;
+    font-weight: lighter;
+    width: 100%;
+    letter-spacing: 0.05em;
+    line-height: 1.8em;
+    margin-top: 10rpx;
+    margin-bottom: 60rpx;
+    @include maxline();
   }
 
-  .info {
+  .author-card {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    align-items: center;
+    padding: 30rpx 0;
+    margin-top: 20rpx;
+    border-top: 1rpx solid #f5f5f5;
+    border-bottom: 1rpx solid #f5f5f5;
 
-    .nickname {
-      font-size: 30rpx;
-      font-weight: bold;
-      color: #333;
-      margin-bottom: 6rpx;
+    .avatar {
+      width: 80rpx;
+      height: 80rpx;
+      border-radius: 50%;
+      margin-right: 20rpx;
+      background-color: #eee;
     }
 
-    .tip {
-      font-size: 24rpx;
-      color: #999;
-      background-color: #f0f0f0;
-      padding: 2rpx 10rpx;
-      border-radius: 6rpx;
-      align-self: flex-start;
+    .info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      .nickname {
+        font-size: 30rpx;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 6rpx;
+      }
+
+      .tip {
+        font-size: 24rpx;
+        color: #999;
+        background-color: #f0f0f0;
+        padding: 2rpx 10rpx;
+        border-radius: 6rpx;
+        align-self: flex-start;
+      }
     }
   }
 }

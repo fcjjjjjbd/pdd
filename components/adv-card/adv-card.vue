@@ -14,14 +14,14 @@ const props = defineProps({
   },
 });
 const newItem = ref(props.item);
+console.log(props.item);
+ 
 // 点击拨通电话
 const cliphone = (value) => {
   uni.makePhoneCall({
     phoneNumber: value,
   });
 };
-
-
 
 // 图片点击事件
 const handleImageClick = () => {
