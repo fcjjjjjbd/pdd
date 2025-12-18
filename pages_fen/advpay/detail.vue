@@ -35,6 +35,12 @@
         </view>
       </view>
 
+      <!-- 管理员操作按钮 -->
+      <view class="admin-actions" v-if="isAdmin">
+        <button class="btn-edit" @click="handleEdit">修改</button>
+        <button class="btn-delete" @click="handleDelete">删除</button>
+      </view>
+
       <!-- 评论区1 -->
 
       <view>
@@ -88,13 +94,44 @@ const paging = ref(null);
 const commentarr = ref([]); // 评论数组
 
 const jgPopup = ref(null); //crud价格弹窗
+const isAdmin = ref(false); // 是否管理员
+
 // 详情页id
 let detailid;
 onLoad((e) => {
   detailid = e.id;
   console.log(detailid);
+  isAdmin.value = isAdminRole();
   getdata();
 });
+
+// 修改文章
+const handleEdit = () => {
+  uni.navigateTo({
+    url: `/pages_fen/advpay/edit?id=${detailid}`,
+  });
+};
+
+// 删除文章
+const handleDelete = () => {
+  uni.showModal({
+    title: "提示",
+    content: "确定要删除这篇文章吗？",
+    success: async (res) => {
+      if (res.confirm) {
+        try {
+          await db.collection("pdd-adv").doc(detailid).remove();
+          showToast("删除成功");
+          setTimeout(() => {
+            uni.navigateBack();
+          }, 1000);
+        } catch (e) {
+          showToast("删除失败");
+        }
+      }
+    },
+  });
+};
 
 // 举报页面
 const tousu = (idd) => {
@@ -355,6 +392,32 @@ const handelComment = async () => {
         border-radius: 6rpx;
         align-self: flex-start;
       }
+    }
+  }
+
+  .admin-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 20rpx;
+    margin: 30rpx 0;
+
+    button {
+      margin: 0;
+      padding: 0 30rpx;
+      height: 64rpx;
+      line-height: 64rpx;
+      font-size: 28rpx;
+      border-radius: 8rpx;
+    }
+
+    .btn-edit {
+      background-color: #bdaf8d;
+      color: #fff;
+    }
+
+    .btn-delete {
+      background-color: #ff4d4f;
+      color: #fff;
     }
   }
 }

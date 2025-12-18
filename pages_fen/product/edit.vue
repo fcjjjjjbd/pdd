@@ -178,7 +178,7 @@ const goodsff = async () => {
     });
     uni.$emit("Updatelist");
     uni.redirectTo({
-      url: "/pages_fena/product/list",
+      url: "/pages_fen/product/list",
     });
     init();
   } catch (err) {

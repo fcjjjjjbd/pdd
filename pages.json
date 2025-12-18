@@ -212,43 +212,6 @@
   },
   "subPackages": [
     {
-      "root": "pages_fena",
-      "pages": [
-        {
-          "path": "love/love",
-          "style": {
-            "navigationBarTitleText": "收藏的商品"
-          }
-        },
-
-        {
-          "path": "product/edit",
-          "style": {
-            "navigationBarTitleText": "添加商品"
-          }
-        },
-        {
-          "path": "product/list",
-          "style": {
-            "navigationBarTitleText": ""
-          }
-        },
-
-        {
-          "path": "historyarr/historyarr",
-          "style": {
-            "navigationBarTitleText": "历史记录"
-          }
-        },
-        {
-          "path": "appcenter/appcenter",
-          "style": {
-            "navigationBarTitleText": "推广中心"
-          }
-        }
-      ]
-    },
-    {
       "root": "uni_modules/uni-pay/pages",
       "pages": [
         {

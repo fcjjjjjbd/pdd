@@ -83,7 +83,7 @@ const onClear = () => {};
 // 判断添加商品
 const addgoods = async () => {
   uni.navigateTo({
-    url: "/pages_fena/product/edit",
+    url: "/pages_fen/product/edit",
   });
 };
 // 请求数据  async function (pageNo, pageSize)
